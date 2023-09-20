@@ -11,8 +11,13 @@
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
+
+import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 public class CommonGuiButton extends GuiButton {
+    ResourceLocation textures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
+
     public CommonGuiButton(int id, int xPos, int yPos, int width, int height, String displayText) {
         super(id, xPos, yPos,width,height,displayText);
     }
