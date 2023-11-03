@@ -19,11 +19,10 @@
 
 package cn.kuzuanpa.thinker.client.render.gui;
 
+import cn.kuzuanpa.thinker.client.render.gui.anime.animeMove;
+import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotate;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cn.kuzuanpa.thinker.clientProxy;
-import lib.lookingGlass.com.xcompwiz.lookingglass.api.view.IWorldView;
-import lib.lookingGlass.com.xcompwiz.lookingglass.client.proxyworld.ProxyWorldManager;
-import lib.lookingGlass.com.xcompwiz.lookingglass.client.proxyworld.WorldView;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,6 +34,9 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 /**
@@ -42,21 +44,25 @@ import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
  */
 @SideOnly(Side.CLIENT)
 public class ThinkingGui extends GuiScreen {
-	public static WorldView view;
 
 	private int displayWidth,displayHeight;
+	public long initTime=0;
+	protected List<CommonGuiButton> buttonHaveAnimeList = new ArrayList();
 	public ThinkingGui() {
 		allowUserInput = false;
 	}
 	public void initGui() {
 		super.initGui();
+		initTime=System.currentTimeMillis();
+		buttonHaveAnimeList.clear();
 		displayWidth= FMLClientHandler.instance().getClient().currentScreen.width;
 		displayHeight= FMLClientHandler.instance().getClient().currentScreen.height;
 		buttonList.clear();
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
-		buttonList.add(new GuiButton(1,2,2,20,20, "x"));
-		buttonList.add(new ThinkIcon(2,displayWidth-52,20,32,32));
-		buttonList.add(new CommonModel(3,50,50,displayWidth,displayHeight));
+		buttonList.add(new CommonModel(1,50,50,displayWidth,displayHeight));
+		buttonList.add(new customImage(2,displayWidth-60,60,0,0,32,32,"textures/gui/think/base.png"));
+		buttonHaveAnimeList.add((CommonGuiButton) buttonList.get(2));
+		buttonHaveAnimeList.get(0).addAnime(new animeMove(5000,10000,10,40));
 	}
 
 	protected void keyTyped(char p_73869_1_, int p_73869_2_)
@@ -95,6 +101,9 @@ public class ThinkingGui extends GuiScreen {
 			case 2:
 			default: return true;
 		}
+	}
+	public void updateScreen() {
+		buttonHaveAnimeList.forEach(button-> button.doAnime(initTime,System.currentTimeMillis()));
 	}
 	public boolean close() {
 		this.mc.displayGuiScreen(null);
