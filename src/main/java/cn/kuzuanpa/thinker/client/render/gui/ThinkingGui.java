@@ -20,6 +20,7 @@
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
+import cn.kuzuanpa.thinker.client.render.gui.anime.animeRGBA;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -57,8 +58,9 @@ public class ThinkingGui extends GuiScreen {
 		buttonList.add(new CommonModel(1,50,50,displayWidth,displayHeight));
 		buttonList.add(new customImage(2,displayWidth-60,60,0,0,32,32,"textures/gui/think/base.png"));
 		buttonHaveAnimeList.add((CommonGuiButton) buttonList.get(2));
-		buttonHaveAnimeList.get(0).addAnime(new animeMoveLinear(5000,10000,10,40));
+		buttonHaveAnimeList.get(0).addAnime(new animeMoveLinear(5000,10000,-100,40));
 		buttonHaveAnimeList.get(0).addAnime(new animeRotateSteadily(0.5F));
+		buttonHaveAnimeList.get(0).addAnime(new animeRGBA(2000,5000,255,255,255,255,0,0,0,-228));
 	}
 
 	protected void keyTyped(char p_73869_1_, int p_73869_2_)
