@@ -2,8 +2,8 @@ package cn.kuzuanpa.thinker.client.render.gui.anime;
 
 import org.lwjgl.opengl.GL11;
 
-public class animeMove implements IAnime{
-    public animeMove(int startTime,int endTime,int endPosX,int endPosY){
+public class animeMoveLinear implements IAnime{
+    public animeMoveLinear(int startTime, int endTime, int endPosX, int endPosY){
         this.startTime=startTime;
         this.endPosX=endPosX;
         this.endPosY=endPosY;

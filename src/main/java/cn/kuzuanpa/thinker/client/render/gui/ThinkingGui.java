@@ -19,25 +19,20 @@
 
 package cn.kuzuanpa.thinker.client.render.gui;
 
-import cn.kuzuanpa.thinker.client.render.gui.anime.animeMove;
-import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotate;
+import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
+import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
-import cn.kuzuanpa.thinker.clientProxy;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 /**
  * @author kuzuanpa
@@ -62,7 +57,8 @@ public class ThinkingGui extends GuiScreen {
 		buttonList.add(new CommonModel(1,50,50,displayWidth,displayHeight));
 		buttonList.add(new customImage(2,displayWidth-60,60,0,0,32,32,"textures/gui/think/base.png"));
 		buttonHaveAnimeList.add((CommonGuiButton) buttonList.get(2));
-		buttonHaveAnimeList.get(0).addAnime(new animeMove(5000,10000,10,40));
+		buttonHaveAnimeList.get(0).addAnime(new animeMoveLinear(5000,10000,10,40));
+		buttonHaveAnimeList.get(0).addAnime(new animeRotateSteadily(0.5F));
 	}
 
 	protected void keyTyped(char p_73869_1_, int p_73869_2_)
