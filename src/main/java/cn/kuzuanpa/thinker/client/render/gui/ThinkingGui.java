@@ -42,6 +42,7 @@ import java.util.List;
 public class ThinkingGui extends GuiScreen {
 
 	private int displayWidth,displayHeight;
+	private final static int THINKING_THEMES=10,THINKING_LIST_GAP=8,THINKING_LIST_START_Y=2,THINKING_LIST_START_X=0;
 	public long initTime=0;
 	protected List<CommonGuiButton> buttonHaveAnimeList = new ArrayList();
 	public ThinkingGui() {
@@ -55,12 +56,11 @@ public class ThinkingGui extends GuiScreen {
 		displayHeight= FMLClientHandler.instance().getClient().currentScreen.height;
 		buttonList.clear();
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
-		buttonList.add(new CommonModel(1,50,50,displayWidth,displayHeight));
-		buttonList.add(new customImage(2,displayWidth-60,60,0,0,32,32,"textures/gui/think/base.png"));
-		buttonHaveAnimeList.add((CommonGuiButton) buttonList.get(2));
-		buttonHaveAnimeList.get(0).addAnime(new animeMoveLinear(5000,10000,-100,40));
-		buttonHaveAnimeList.get(0).addAnime(new animeRotateSteadily(0.5F));
-		buttonHaveAnimeList.get(0).addAnime(new animeRGBA(2000,5000,255,255,255,255,0,0,0,-228));
+		buttonList.add(new CommonModel(1,0,0,displayWidth,displayHeight));
+		for (int i=1;i<THINKING_THEMES+1;i++) buttonList.add(new ThinkingList(i,THINKING_LIST_START_X,THINKING_LIST_START_Y+i*(16+THINKING_LIST_GAP)));
+		buttonList.add(new customImage(THINKING_THEMES+2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png").addAnime(new animeRotateSteadily(0.05F)));
+
+		buttonHaveAnimeList.add((CommonGuiButton) buttonList.get(THINKING_THEMES+2));
 	}
 
 	protected void keyTyped(char p_73869_1_, int p_73869_2_)
@@ -95,7 +95,7 @@ public class ThinkingGui extends GuiScreen {
 	protected boolean onButtonPressed(GuiButton button) {
 		switch (button.id){
 			case 0:
-			case 1: return close();
+			case 1:
 			case 2:
 			default: return true;
 		}

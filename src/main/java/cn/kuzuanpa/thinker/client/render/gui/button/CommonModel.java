@@ -15,16 +15,20 @@ import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.DummyWorld;
 import blockrenderer6343.world.TrackedDummyWorld;
+import cn.kuzuanpa.ktfruaddon.tile.parts.SunHeaterMirror;
 import cn.kuzuanpa.thinker.client.render.gui.ThinkingGui;
-import cn.kuzuanpa.thinker.clientProxy;
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
+import gregapi.util.UT;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -72,7 +76,12 @@ public class CommonModel extends CommonGuiButton{
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
         ((DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
-        renderer.world.setBlock(0,5,0,Blocks.diamond_block);
+        renderer.world.setBlock(0,2,0,Blocks.diamond_block);
+        for (int i=-6;i<4;i++)for(int j=-6;j<4;j++)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,8,1);
+        for (int i=-5;i<5;i+=2)for(int j=-5;j<5;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
+        for (int i=-6;i<4;i+=2)for(int j=-6;j<4;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
+        eyePos.setY((float) (eyePos.getY()*0.6));
+       // for (int i=6;i<42;i++)for(int j=6;j<42;j++)for (int k=1;k<5;k++)        renderer.world.setBlock(i,k,j,Blocks.stained_glass,8,1);
         //placeMultiblock();
 
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
@@ -84,8 +93,7 @@ public class CommonModel extends CommonGuiButton{
         renderer.setOnLookingAt(ray -> {});
 
         renderer.setOnWorldRender(this::onRendererRender);
-        // world.setRenderFilter(pos -> worldSceneRenderer.renderedBlocksMap.keySet().stream().anyMatch(c ->
-        // c.contains(pos)));
+
 
         selectedBlock = null;
         if (resetCamera) {
@@ -144,12 +152,10 @@ public class CommonModel extends CommonGuiButton{
         if (this.visible)
         {
             try {
-                int RECIPE_LAYOUT_X = 8;
-                int RECIPE_LAYOUT_Y = 50;
-                int RECIPE_WIDTH = 160;
-                int sceneHeight = RECIPE_WIDTH - 10;
-                int MOUSE_OFFSET_X = 5;
-                int MOUSE_OFFSET_Y = 43;
+                int RECIPE_LAYOUT_X = xPosition;
+                int RECIPE_LAYOUT_Y = yPosition;
+                int RECIPE_WIDTH = width;
+                int sceneHeight = height;
 
                 int guiMouseX = GuiDraw.getMousePosition().x;
                 int guiMouseY = GuiDraw.getMousePosition().y;
@@ -190,10 +196,6 @@ public class CommonModel extends CommonGuiButton{
                     renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
                 }
 
-                // draw buttons
-                for (GuiButton button : buttons.keySet()) {
-                    button.drawButton(Minecraft.getMinecraft(), guiMouseX - k - MOUSE_OFFSET_X, guiMouseY - l - MOUSE_OFFSET_Y);
-                }
 
                 if (!(leftClickHeld || rightClickHeld) && rayTraceResult != null
                         && !renderer.world.isAirBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ)) {

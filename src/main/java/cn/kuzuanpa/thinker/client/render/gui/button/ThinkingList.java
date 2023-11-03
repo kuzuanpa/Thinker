@@ -16,20 +16,19 @@ import org.lwjgl.opengl.GL11;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class ThinkingBackground extends CommonGuiButton{
-    ResourceLocation textures=new ResourceLocation(MOD_ID,"textures/gui/think/background.png");
+public class ThinkingList extends CommonGuiButton{
 
-    public ThinkingBackground(int id,int width,int height){
-        super(id, 0, 0,width,height,"");
+    public ThinkingList(int id, int x,int y){
+        super(id, x, y,64,16,"sad");
 
     }
     public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
         if (this.visible)
         {
-            ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/background.png");
+            ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
             p_146112_1_.getTextureManager().bindTexture(buttontextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
-            this.drawTexturedModalRect(0,0, 0, 0, width, height);
+            this.drawTexturedModalRect(xPosition,yPosition, 64, 0, 64, 16);
         }
     }
 }

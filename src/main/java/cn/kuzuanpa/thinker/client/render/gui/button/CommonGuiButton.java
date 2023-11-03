@@ -25,8 +25,9 @@ public class CommonGuiButton extends GuiButton {
         super(id, xPos, yPos,width,height,displayText);
     }
     public ArrayList<IAnime> animeList=new ArrayList<>();
-    public void addAnime(IAnime anime){
+    public CommonGuiButton addAnime(IAnime anime){
         animeList.add(anime);
+        return this;
     }
     public void doAnime(long initTime,long currentTime){};
 }

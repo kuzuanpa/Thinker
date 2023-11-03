@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -21,6 +22,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Vector3f;
@@ -105,6 +107,8 @@ public abstract class WorldSceneRenderer {
         PositionedRect mouse = getPositionedRect(mouseX, mouseY, 0, 0);
         mouseX = mouse.position.x;
         mouseY = mouse.position.y;
+
+        GL11.glPushMatrix();
         // setupCamera
         setupCamera(positionedRect);
 
@@ -127,6 +131,7 @@ public abstract class WorldSceneRenderer {
 
         // resetcamera
         resetCamera();
+        GL11.glPopMatrix();
     }
 
     public Vector3f getEyePos() {
@@ -173,10 +178,11 @@ public abstract class WorldSceneRenderer {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
 
+
         // setup viewport and clear GL buffers
         glViewport(x, y, width, height);
 
-        clearView(x, y, width, height);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         // setup projection matrix to perspective
         glMatrixMode(GL_PROJECTION);
@@ -188,21 +194,10 @@ public abstract class WorldSceneRenderer {
 
         // setup modelview matrix
         glMatrixMode(GL_MODELVIEW);
+
         glPushMatrix();
         glLoadIdentity();
         GLU.gluLookAt(eyePos.x, eyePos.y, eyePos.z, lookAt.x, lookAt.y, lookAt.z, worldUp.x, worldUp.y, worldUp.z);
-    }
-
-    public static void setGlClearColorFromInt(int colorValue, int opacity) {
-        int i = (colorValue & 16711680) >> 16;
-        int j = (colorValue & 65280) >> 8;
-        int k = (colorValue & 255);
-        glClearColor(i / 255.0f, j / 255.0f, k / 255.0f, opacity / 255.0f);
-    }
-
-    protected void clearView(int x, int y, int width, int height) {
-        setGlClearColorFromInt(clearColor, clearColor >> 24);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     public static void resetCamera() {
@@ -272,13 +267,25 @@ public abstract class WorldSceneRenderer {
         for (int pass = 0; pass < 2; pass++) {
             ForgeHooksClient.setRenderPass(pass);
             int finalPass = pass;
-            renderedBlocks.forEach(blockPosition -> {
+            //renderedBlocks.forEach(blockPosition -> {
+            //    setDefaultPassRenderState(finalPass);
+            //    TileEntity tile = world.getTileEntity(blockPosition.x, blockPosition.y, blockPosition.z);
+            //    if (tile != null) {
+            //        if (tile.shouldRenderInPass(finalPass)) {
+            //        }
+            //    }
+            //});
+            world.loadedTileEntityList.forEach(t->{
                 setDefaultPassRenderState(finalPass);
-                TileEntity tile = world.getTileEntity(blockPosition.x, blockPosition.y, blockPosition.z);
-                if (tile != null) {
-                    if (tile.shouldRenderInPass(finalPass)) {
-                        TileEntityRendererDispatcher.instance.renderTileEntity(tile, 0);
-                    }
+                if(!(t instanceof TileEntity))return;
+                TileEntity tile=(TileEntity) (t);
+                if(tile instanceof TileEntity&&((TileEntity) tile).shouldRenderInPass(finalPass)){
+                    int i = world.getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
+                    float j = i % 65536;
+                    float k = i / 65536;
+                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,  j,  k);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, (double)tile.xCoord, (double)tile.yCoord, (double)tile.zCoord, 0);
                 }
             });
         }

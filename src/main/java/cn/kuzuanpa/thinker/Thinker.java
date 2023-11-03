@@ -20,7 +20,7 @@ public class Thinker
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-PROXY.init(event);
+        PROXY.init(event);
     }
     public static void error(Throwable err){
         err.printStackTrace();

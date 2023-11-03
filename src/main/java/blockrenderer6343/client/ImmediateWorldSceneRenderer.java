@@ -10,6 +10,9 @@ import blockrenderer6343.api.utils.PositionedRect;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
 /**
  * Created with IntelliJ IDEA.
  * 
@@ -38,13 +41,5 @@ public class ImmediateWorldSceneRenderer extends WorldSceneRenderer {
                 - windowHeight;
 
         return super.getPositionedRect(windowX, windowY, windowWidth, windowHeight);
-    }
-
-    @Override
-    protected void clearView(int x, int y, int width, int height) {
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor(x, y, width, height);
-        super.clearView(x, y, width, height);
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 }
