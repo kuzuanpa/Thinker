@@ -15,20 +15,14 @@ import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.DummyWorld;
 import blockrenderer6343.world.TrackedDummyWorld;
-import cn.kuzuanpa.ktfruaddon.tile.parts.SunHeaterMirror;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGui;
-import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
-import gregapi.util.UT;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -39,8 +33,6 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-
 public class CommonModel extends CommonGuiButton{
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
@@ -50,6 +42,7 @@ public class CommonModel extends CommonGuiButton{
     protected static float zoom;
     protected static final float DEFAULT_RANGE_MULTIPLIER = 3.5f;
     protected int lastGuiMouseX,lastGuiMouseY;
+    public boolean clickOnOtherButton=false;
     public CommonModel(int id, int xPos, int yPos, int width, int height){
         super(id, xPos, yPos,width,height,"");
         try {
@@ -69,7 +62,7 @@ public class CommonModel extends CommonGuiButton{
                 eyePos = renderer.getEyePos();
                 lookAt = renderer.getLookAt();
                 worldUp = renderer.getWorldUp();
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ignored) {
             }
         }
 
@@ -80,7 +73,7 @@ public class CommonModel extends CommonGuiButton{
         for (int i=-6;i<4;i++)for(int j=-6;j<4;j++)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,8,1);
         for (int i=-5;i<5;i+=2)for(int j=-5;j<5;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
         for (int i=-6;i<4;i+=2)for(int j=-6;j<4;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
-        eyePos.setY((float) (eyePos.getY()*0.6));
+        lookAt.setY((float) (1));
        // for (int i=6;i<42;i++)for(int j=6;j<42;j++)for (int k=1;k<5;k++)        renderer.world.setBlock(i,k,j,Blocks.stained_glass,8,1);
         //placeMultiblock();
 
@@ -152,6 +145,7 @@ public class CommonModel extends CommonGuiButton{
         if (this.visible)
         {
             try {
+                animeList.forEach(anime -> anime.animeDrawPre(initTime));
                 int RECIPE_LAYOUT_X = xPosition;
                 int RECIPE_LAYOUT_Y = yPosition;
                 int RECIPE_WIDTH = width;
@@ -161,25 +155,23 @@ public class CommonModel extends CommonGuiButton{
                 int guiMouseY = GuiDraw.getMousePosition().y;
                 ItemStack tooltipBlockStack=null;
                 final Map<GuiButton, Runnable> buttons = new HashMap<>();
-
-                // NEI guiLeft
-                int k = 23;
-                // NEI guiTop
-                int l = 8;
                 renderer.render(
-                        RECIPE_LAYOUT_X + k,
-                        RECIPE_LAYOUT_Y + l,
+                        RECIPE_LAYOUT_X,
+                        RECIPE_LAYOUT_Y,
                         RECIPE_WIDTH,
                         sceneHeight,
                         lastGuiMouseX,
-                        lastGuiMouseY);
+                        lastGuiMouseY,
+                        animeList,
+                        initTime);
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
                 MovingObjectPosition rayTraceResult = renderer.getLastTraceResult();
-                boolean insideView = guiMouseX >= k + RECIPE_LAYOUT_X && guiMouseY >= l + RECIPE_LAYOUT_Y
-                        && guiMouseX < k + RECIPE_LAYOUT_X + RECIPE_WIDTH
-                        && guiMouseY < l + RECIPE_LAYOUT_Y + sceneHeight;
+                boolean insideView = !clickOnOtherButton
+                        && guiMouseX >=  RECIPE_LAYOUT_X && guiMouseY >=  RECIPE_LAYOUT_Y
+                        && guiMouseX <  RECIPE_LAYOUT_X + RECIPE_WIDTH
+                        && guiMouseY <  RECIPE_LAYOUT_Y + sceneHeight;
                 boolean leftClickHeld = Mouse.isButtonDown(0);
                 boolean rightClickHeld = Mouse.isButtonDown(1);
                 if (insideView) {
@@ -211,6 +203,7 @@ public class CommonModel extends CommonGuiButton{
 
                 lastGuiMouseX = guiMouseX;
                 lastGuiMouseY = guiMouseY;
+                animeList.forEach(anime -> anime.animeDrawAfter(initTime));
             }catch (Throwable t){
                 t.printStackTrace();
             }

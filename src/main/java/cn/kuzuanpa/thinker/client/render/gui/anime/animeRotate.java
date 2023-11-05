@@ -10,20 +10,21 @@ public class animeRotate implements IAnime{
     }
     public int startTime, endTime, rotateAngle;
     @Override
-    public void animeDraw(long initTime, long currentTime) {
-        long timer = currentTime-initTime;
+    public void animeDraw(long initTime) {
+        long timer = System.currentTimeMillis()-initTime;
+
         if(timer<startTime) return;
         if(timer<endTime)GL11.glRotatef(((float)(timer - startTime)/(float)(endTime-startTime))*rotateAngle,0,0,1);
         else GL11.glRotatef(rotateAngle,0,0,1);
     }
 
     @Override
-    public void animeDrawPre(long initTime, long currentTime) {
+    public void animeDrawPre(long initTime) {
 
     }
 
     @Override
-    public void animeDrawAfter(long currentTime, long initTime) {
+    public void animeDrawAfter(long initTime) {
 
     }
 }

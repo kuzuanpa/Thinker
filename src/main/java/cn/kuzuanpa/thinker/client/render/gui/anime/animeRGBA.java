@@ -18,8 +18,9 @@ public class animeRGBA implements IAnime{
     }
     public int startTime, endTime,startR, startG, startB, startA,dR,dG,dB,dA;
     @Override
-    public void animeDraw(long initTime, long currentTime) {
-        long timer = currentTime-initTime;
+    public void animeDraw(long initTime) {
+        long timer = System.currentTimeMillis()-initTime;
+
         if((startR+dR)>255||(startG+dG)>255||(startB+dB)>255||(startA+dA)>255) Thinker.error(new IllegalArgumentException("RGBA value is too big: dR:"+dR+",dG:"+dG+",dB:"+dB+",dA:"+dA));
         if(timer<startTime) return;
         if(timer<endTime){
@@ -29,12 +30,12 @@ public class animeRGBA implements IAnime{
     }
 
     @Override
-    public void animeDrawPre(long initTime, long currentTime) {
+    public void animeDrawPre(long initTime) {
 
     }
 
     @Override
-    public void animeDrawAfter(long currentTime, long initTime) {
+    public void animeDrawAfter(long initTime) {
 
     }
 }

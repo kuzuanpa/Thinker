@@ -4,9 +4,11 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import cn.kuzuanpa.thinker.client.render.gui.anime.IAnime;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -102,7 +104,7 @@ public abstract class WorldSceneRenderer {
      * ignore any transformations applied currently to projection/view matrix, so specified coordinates are scaled MC
      * gui coordinates. It will return matrices of projection and view in previous state after rendering
      */
-    public void render(int x, int y, int width, int height, int mouseX, int mouseY) {
+    public void render(int x, int y, int width, int height, int mouseX, int mouseY, List<IAnime> animeList,long initTime) {
         PositionedRect positionedRect = getPositionedRect(x, y, width, height);
         PositionedRect mouse = getPositionedRect(mouseX, mouseY, 0, 0);
         mouseX = mouse.position.x;
@@ -113,6 +115,7 @@ public abstract class WorldSceneRenderer {
         setupCamera(positionedRect);
 
         // render TrackedDummyWorld
+        animeList.forEach(anime -> anime.animeDraw(initTime));
         drawWorld();
 
         // check lookingAt
@@ -219,6 +222,7 @@ public abstract class WorldSceneRenderer {
         glPopClientAttrib();
         glPopAttrib();
     }
+
 
     protected void drawWorld() {
         if (beforeRender != null) {

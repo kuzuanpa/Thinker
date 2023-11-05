@@ -8,17 +8,19 @@ public class animeRotateSteadily implements IAnime{
     }
     public float speed=1.0F;
     @Override
-    public void animeDraw(long initTime, long currentTime) {
-        GL11.glRotated(((currentTime%360000)*speed)%360,0,0,1);
+    public void animeDraw(long initTime) {
+        long timer = System.currentTimeMillis()-initTime;
+
+        GL11.glRotated((timer*speed)%360,0,0,1);
     }
 
     @Override
-    public void animeDrawPre(long initTime, long currentTime) {
+    public void animeDrawPre(long initTime) {
 
     }
 
     @Override
-    public void animeDrawAfter(long currentTime, long initTime) {
+    public void animeDrawAfter(long initTime) {
 
     }
 }

@@ -11,20 +11,20 @@ public class animeMoveLinear implements IAnime{
     }
     public int startTime, endTime, dX, dY;
     @Override
-    public void animeDraw(long initTime, long currentTime) {
-        long timer = currentTime-initTime;
+    public void animeDraw(long initTime) {
+        long timer = System.currentTimeMillis()-initTime;
         if(timer<startTime) return;
-        if (timer < endTime) GL11.glTranslatef((float)(timer - startTime)/(float)(endTime-startTime)* dX,(float)(timer - startTime)/(float)(endTime-startTime)* dY, 0);
+        if (timer < endTime) GL11.glTranslatef(((float)(timer - startTime)/(float)(endTime-startTime))* dX,((float)(timer - startTime)/(float)(endTime-startTime))* dY, 0);
         else GL11.glTranslatef(dX, dY, 0);
     }
 
     @Override
-    public void animeDrawPre(long initTime, long currentTime) {
+    public void animeDrawPre(long initTime) {
 
     }
 
     @Override
-    public void animeDrawAfter(long currentTime, long initTime) {
+    public void animeDrawAfter(long initTime) {
 
     }
 }

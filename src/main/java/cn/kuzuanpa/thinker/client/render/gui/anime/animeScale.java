@@ -13,16 +13,17 @@ public class animeScale implements IAnime{
     public int startTime, endTime;
     public float scaleRate,scaleX,scaleY;
     @Override
-    public void animeDraw(long initTime, long currentTime) {
-        long timer = currentTime-initTime;
+    public void animeDraw(long initTime) {
+        long timer = System.currentTimeMillis()-initTime;
+
         if(timer<startTime) return;
         if(timer<endTime) GL11.glScalef(((float)(timer - startTime)/(float)(endTime-startTime))*scaleX*scaleRate,((float)(timer - startTime)/(float)(endTime-startTime))*scaleY*scaleRate,1);
         else GL11.glScalef(scaleX*scaleRate,scaleY*scaleRate,1);
     }
 
     @Override
-    public void animeDrawPre(long initTime, long currentTime) {}
+    public void animeDrawPre(long initTime) {}
 
     @Override
-    public void animeDrawAfter(long initTime, long currentTime) {}
+    public void animeDrawAfter(long initTime) {}
 }

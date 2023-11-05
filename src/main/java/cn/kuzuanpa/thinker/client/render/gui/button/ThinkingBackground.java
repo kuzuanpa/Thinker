@@ -10,26 +10,30 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
+import cn.kuzuanpa.thinker.client.configHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+
+
+import java.awt.*;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 public class ThinkingBackground extends CommonGuiButton{
-    ResourceLocation textures=new ResourceLocation(MOD_ID,"textures/gui/think/background.png");
 
     public ThinkingBackground(int id,int width,int height){
         super(id, 0, 0,width,height,"");
-
+        this.zLevel=-255;
     }
     public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
         if (this.visible)
         {
-            ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/background.png");
-            p_146112_1_.getTextureManager().bindTexture(buttontextures);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
-            this.drawTexturedModalRect(0,0, 0, 0, width, height);
+            GL11.glPushMatrix();
+            drawRect(0,0,width,height,new Color(configHandler.backgroundColorR,configHandler.backgroundColorG,configHandler.backgroundColorB,configHandler.backgroundColorA).getRGB());
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glPopMatrix();
         }
     }
 }

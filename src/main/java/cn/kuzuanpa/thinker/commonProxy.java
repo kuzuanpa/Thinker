@@ -8,7 +8,6 @@
  */
 package cn.kuzuanpa.thinker;
 
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGui;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -16,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
-import static cn.kuzuanpa.thinker.Thinker.PROXY;
 
 public class commonProxy implements IGuiHandler {
     public commonProxy() {

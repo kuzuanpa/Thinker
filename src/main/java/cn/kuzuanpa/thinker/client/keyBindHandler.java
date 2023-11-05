@@ -10,7 +10,7 @@
 
 package cn.kuzuanpa.thinker.client;
 
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGui;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
@@ -26,7 +26,7 @@ public class keyBindHandler {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (keyThink.isPressed()) {
-                FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGui());
+                FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGuiMain());
         }
 
     }

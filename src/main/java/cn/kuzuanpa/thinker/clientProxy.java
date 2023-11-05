@@ -14,12 +14,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGui;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
 import cn.kuzuanpa.thinker.client.keyBindHandler;
-
-import javax.annotation.Nullable;
 
 public class clientProxy extends commonProxy {
 
@@ -38,7 +35,7 @@ public class clientProxy extends commonProxy {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         switch(id) {
             case 0:
-                return new ThinkingGui();
+                return new ThinkingGuiMain();
         }
         return null;
     }
