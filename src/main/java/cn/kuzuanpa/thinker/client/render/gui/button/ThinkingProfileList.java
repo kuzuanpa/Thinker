@@ -10,6 +10,7 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
+import cn.kuzuanpa.thinker.client.config.configHandler;
 import cn.kuzuanpa.thinker.client.thinkingProfileHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -24,22 +25,27 @@ public class ThinkingProfileList extends CommonGuiButton{
         super(id, x, y,64,height,"");
 
     }
-    public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
-        if (this.visible)
-        {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        updateHoverState(mouseX,mouseY);
+        if (!this.visible)return;
+        GL11.glPushMatrix();
+        animeList.forEach(anime->anime.animeDrawPre(initTime));
+        ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
+        for (int i=0;i<thinkingProfileHandler.profileList.size();i++){
             GL11.glPushMatrix();
-            ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
-            for (int i=0;i<thinkingProfileHandler.profileList.size();i++){
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
-                p_146112_1_.getTextureManager().bindTexture(buttontextures);
-                this.drawTexturedModalRect(0,thinkingProfileHandler.YOffset+i*(16+thinkingProfileHandler.PROFILE_GAP), 64, 0, 64, 16);
-                if(thinkingProfileHandler.profileList.get(i).icon!=null){
-                    thinkingProfileHandler.thinkingProfile profile = thinkingProfileHandler.profileList.get(i);
-                    GL11.glColor4f(profile.iconR,profile.iconG,profile.iconB,profile.iconA);
-                    p_146112_1_.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-                    this.drawTexturedModelRectFromIcon(0,thinkingProfileHandler.YOffset+i*(16+thinkingProfileHandler.PROFILE_GAP),profile.icon, 16, 16);
-            }}
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
+            mc.getTextureManager().bindTexture(buttontextures);
+            animeList.forEach(anime->anime.animeDraw(initTime));
+            this.drawTexturedModalRect(0,thinkingProfileHandler.YOffset+i*(16+ (int)configHandler.themeSelectorProfileGap.get()), 64, 0, 64, 16);
+            if(thinkingProfileHandler.profileList.get(i).icon==null){GL11.glPopMatrix();continue;}
+            thinkingProfileHandler.thinkingProfile profile = thinkingProfileHandler.profileList.get(i);
+            GL11.glColor4f(profile.iconR,profile.iconG,profile.iconB,profile.iconA);
+            mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+            this.drawTexturedModelRectFromIcon(0,thinkingProfileHandler.YOffset+i*(16+ (int)configHandler.themeSelectorProfileGap.get()),profile.icon, 16, 16);
             GL11.glPopMatrix();
         }
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        animeList.forEach(anime->anime.animeDrawAfter(initTime));
+        GL11.glPopMatrix();
     }
 }

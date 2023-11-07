@@ -1,6 +1,7 @@
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
 import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
 public class animeRGBA implements IAnime{
@@ -31,11 +32,19 @@ public class animeRGBA implements IAnime{
 
     @Override
     public void animeDrawPre(long initTime) {
-
     }
 
     @Override
     public void animeDrawAfter(long initTime) {
-
+    }
+    @Override
+    public void updateButton(long initTime, CommonGuiButton button) {
+        long timer = System.currentTimeMillis()-initTime;
+        if(timer<startTime) return;
+        if(timer<endTime){
+            button.visible= (startA + ((float) (timer - startTime) / (float) (endTime - startTime) * dA) >= 1);
+        } else {
+            button.visible= startA + dA > 1;
+        }
     }
 }

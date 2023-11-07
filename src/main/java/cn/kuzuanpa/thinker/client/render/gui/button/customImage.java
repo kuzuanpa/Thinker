@@ -1,7 +1,5 @@
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import gregapi.data.LH;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -21,10 +19,10 @@ public class customImage extends CommonGuiButton {
         this.path=path;
         rotateAngle=0;
     }
-    public int id,x,y,rotateAngle,scaleX,scaleY, u, v, width, height;
+    public int id,x,y,rotateAngle, u, v, width, height;
     public String path;
-    public byte[] combineRGB;
-    public void drawButton(Minecraft mc, int p_146112_2_, int p_146112_3_) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        updateHoverState(mouseX,mouseY);
         if (this.visible) {
             GL11.glPushMatrix();
             animeList.forEach(anime->anime.animeDrawPre(initTime));
@@ -32,7 +30,6 @@ public class customImage extends CommonGuiButton {
             GL11.glTranslatef(x + (height / 2F), y + (width / 2F),0);
             animeList.forEach(anime->anime.animeDraw(initTime));
             GL11.glTranslatef(-(x + (height / 2F)), -(y + (width / 2F)),0);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.drawTexturedModalRect(x, y, u, v, this.width, this.height);
             animeList.forEach(anime->anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();

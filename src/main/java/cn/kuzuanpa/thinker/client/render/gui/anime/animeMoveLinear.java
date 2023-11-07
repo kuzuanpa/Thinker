@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
+import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
 public class animeMoveLinear implements IAnime{
@@ -27,4 +28,20 @@ public class animeMoveLinear implements IAnime{
     public void animeDrawAfter(long initTime) {
 
     }
+
+    @Override
+    public void updateButton(long initTime, CommonGuiButton button) {
+        long timer = System.currentTimeMillis()-initTime;
+        if(timer<startTime) return;
+        if (timer < endTime) {
+            float f1=((float)(timer - startTime)/(float)(endTime-startTime));
+            button.animeXModify+= (int) (dX*f1);
+            button.animeYModify+= (int) (dY*f1);
+        }
+        else {
+            button.animeXModify +=dX ;
+            button.animeYModify +=dY ;
+        }
+    }
+
 }

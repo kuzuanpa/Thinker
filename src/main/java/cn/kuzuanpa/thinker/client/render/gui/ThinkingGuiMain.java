@@ -20,6 +20,8 @@
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import cn.kuzuanpa.ktfruaddon.item.util.ItemList;
+import cn.kuzuanpa.thinker.client.config.configHandler;
+import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cn.kuzuanpa.thinker.client.thinkingProfileHandler;
@@ -50,7 +52,7 @@ import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
 public class ThinkingGuiMain extends GuiScreen {
 
 	private int displayWidth,displayHeight;
-	public boolean openByUser=false;
+	public boolean openByUser,themeSelectorFolded=false;
 	public long initTime=0;
 	private List<String> hoveringString=new ArrayList<>();
 	protected List<CommonGuiButton> buttonsHaveAnime = new ArrayList<CommonGuiButton>();
@@ -69,12 +71,11 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.clear();
 		buttonsHaveAnime.clear();
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
-		buttonList.add(new CommonModel(1,0,0,displayWidth,displayHeight));
+		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
 		buttonList.add(new customImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
-		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight));
-		buttonList.add(new customImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")));
-		buttonList.add(new customImage(5,0,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")));
-		((CommonGuiButton) buttonList.get(5)).visible=false;
+		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
+		buttonList.add(new customImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
+		buttonList.add(new customImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 		thinkingProfileHandler.profileList.clear();
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Items.string.getIconFromDamage(0)));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, ItemList.Alpha_Particle.item().getIconFromDamage(1000)));
@@ -82,9 +83,9 @@ public class ThinkingGuiMain extends GuiScreen {
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Blocks.stone.getIcon(0,0)));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
+		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
+		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
+		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
 		if(openByUser)postInit();
 	}
 	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
@@ -102,14 +103,14 @@ public class ThinkingGuiMain extends GuiScreen {
 		{
 			for (int l = this.buttonList.size() - 1; l >= 0 ;l--)
 			{
-				GuiButton guibutton = (GuiButton)this.buttonList.get(l);
+				CommonGuiButton guibutton = (CommonGuiButton)this.buttonList.get(l);
 
-				if (guibutton.mousePressed(this.mc, p_73864_1_, p_73864_2_))
+				if (guibutton.updateHoverState(p_73864_1_, p_73864_2_))
 				{
 					GuiScreenEvent.ActionPerformedEvent.Pre event = new GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
 					if (MinecraftForge.EVENT_BUS.post(event))
 						break;
-					event.button.func_146113_a(this.mc.getSoundHandler());
+					if(event.button.id!=0)event.button.func_146113_a(this.mc.getSoundHandler());
 					if (this.onButtonPressed(event.button)) break;
 					if (this.equals(this.mc.currentScreen))
 						MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.ActionPerformedEvent.Post(this, event.button, this.buttonList));
@@ -118,18 +119,20 @@ public class ThinkingGuiMain extends GuiScreen {
 		}
 	}
 	protected boolean onButtonPressed(GuiButton button) {
-		((CommonModel)buttonList.get(1)).clickOnOtherButton=button.id!=1;
+		((DummyWorld)buttonList.get(1)).clickOnOtherButton=button.id!=1;
 		if(button.id==2) this.mc.displayGuiScreen(new ThinkerSettingsGui());
 		if(button.id==3) thinkingProfileHandler.MouseClickHandler(this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1);
-		if(button.id==4) {
-			((CommonGuiButton)buttonList.get(3)).visible=false;
-			((CommonGuiButton)buttonList.get(4)).visible=false;
-			((CommonGuiButton)buttonList.get(5)).visible=true;
+		if(button.id==4&&!themeSelectorFolded) {
+			((CommonGuiButton)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),-80,0));
+			((CommonGuiButton)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),-80,0));
+			((CommonGuiButton)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(200)),16,0));
+			themeSelectorFolded=true;
 		}
-		if(button.id==5) {
-			((CommonGuiButton)buttonList.get(3)).visible=true;
-			((CommonGuiButton)buttonList.get(4)).visible=true;
-			((CommonGuiButton)buttonList.get(5)).visible=false;
+		if(button.id==5&&themeSelectorFolded) {
+			((CommonGuiButton)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));
+			((CommonGuiButton)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));
+			((CommonGuiButton)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(200)),-16,0));
+			themeSelectorFolded=false;
 		}
 		return true;
 	}
@@ -137,12 +140,6 @@ public class ThinkingGuiMain extends GuiScreen {
 		super.handleMouseInput();
 		int x = Mouse.getX() * this.width / this.mc.displayWidth;
 		int y =this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
-		buttonList.forEach(b -> {
-			if (!(b instanceof CommonGuiButton)) return;
-			CommonGuiButton button = (CommonGuiButton) b;
-			if(!button.visible)return;
-			if(button.xPosition<x&&x<button.xPosition+button.width&&button.yPosition<y&&y<button.yPosition+button.height)hoveringString= Collections.singletonList(button.displayString);
-		});
 		if(((CommonGuiButton)buttonList.get(3)).visible&&Mouse.isInsideWindow()&&Mouse.getEventDWheel()!=0&& x<thinkingProfileHandler.profileLayer*32+32&& x>0)thinkingProfileHandler.MouseWheelHandler();
 	}
 	public void updateScreen() {
@@ -151,9 +148,17 @@ public class ThinkingGuiMain extends GuiScreen {
 	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_){
 		super.drawScreen(p_73863_1_,p_73863_2_,p_73863_3_);
 		thinkingProfileHandler.tick();
-		if (hoveringString == null||hoveringString.stream().allMatch(string->string.equals(""))) return;
+
+		if(!Mouse.isInsideWindow())return;
 		int x = Mouse.getX() * this.width / this.mc.displayWidth;
 		int y = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+		buttonList.forEach(b -> {
+			if (!(b instanceof CommonGuiButton)) return;
+			CommonGuiButton button = (CommonGuiButton) b;
+			if(!button.visible)return;
+			if(button.updateHoverState(x,y))hoveringString= Collections.singletonList(button.displayString);
+		});
+		if (hoveringString == null||hoveringString.stream().allMatch(string->string.equals(""))) return;
 		drawHoveringText(hoveringString, x, y+5, fontRendererObj);
 	}
 	public boolean close() {

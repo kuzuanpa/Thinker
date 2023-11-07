@@ -13,7 +13,6 @@ package cn.kuzuanpa.thinker.client.render.gui.button;
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
-import blockrenderer6343.world.DummyWorld;
 import blockrenderer6343.world.TrackedDummyWorld;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
@@ -33,7 +32,7 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommonModel extends CommonGuiButton{
+public class DummyWorld extends CommonGuiButton{
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
     protected static BlockPosition selectedBlock;
@@ -43,7 +42,7 @@ public class CommonModel extends CommonGuiButton{
     protected static final float DEFAULT_RANGE_MULTIPLIER = 3.5f;
     protected int lastGuiMouseX,lastGuiMouseY;
     public boolean clickOnOtherButton=false;
-    public CommonModel(int id, int xPos, int yPos, int width, int height){
+    public DummyWorld(int id, int xPos, int yPos, int width, int height){
         super(id, xPos, yPos,width,height,"");
         try {
             initializeSceneRenderer(true);
@@ -67,7 +66,7 @@ public class CommonModel extends CommonGuiButton{
         }
 
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
-        ((DummyWorld) renderer.world).updateEntitiesForNEI();
+        ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
         renderer.world.setBlock(0,2,0,Blocks.diamond_block);
         for (int i=-6;i<4;i++)for(int j=-6;j<4;j++)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,8,1);
@@ -141,11 +140,13 @@ public class CommonModel extends CommonGuiButton{
         bufferBuilder.renderBlockUsingTexture(block, pos.x, pos.y, pos.z, icon);
     }
 
-    public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible)
         {
             try {
+                updateHoverState(mouseX,mouseY);
                 animeList.forEach(anime -> anime.animeDrawPre(initTime));
+
                 int RECIPE_LAYOUT_X = xPosition;
                 int RECIPE_LAYOUT_Y = yPosition;
                 int RECIPE_WIDTH = width;
@@ -153,7 +154,6 @@ public class CommonModel extends CommonGuiButton{
 
                 int guiMouseX = GuiDraw.getMousePosition().x;
                 int guiMouseY = GuiDraw.getMousePosition().y;
-                ItemStack tooltipBlockStack=null;
                 final Map<GuiButton, Runnable> buttons = new HashMap<>();
                 renderer.render(
                         RECIPE_LAYOUT_X,
@@ -192,14 +192,8 @@ public class CommonModel extends CommonGuiButton{
                 if (!(leftClickHeld || rightClickHeld) && rayTraceResult != null
                         && !renderer.world.isAirBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ)) {
                     Block block = renderer.world.getBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
-                    tooltipBlockStack = block.getPickBlock(
-                            rayTraceResult,
-                            renderer.world,
-                            rayTraceResult.blockX,
-                            rayTraceResult.blockY,
-                            rayTraceResult.blockZ,
-                            Minecraft.getMinecraft().thePlayer);
                 }
+
 
                 lastGuiMouseX = guiMouseX;
                 lastGuiMouseY = guiMouseY;

@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker.client;
 
+import cn.kuzuanpa.thinker.client.config.configHandler;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Mouse;
@@ -8,12 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class thinkingProfileHandler {
-    public static int selectedProfile=0,YOffset=0,PROFILE_GAP=4;
-    public static float scrollInertia=1F,oldWheel=0F;
+    public static int selectedProfile=0;
+    public static int YOffset=0;
+    public static float oldWheel=0F;
     public static ArrayList<thinkingProfile> profileList=new ArrayList<>();
     public static int profileLayer=1;
     public static void MouseClickHandler(int mouseY){
-        if(Mouse.isInsideWindow())for (int i=0;i<profileList.size();i++)if(mouseY>=YOffset+i*(16+PROFILE_GAP) && mouseY<=YOffset+16+i*(16+PROFILE_GAP)){
+        if(Mouse.isInsideWindow())for (int i=0;i<profileList.size();i++)if(mouseY>=YOffset+i*(16+ configHandler.themeSelectorProfileGap.get()) && mouseY<=YOffset+16+i*(16+ configHandler.themeSelectorProfileGap.get())){
             selectedProfile=i;
             break;
         }
@@ -22,14 +24,11 @@ public class thinkingProfileHandler {
     public static void MouseWheelHandler(){
         oldWheel=Mouse.getEventDWheel();
     }
-    public static void MouseInputHandler(){
-
-    }
     public static void tick(){
-        oldWheel+=oldWheel>0?-scrollInertia : scrollInertia;
-        if(Math.abs(oldWheel)<= scrollInertia)oldWheel=0;
+        oldWheel+=oldWheel>0?-configHandler.themeSelectorScrollInertia.get()*5 : configHandler.themeSelectorScrollInertia.get();
+        if(Math.abs(oldWheel)<= configHandler.themeSelectorScrollInertia.get())oldWheel=0;
         YOffset+=oldWheel/100;
-        if(YOffset>0)YOffset=0;
+        if(!configHandler.themeSelectorFreelyScroll.get()&&YOffset>0)YOffset=0;
     }
     public static class thinkingProfile{
         public thinkingProfile(boolean disableDummyWorldRend, CommonGuiButton... buttons){

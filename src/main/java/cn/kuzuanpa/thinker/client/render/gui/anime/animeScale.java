@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
+import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
 public class animeScale implements IAnime{
@@ -26,4 +27,8 @@ public class animeScale implements IAnime{
 
     @Override
     public void animeDrawAfter(long initTime) {}
+    @Override
+    public void updateButton(long initTime, CommonGuiButton button) {
+        //TODO
+    }
 }

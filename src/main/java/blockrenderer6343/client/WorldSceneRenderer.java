@@ -118,6 +118,7 @@ public abstract class WorldSceneRenderer {
         animeList.forEach(anime -> anime.animeDraw(initTime));
         drawWorld();
 
+
         // check lookingAt
         this.lastTraceResult = null;
         if (onLookingAt != null && mouseX > positionedRect.position.x

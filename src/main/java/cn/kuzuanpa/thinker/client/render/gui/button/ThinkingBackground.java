@@ -10,16 +10,12 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
-import cn.kuzuanpa.thinker.client.configHandler;
+import cn.kuzuanpa.thinker.client.config.configHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 
 import java.awt.*;
-
-import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 public class ThinkingBackground extends CommonGuiButton{
 
@@ -27,12 +23,13 @@ public class ThinkingBackground extends CommonGuiButton{
         super(id, 0, 0,width,height,"");
         this.zLevel=-255;
     }
-    public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
+    public void drawButton(Minecraft p_146112_1_, int mouseX, int mouseY) {
         if (this.visible)
         {
             GL11.glPushMatrix();
-            drawRect(0,0,width,height,new Color(configHandler.backgroundColorR,configHandler.backgroundColorG,configHandler.backgroundColorB,configHandler.backgroundColorA).getRGB());
+            drawRect(0,0,width,height,new Color(configHandler.HUDBackgroundColorR.getI(),configHandler.HUDBackgroundColorG.getI(),configHandler.HUDBackgroundColorB.getI(),configHandler.HUDBackgroundColorA.getI()).getRGB());
             GL11.glEnable(GL11.GL_BLEND);
+            GL11.glColor4f(1,1,1,1);
             GL11.glPopMatrix();
         }
     }
