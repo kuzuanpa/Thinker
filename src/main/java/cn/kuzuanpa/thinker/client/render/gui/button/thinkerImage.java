@@ -1,13 +1,14 @@
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
+import cn.kuzuanpa.thinker.client.render.gui.button.custom.customText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class customImage extends CommonGuiButton {
-    public customImage(int id,int x,int y,int u,int v,int width,int height,String path,String displayText) {
+public class thinkerImage extends CommonGuiButton {
+    public thinkerImage(int id, int x, int y, int u, int v, int width, int height, String path, String displayText) {
         super(id, x, y,width,height,displayText);
         this.id=id;
         this.x=x;

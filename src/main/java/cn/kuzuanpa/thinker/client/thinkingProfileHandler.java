@@ -1,6 +1,5 @@
 package cn.kuzuanpa.thinker.client;
 
-import cn.kuzuanpa.thinker.client.config.configHandler;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Mouse;
@@ -10,8 +9,7 @@ import java.util.Collections;
 
 public class thinkingProfileHandler {
     public static int selectedProfile=0;
-    public static int YOffset=0;
-    public static float oldWheel=0F;
+    public static float oldWheel=0F,YOffset=0;
     public static ArrayList<thinkingProfile> profileList=new ArrayList<>();
     public static int profileLayer=1;
     public static void MouseClickHandler(int mouseY){
@@ -22,12 +20,12 @@ public class thinkingProfileHandler {
         System.out.println(selectedProfile);
     }
     public static void MouseWheelHandler(){
-        oldWheel=Mouse.getEventDWheel();
+        oldWheel+=Mouse.getEventDWheel();
     }
     public static void tick(){
-        oldWheel+=oldWheel>0?-configHandler.themeSelectorScrollInertia.get()*5 : configHandler.themeSelectorScrollInertia.get();
+        oldWheel+=oldWheel>0?-configHandler.themeSelectorScrollInertia.get() : configHandler.themeSelectorScrollInertia.get();
         if(Math.abs(oldWheel)<= configHandler.themeSelectorScrollInertia.get())oldWheel=0;
-        YOffset+=oldWheel/100;
+        YOffset+=oldWheel/300*(configHandler.themeSelectorScrollSpeed.get());
         if(!configHandler.themeSelectorFreelyScroll.get()&&YOffset>0)YOffset=0;
     }
     public static class thinkingProfile{

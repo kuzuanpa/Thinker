@@ -1,4 +1,4 @@
-package cn.kuzuanpa.thinker.client.config;
+package cn.kuzuanpa.thinker.client;
 
 
 
@@ -7,10 +7,12 @@ public class configHandler {
     public static configNumber HUDBackgroundColorG =new configNumber(0,50,255);
     public static configNumber HUDBackgroundColorB =new configNumber(0,50,255);
     public static configNumber HUDBackgroundColorA =new configNumber(0,200,255);
-    public static configNumber animeSpeed=new configNumber(0.01F,1.0F,100.0F);
+    public static configNumber animeSpeed=new configNumber(0.01F,1.0F,10.0F);
     public static configBoolean themeSelectorFreelyScroll=new configBoolean(false);
-    public static configNumber themeSelectorProfileGap =new configNumber(0,4,200);
-    public static configNumber themeSelectorScrollInertia =new configNumber(0.01F,200,100.0F);
+    public static configNumber themeSelectorProfileGap =new configNumber(0,4,80);
+    public static configNumber themeSelectorScrollSpeed =new configNumber(0.01F,1.0F,10.0F);
+
+    public static configNumber themeSelectorScrollInertia =new configNumber(0.01F,8F,50.0F);
 
     public static int getConfiguredAnimeTime(int originalTime){return (int) (originalTime*((float)1/animeSpeed.get()));}
     public static float getConfiguredAnimeTime(float originalTime){return originalTime*((float)1/animeSpeed.get());}

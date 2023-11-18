@@ -10,11 +10,11 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
-import cn.kuzuanpa.thinker.client.config.configHandler;
-import cpw.mods.fml.client.FMLClientHandler;
+import cn.kuzuanpa.thinker.client.configHandler;
+import cn.kuzuanpa.thinker.util.GLUT;
+import cpw.mods.fml.client.config.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -42,17 +42,14 @@ public class NumberConfigButton extends CommonGuiButton {
             float progress=config.get()/(config.max()-config.min());
             drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,-2132680325);
             drawRect((int) (xPosition+2+(width-4)*progress)-1,yPosition+10, (int) (xPosition+2+(width-4)*progress)+1,yPosition+height-10,-1);
-            if(k==2&& Mouse.isButtonDown(0)){
-                System.out.println(config.get());
-                float newValue=(config.max()-config.min())*(mouseX-2-xPosition)/(width-4);
-                config.update(newValue);
-            }
+            if(k==2&& Mouse.isButtonDown(0)) config.update(mouseX<xPosition+2?config.min():mouseX>xPosition+width-2?config.max():(config.max()-config.min())*(mouseX-2-xPosition)/(width-4));
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMaximumFractionDigits(2);
             this.drawString(fontrenderer, this.displayString, this.xPosition, this.yPosition, -1);
             this.drawString(fontrenderer, nf.format(config.min()), this.xPosition, this.yPosition+height-10, -1);
             this.drawCenteredString(fontrenderer, nf.format(config.get()), this.xPosition+width/2, this.yPosition+height-10, -1);
             this.drawCenteredString(fontrenderer, nf.format(config.max()), this.xPosition+width, this.yPosition+height-10, -1);
+
             animeList.forEach(anime -> anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();
         }

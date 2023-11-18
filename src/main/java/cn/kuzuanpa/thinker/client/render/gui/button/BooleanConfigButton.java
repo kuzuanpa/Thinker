@@ -10,13 +10,11 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
-import cn.kuzuanpa.thinker.client.config.configHandler;
+import cn.kuzuanpa.thinker.client.configHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import java.text.NumberFormat;
 
 public class BooleanConfigButton extends CommonGuiButton {
     public BooleanConfigButton(int id, int xPos, int yPos, int width, int height, String displayText, configHandler.configBoolean config) {
@@ -38,9 +36,7 @@ public class BooleanConfigButton extends CommonGuiButton {
             int k = this.getHoverState(isMouseHovering);
             animeList.forEach(anime -> anime.animeDraw(initTime));
             drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,-2132680325);
-            if(k==2&& Mouse.isButtonDown(0)){
-                config.set(!config.get());
-            }
+            if(k==2&& Mouse.isButtonDown(0))config.set(!config.get());
             this.drawString(fontrenderer, this.displayString, this.xPosition, this.yPosition, -1);
             animeList.forEach(anime -> anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();

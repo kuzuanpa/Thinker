@@ -20,7 +20,7 @@
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import cn.kuzuanpa.ktfruaddon.item.util.ItemList;
-import cn.kuzuanpa.thinker.client.config.configHandler;
+import cn.kuzuanpa.thinker.client.configHandler;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
@@ -72,10 +72,10 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonsHaveAnime.clear();
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
-		buttonList.add(new customImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
-		buttonList.add(new customImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
-		buttonList.add(new customImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 		thinkingProfileHandler.profileList.clear();
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Items.string.getIconFromDamage(0)));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, ItemList.Alpha_Particle.item().getIconFromDamage(1000)));

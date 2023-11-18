@@ -10,7 +10,7 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
-import cn.kuzuanpa.thinker.client.config.configHandler;
+import cn.kuzuanpa.thinker.client.configHandler;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
