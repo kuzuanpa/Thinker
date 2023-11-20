@@ -3,7 +3,7 @@ package cn.kuzuanpa.thinker.client.render.gui.anime;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
-public class animeScale implements IAnime{
+public class animeScale implements IGuiAnime {
     public animeScale(int startTime,int endTime,float scaleRate,float scaleX,float scaleY){
         this.startTime=startTime;
         this.endTime=endTime;

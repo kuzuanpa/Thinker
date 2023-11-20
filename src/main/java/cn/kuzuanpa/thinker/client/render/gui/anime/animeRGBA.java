@@ -4,7 +4,7 @@ import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
-public class animeRGBA implements IAnime{
+public class animeRGBA implements IGuiAnime {
     public animeRGBA(int startTime, int endTime,int startR,int startG,int startB,int startA,int dR,int dG,int dB,int dA){
         this.startTime=startTime;
         this.endTime=endTime;

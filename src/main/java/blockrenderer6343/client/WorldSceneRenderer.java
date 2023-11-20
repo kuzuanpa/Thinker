@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import cn.kuzuanpa.thinker.client.render.gui.anime.IAnime;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnime;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldAnimeHandler;
+import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -60,6 +62,7 @@ public abstract class WorldSceneRenderer {
     private Vector3f lookAt = new Vector3f(0, 0, 0);
     private Vector3f worldUp = new Vector3f(0, 1, 0);
     private boolean renderAllFaces = false;
+    public long initTime=0;
 
     public WorldSceneRenderer(World world) {
         this.world = world;
@@ -104,7 +107,7 @@ public abstract class WorldSceneRenderer {
      * ignore any transformations applied currently to projection/view matrix, so specified coordinates are scaled MC
      * gui coordinates. It will return matrices of projection and view in previous state after rendering
      */
-    public void render(int x, int y, int width, int height, int mouseX, int mouseY, List<IAnime> animeList,long initTime) {
+    public void render(int x, int y, int width, int height, int mouseX, int mouseY, List<IGuiAnime> animeList) {
         PositionedRect positionedRect = getPositionedRect(x, y, width, height);
         PositionedRect mouse = getPositionedRect(mouseX, mouseY, 0, 0);
         mouseX = mouse.position.x;
@@ -242,29 +245,28 @@ public abstract class WorldSceneRenderer {
 
         final int savedAo = mc.gameSettings.ambientOcclusion;
         mc.gameSettings.ambientOcclusion = 0;
-
-        Tessellator.instance.startDrawingQuads();
-        try {
-            Tessellator.instance.setBrightness(15 << 20 | 15 << 4);
-            for (BlockPosition pos : renderedBlocks) {
+        for (BlockPosition pos : renderedBlocks) {
+            GL11.glPushMatrix();
+            Tessellator.instance.startDrawingQuads();
+            IDummyWorldAnime anime = dummyWorldAnimeHandler.dummyWorldAnimeHashMap.get(pos);
+            if(anime!=null)anime.animeDraw(initTime);
+            try {
+                Tessellator.instance.setBrightness(15 << 20 | 15 << 4);
                 Block block = world.getBlock(pos.x, pos.y, pos.z);
                 if (block.equals(Blocks.air)) continue;
-
                 RenderBlocks bufferBuilder = new RenderBlocks();
                 bufferBuilder.blockAccess = world;
                 bufferBuilder.setRenderBounds(0, 0, 0, 1, 1, 1);
                 bufferBuilder.renderAllFaces = renderAllFaces;
                 bufferBuilder.renderBlockByRenderType(block, pos.x, pos.y, pos.z);
+                if (onRender != null) onRender.accept(this);
+            } finally {
+                Tessellator.instance.draw();
+                Tessellator.instance.setTranslation(0, 0, 0);
+                GL11.glPopMatrix();
             }
-            if (onRender != null) {
-                onRender.accept(this);
-            }
-        } finally {
-            mc.gameSettings.ambientOcclusion = savedAo;
-            Tessellator.instance.draw();
-            Tessellator.instance.setTranslation(0, 0, 0);
         }
-
+        mc.gameSettings.ambientOcclusion = savedAo;
         RenderHelper.enableStandardItemLighting();
         glEnable(GL_LIGHTING);
 
@@ -284,7 +286,7 @@ public abstract class WorldSceneRenderer {
                 setDefaultPassRenderState(finalPass);
                 if(!(t instanceof TileEntity))return;
                 TileEntity tile=(TileEntity) (t);
-                if(tile instanceof TileEntity&&((TileEntity) tile).shouldRenderInPass(finalPass)){
+                if(tile.shouldRenderInPass(finalPass)){
                     int i = world.getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
                     float j = i % 65536;
                     float k = i / 65536;

@@ -3,7 +3,7 @@ package cn.kuzuanpa.thinker.client.render.gui.anime;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
-public class animeRotateSteadily implements IAnime{
+public class animeRotateSteadily implements IGuiAnime {
     public animeRotateSteadily(float speed){
         this.speed=speed;
     }

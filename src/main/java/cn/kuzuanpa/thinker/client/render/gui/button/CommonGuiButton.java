@@ -10,7 +10,7 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
-import cn.kuzuanpa.thinker.client.render.gui.anime.IAnime;
+import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -57,8 +57,8 @@ public class CommonGuiButton extends GuiButton {
             GL11.glPopMatrix();
         }
     }
-    public ArrayList<IAnime> animeList=new ArrayList<>();
-    public CommonGuiButton addAnime(IAnime anime){
+    public ArrayList<IGuiAnime> animeList=new ArrayList<>();
+    public CommonGuiButton addAnime(IGuiAnime anime){
         animeList.add(anime);
         return this;
     }

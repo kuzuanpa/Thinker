@@ -14,6 +14,8 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldAnimeRotate;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldAnimeHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
 import net.minecraft.block.Block;
@@ -21,7 +23,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -66,6 +67,8 @@ public class DummyWorld extends CommonGuiButton{
         }
 
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
+        renderer.initTime=System.currentTimeMillis();
+        dummyWorldAnimeHandler.add(new BlockPosition(0,0,0),new DummyWorldAnimeRotate());
         ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
         renderer.world.setBlock(0,2,0,Blocks.diamond_block);
@@ -119,8 +122,7 @@ public class DummyWorld extends CommonGuiButton{
             renderBlockOverLay(selectedBlock, Blocks.glass.getIcon(0, 6));
             return;
         }
-        renderBlockOverLay(look, Blocks.stained_glass.getIcon(0, 7));
-        renderBlockOverLay(selectedBlock, Blocks.stained_glass.getIcon(0, 14));
+
     }
     private void resetCenter() {
         TrackedDummyWorld world = (TrackedDummyWorld) renderer.world;
@@ -162,8 +164,7 @@ public class DummyWorld extends CommonGuiButton{
                         sceneHeight,
                         lastGuiMouseX,
                         lastGuiMouseY,
-                        animeList,
-                        initTime);
+                        animeList);
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -187,13 +188,6 @@ public class DummyWorld extends CommonGuiButton{
                     }
                     renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
                 }
-
-
-                if (!(leftClickHeld || rightClickHeld) && rayTraceResult != null
-                        && !renderer.world.isAirBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ)) {
-                    Block block = renderer.world.getBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
-                }
-
 
                 lastGuiMouseX = guiMouseX;
                 lastGuiMouseY = guiMouseY;

@@ -3,7 +3,7 @@ package cn.kuzuanpa.thinker.client.render.gui.anime;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
-public class animeRotate implements IAnime{
+public class animeRotate implements IGuiAnime {
     public animeRotate(int startTime,int endTime,int rotateAngle){
         this.startTime=startTime;
         this.rotateAngle=rotateAngle;

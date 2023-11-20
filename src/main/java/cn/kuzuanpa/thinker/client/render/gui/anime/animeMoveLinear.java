@@ -3,7 +3,7 @@ package cn.kuzuanpa.thinker.client.render.gui.anime;
 import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
 import org.lwjgl.opengl.GL11;
 
-public class animeMoveLinear implements IAnime{
+public class animeMoveLinear implements IGuiAnime {
     public animeMoveLinear(int startTime, int endTime, int dX, int dY){
         this.startTime=startTime;
         this.dX =dX;

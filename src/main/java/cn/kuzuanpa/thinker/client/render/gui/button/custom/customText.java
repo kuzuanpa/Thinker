@@ -14,7 +14,7 @@ public class customText extends CommonGuiButton {
         this.initTime=System.currentTimeMillis();
     }
     public customText(int id, String text, int posX, int posY, int color){
-        super(id,posX,posY,text.length(),12,"");
+        super(id,posX,posY,text.length()*5,12,"");
         this.text=text;
         this.color=color;
         this.initTime=System.currentTimeMillis();
@@ -24,7 +24,9 @@ public class customText extends CommonGuiButton {
         if (this.visible) {
             GL11.glPushMatrix();
             animeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GL11.glTranslatef(xPosition + (height / 2F), yPosition + (width / 2F),0);
             animeList.forEach(anime -> anime.animeDraw(initTime));
+            GL11.glTranslatef(-(xPosition + (height / 2F)), -(yPosition + (width / 2F)),0);
             this.drawString(Minecraft.getMinecraft().fontRenderer, text, xPosition, yPosition, color);
             animeList.forEach(anime -> anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();
