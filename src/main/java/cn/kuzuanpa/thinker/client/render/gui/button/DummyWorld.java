@@ -15,7 +15,7 @@ import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldAnimeRotate;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldAnimeHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
 import net.minecraft.block.Block;
@@ -68,15 +68,16 @@ public class DummyWorld extends CommonGuiButton{
 
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
         renderer.initTime=System.currentTimeMillis();
-        dummyWorldAnimeHandler.add(new BlockPosition(0,0,0),new DummyWorldAnimeRotate());
         ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
+        dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->renderer.world.setBlock(pos.x,pos.y,pos.z,block));
         renderer.world.setBlock(0,2,0,Blocks.diamond_block);
         for (int i=-6;i<4;i++)for(int j=-6;j<4;j++)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,8,1);
         for (int i=-5;i<5;i+=2)for(int j=-5;j<5;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
         for (int i=-6;i<4;i+=2)for(int j=-6;j<4;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
+        dummyWorldHandler.addAnime(new BlockPosition(0,0,0),new DummyWorldAnimeRotate());
+
         lookAt.setY((float) (1));
-       // for (int i=6;i<42;i++)for(int j=6;j<42;j++)for (int k=1;k<5;k++)        renderer.world.setBlock(i,k,j,Blocks.stained_glass,8,1);
         //placeMultiblock();
 
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
