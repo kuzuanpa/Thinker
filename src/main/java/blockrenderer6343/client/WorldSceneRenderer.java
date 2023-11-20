@@ -248,8 +248,8 @@ public abstract class WorldSceneRenderer {
         for (BlockPosition pos : renderedBlocks) {
             GL11.glPushMatrix();
             Tessellator.instance.startDrawingQuads();
-            IDummyWorldAnime anime = dummyWorldHandler.dummyWorldAnimeHashMap.get(pos);
-            if(anime!=null)anime.animeDraw(initTime);
+            List<IDummyWorldAnime> anime = dummyWorldHandler.dummyWorldAnimeHashMap.get(pos);
+            if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime));
             try {
                 Tessellator.instance.setBrightness(15 << 20 | 15 << 4);
                 Block block = world.getBlock(pos.x, pos.y, pos.z);
@@ -287,8 +287,8 @@ public abstract class WorldSceneRenderer {
                 if(!(t instanceof TileEntity))return;
                 TileEntity tile=(TileEntity) (t);
                 if(tile.shouldRenderInPass(finalPass)){
-                    IDummyWorldAnime anime = dummyWorldHandler.dummyWorldAnimeHashMap.get(new BlockPosition(tile.xCoord,tile.yCoord,tile.zCoord));
-                    if(anime!=null)anime.animeDraw(initTime);
+                    List<IDummyWorldAnime> anime = dummyWorldHandler.dummyWorldAnimeHashMap.get(new BlockPosition(tile.xCoord,tile.yCoord,tile.zCoord));
+                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime));
                     int i = world.getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
                     float j = i % 65536;
                     float k = i / 65536;

@@ -75,7 +75,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 		thinkingProfileHandler.profileList.clear();
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Items.string.getIconFromDamage(0)));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Blocks.stone.getIcon(0,0)));
+		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
 		if(openByUser)postInit();
 	}

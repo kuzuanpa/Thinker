@@ -70,12 +70,17 @@ public class DummyWorld extends CommonGuiButton{
         renderer.initTime=System.currentTimeMillis();
         ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
+
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->renderer.world.setBlock(pos.x,pos.y,pos.z,block));
         renderer.world.setBlock(0,2,0,Blocks.diamond_block);
         for (int i=-6;i<4;i++)for(int j=-6;j<4;j++)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,8,1);
         for (int i=-5;i<5;i+=2)for(int j=-5;j<5;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
         for (int i=-6;i<4;i+=2)for(int j=-6;j<4;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
+        dummyWorldHandler.dummyWorldAnimeHashMap.clear();
         dummyWorldHandler.addAnime(new BlockPosition(0,0,0),new DummyWorldAnimeRotate());
+        dummyWorldHandler.addAnime(new BlockPosition(0,0,1),new DummyWorldAnimeRotate());
+        dummyWorldHandler.addAnime(new BlockPosition(1,0,1),new DummyWorldAnimeRotate());
+        dummyWorldHandler.addAnime(new BlockPosition(1,0,0),new DummyWorldAnimeRotate());
 
         lookAt.setY((float) (1));
         //placeMultiblock();
