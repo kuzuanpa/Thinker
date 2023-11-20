@@ -19,7 +19,6 @@
 
 package cn.kuzuanpa.thinker.client.render.gui;
 
-import cn.kuzuanpa.ktfruaddon.item.util.ItemList;
 import cn.kuzuanpa.thinker.client.configHandler;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
@@ -29,8 +28,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregapi.data.MT;
-import gregapi.data.OP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Blocks;
@@ -78,14 +75,8 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 		thinkingProfileHandler.profileList.clear();
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Items.string.getIconFromDamage(0)));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, ItemList.Alpha_Particle.item().getIconFromDamage(1000)));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.dust.mat(MT.Na,1).getIconIndex(),MT.Na.fRGBaSolid));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, Blocks.stone.getIcon(0,0)));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
 		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
-		thinkingProfileHandler.profileList.add(new thinkingProfileHandler.thinkingProfile(false, OP.ring.mat(MT.Bronze,1).getIconIndex()));
 		if(openByUser)postInit();
 	}
 	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
