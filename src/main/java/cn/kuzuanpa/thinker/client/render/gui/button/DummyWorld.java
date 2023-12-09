@@ -14,7 +14,6 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldAnimeRotate;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
@@ -23,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -43,6 +43,7 @@ public class DummyWorld extends CommonGuiButton{
     protected static final float DEFAULT_RANGE_MULTIPLIER = 3.5f;
     protected int lastGuiMouseX,lastGuiMouseY;
     public boolean clickOnOtherButton=false;
+
     public DummyWorld(int id, int xPos, int yPos, int width, int height){
         super(id, xPos, yPos,width,height,"");
         try {
@@ -51,7 +52,9 @@ public class DummyWorld extends CommonGuiButton{
             t.printStackTrace();
         }
         lastGuiMouseX=0;lastGuiMouseY=0;
-
+    }
+    public void updateDummyWorldInitTime(long initTime){
+        if(renderer!=null)renderer.initTime=initTime;
     }
     protected void initializeSceneRenderer(boolean resetCamera) {
         Vector3f eyePos = new Vector3f();
@@ -71,26 +74,12 @@ public class DummyWorld extends CommonGuiButton{
         ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
 
-        dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->renderer.world.setBlock(pos.x,pos.y,pos.z,block));
-        renderer.world.setBlock(0,2,0,Blocks.diamond_block);
-        for (int i=-6;i<4;i++)for(int j=-6;j<4;j++)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,8,1);
-        for (int i=-5;i<5;i+=2)for(int j=-5;j<5;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
-        for (int i=-6;i<4;i+=2)for(int j=-6;j<4;j+=2)        renderer.world.setBlock(i,0,j,Blocks.stained_glass,7,1);
-        dummyWorldHandler.dummyWorldAnimeHashMap.clear();
-        dummyWorldHandler.addAnime(new BlockPosition(0,0,0),new DummyWorldAnimeRotate());
-        dummyWorldHandler.addAnime(new BlockPosition(0,0,1),new DummyWorldAnimeRotate());
-        dummyWorldHandler.addAnime(new BlockPosition(1,0,1),new DummyWorldAnimeRotate());
-        dummyWorldHandler.addAnime(new BlockPosition(1,0,0),new DummyWorldAnimeRotate());
-
         lookAt.setY((float) (1));
-        //placeMultiblock();
 
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
         Vector3f minPos = ((TrackedDummyWorld) renderer.world).getMinPos();
         center = new Vector3f(minPos.x + size.x / 2, minPos.y + size.y / 2, minPos.z + size.z / 2);
 
-        renderer.renderedBlocks.clear();
-        renderer.addRenderedBlocks(((TrackedDummyWorld) renderer.world).placedBlocks);
         renderer.setOnLookingAt(ray -> {});
 
         renderer.setOnWorldRender(this::onRendererRender);

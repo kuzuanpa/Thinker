@@ -2,7 +2,7 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
 import org.lwjgl.opengl.GL11;
 
-public class DummyWorldAnimeRotate implements IDummyWorldAnime{
+public class DummyBlockAnimeRotate implements IDummyBlockAnime {
     @Override
     public void animeDraw(long initTime) {
         GL11.glRotated((System.currentTimeMillis()-initTime) /10F,0,0,1);

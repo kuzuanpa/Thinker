@@ -73,5 +73,5 @@ public class CommonGuiButton extends GuiButton {
         animeList.forEach(anime -> anime.updateButton(initTime,this));
         return this.enabled && this.visible && mouseX >= this.xPosition+animeXModify && mouseY >= this.yPosition+animeYModify && mouseX < this.xPosition+animeXModify + this.width+animeWidthModify && mouseY < this.yPosition+animeYModify + this.height+animeHeightModify;
     }
-    public void doAnime(long initTime){this.initTime=initTime;}
+    public void updateInitTime(long initTime){this.initTime=initTime;}
 }

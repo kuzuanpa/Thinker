@@ -1,6 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
-public interface IDummyWorldAnime {
+public interface IDummyBlockAnime {
     void animeDraw(long initTime);
     void animeDrawPre(long initTime);
     void animeDrawAfter(long initTime);

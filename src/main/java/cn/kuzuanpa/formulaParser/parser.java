@@ -7,7 +7,7 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.ktfruaddon.code.formulaParser;
+package cn.kuzuanpa.formulaParser;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

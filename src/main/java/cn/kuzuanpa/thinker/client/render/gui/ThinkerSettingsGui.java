@@ -173,7 +173,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         if(Mouse.isInsideWindow()&&Mouse.getEventDWheel()!=0&& x>50)oldWheel+=Mouse.getEventDWheel();
     }
     public void updateScreen() {
-        buttonsHaveAnime.forEach(button-> button.doAnime(initTime));
+        buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
     }
     public void close() {
         this.mc.displayGuiScreen(new ThinkingGuiMain());
