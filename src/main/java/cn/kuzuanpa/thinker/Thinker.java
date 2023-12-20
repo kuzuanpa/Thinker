@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker;
 
+import cn.kuzuanpa.thinker.client.json.jsonReader;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.SidedProxy;
 import net.minecraft.init.Blocks;
@@ -21,6 +22,7 @@ public class Thinker
     public void init(FMLInitializationEvent event)
     {
         PROXY.init(event);
+        jsonReader.readAllProfiles();
     }
     public static void error(Throwable err){
         err.printStackTrace();

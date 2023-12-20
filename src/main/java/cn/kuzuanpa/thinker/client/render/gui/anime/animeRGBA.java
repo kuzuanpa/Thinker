@@ -1,7 +1,7 @@
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import org.lwjgl.opengl.GL11;
 
 public class animeRGBA implements IGuiAnime {
@@ -27,7 +27,7 @@ public class animeRGBA implements IGuiAnime {
         if(timer<endTime){
             float f1=((float)(timer - startTime)/(float)(endTime-startTime));
             GL11.glColor4ub((byte) (startR+(f1*dR)), (byte) (startG+(f1*dG)), (byte) (startB+(f1*dB)), (byte) (startA+(f1*dA)));
-        } else GL11.glColor4ub((byte) (startR+dR), (byte) (startG+dG), (byte) (startB+dB), (byte) (startA+dA));
+        }
     }
 
     @Override
@@ -38,13 +38,16 @@ public class animeRGBA implements IGuiAnime {
     public void animeDrawAfter(long initTime) {
     }
     @Override
-    public void updateButton(long initTime, CommonGuiButton button) {
+    public void updateButton(long initTime, ThinkerButton button) {
         long timer = System.currentTimeMillis()-initTime;
         if(timer<startTime) return;
-        if(timer<endTime){
-            button.visible= (startA + ((float) (timer - startTime) / (float) (endTime - startTime) * dA) >= 1);
-        } else {
-            button.visible= startA + dA > 1;
-        }
+        if(timer<endTime)button.visible= (startA + ((float) (timer - startTime) / (float) (endTime - startTime) * dA) >= 1);
+         else button.visible= startA + dA > 1;
+
+    }
+
+    @Override
+    public String jsonName() {
+        return "Gui.RGBA";
     }
 }

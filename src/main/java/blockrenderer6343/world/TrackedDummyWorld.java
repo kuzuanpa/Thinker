@@ -258,14 +258,10 @@ public class TrackedDummyWorld extends DummyWorld {
                     Block block1 = this.getBlock(l, i1, j1);
                     int l1 = this.getBlockMetadata(l, i1, j1);
 
-                    if (!ignoreBlockWithoutBoundingBox
-                            || block1.getCollisionBoundingBoxFromPool(this, l, i1, j1) != null) {
+                    if (!ignoreBlockWithoutBoundingBox || block1.getCollisionBoundingBoxFromPool(this, l, i1, j1) != null) {
                         if (block1.canCollideCheck(l1, stopOnLiquid)) {
-                            MovingObjectPosition movingobjectposition1 = block1
-                                    .collisionRayTrace(this, l, i1, j1, start, end);
-
-                            if (movingobjectposition1 != null
-                                    && isBlockTargeted(movingobjectposition1, targetedBlocks)) {
+                            MovingObjectPosition movingobjectposition1 = block1.collisionRayTrace(this, l, i1, j1, start, end);
+                            if (movingobjectposition1 != null && isBlockTargeted(movingobjectposition1, targetedBlocks)) {
                                 return movingobjectposition1;
                             }
                         } else {

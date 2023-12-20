@@ -1,7 +1,7 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
-import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import cpw.mods.fml.client.config.GuiUtils;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class customImage extends CommonGuiButton {
+public class customImage extends ThinkerButton {
     public customImage(int id, String texturePath, int posX, int posY, int width, int height){
         super(id,posX,posY,width,height,"");
         this.texturePath=texturePath;

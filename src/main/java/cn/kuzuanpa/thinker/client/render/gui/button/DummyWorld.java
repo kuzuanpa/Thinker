@@ -14,15 +14,13 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.profileHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -30,10 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class DummyWorld extends CommonGuiButton{
+public class DummyWorld extends ThinkerButton {
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
     protected static BlockPosition selectedBlock;
@@ -53,8 +48,11 @@ public class DummyWorld extends CommonGuiButton{
         }
         lastGuiMouseX=0;lastGuiMouseY=0;
     }
-    public void updateDummyWorldInitTime(long initTime){
-        if(renderer!=null)renderer.initTime=initTime;
+    public void onProfileChanged(long initTime){
+        if(renderer==null)return;
+        renderer.initTime=initTime;
+        renderer.sync();
+        resetCenter();
     }
     protected void initializeSceneRenderer(boolean resetCamera) {
         Vector3f eyePos = new Vector3f();
@@ -74,11 +72,11 @@ public class DummyWorld extends CommonGuiButton{
         ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
 
-        lookAt.setY((float) (1));
+        lookAt.setX((float) (100));
 
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
         Vector3f minPos = ((TrackedDummyWorld) renderer.world).getMinPos();
-        center = new Vector3f(minPos.x + size.x / 2, minPos.y + size.y / 2, minPos.z + size.z / 2);
+        center = new Vector3f((minPos.x + size.x / 2)+100, minPos.y + size.y / 2, minPos.z + size.z / 2);
 
         renderer.setOnLookingAt(ray -> {});
 
@@ -117,13 +115,12 @@ public class DummyWorld extends CommonGuiButton{
             renderBlockOverLay(selectedBlock, Blocks.glass.getIcon(0, 6));
             return;
         }
-
     }
     private void resetCenter() {
         TrackedDummyWorld world = (TrackedDummyWorld) renderer.world;
         Vector3f size = world.getSize();
         Vector3f minPos = world.getMinPos();
-        center = new Vector3f(minPos.x + size.x / 2, minPos.y + size.y / 2, minPos.z + size.z / 2);
+        center = new Vector3f((minPos.x + size.x / 2)+100, minPos.y + size.y / 2, minPos.z + size.z / 2);
         renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
     }
     private void renderBlockOverLay(BlockPosition pos, IIcon icon) {
@@ -138,7 +135,7 @@ public class DummyWorld extends CommonGuiButton{
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (this.visible)
+        if (this.visible&&(profileHandler.selectedProfile==null||!profileHandler.selectedProfile.disableDummyWorldRend))
         {
             try {
                 updateHoverState(mouseX,mouseY);
@@ -151,7 +148,6 @@ public class DummyWorld extends CommonGuiButton{
 
                 int guiMouseX = GuiDraw.getMousePosition().x;
                 int guiMouseY = GuiDraw.getMousePosition().y;
-                final Map<GuiButton, Runnable> buttons = new HashMap<>();
                 renderer.render(
                         RECIPE_LAYOUT_X,
                         RECIPE_LAYOUT_Y,
@@ -163,14 +159,17 @@ public class DummyWorld extends CommonGuiButton{
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-                MovingObjectPosition rayTraceResult = renderer.getLastTraceResult();
                 boolean insideView = !clickOnOtherButton
                         && guiMouseX >=  RECIPE_LAYOUT_X && guiMouseY >=  RECIPE_LAYOUT_Y
                         && guiMouseX <  RECIPE_LAYOUT_X + RECIPE_WIDTH
-                        && guiMouseY <  RECIPE_LAYOUT_Y + sceneHeight;
+                        && guiMouseY <  RECIPE_LAYOUT_Y + sceneHeight
+                        && Mouse.isInsideWindow();
                 boolean leftClickHeld = Mouse.isButtonDown(0);
                 boolean rightClickHeld = Mouse.isButtonDown(1);
+                boolean middleClickHeld = Mouse.isButtonDown(2);
                 if (insideView) {
+                    MovingObjectPosition rayTraceResult = renderer.getLastTraceResult();
+
                     if (leftClickHeld) {
                         rotationPitch += guiMouseX - lastGuiMouseX + 360;
                         rotationPitch = rotationPitch % 360;
@@ -180,8 +179,25 @@ public class DummyWorld extends CommonGuiButton{
                         if (Math.abs(mouseDeltaY) > 1) {
                             zoom = (float) MathHelper.clip(zoom + (mouseDeltaY > 0 ? 0.5 : -0.5), 3, 999);
                         }
+                    }else if(middleClickHeld){
+                        int mouseDeltaX = guiMouseX - lastGuiMouseX;
+                        int mouseDeltaY = guiMouseY - lastGuiMouseY;
+
+                        double rYaw=3.14*rotationYaw/180;
+                        double rPitch=3.14*rotationPitch/180;
+                        center.x-=(Math.sin(rPitch)*mouseDeltaX+Math.sin(rYaw)*Math.cos(rPitch)*mouseDeltaY)/20F;
+                        center.z+=(Math.cos(rPitch)*mouseDeltaX-Math.sin(rYaw)*Math.sin(rPitch)*mouseDeltaY)/20F;
+                        center.y+=Math.cos(rYaw)*mouseDeltaY/20F;
+
+
                     }
                     renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
+                    if (!(leftClickHeld || rightClickHeld) && rayTraceResult != null
+                            && !renderer.world.isAirBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ)) {
+                        Block block = renderer.world.getBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
+                    }
+                    if(rayTraceResult!=null)System.out.println(rayTraceResult.blockX+"/"+rayTraceResult.blockY+ rayTraceResult.blockZ);
+
                 }
 
                 lastGuiMouseX = guiMouseX;

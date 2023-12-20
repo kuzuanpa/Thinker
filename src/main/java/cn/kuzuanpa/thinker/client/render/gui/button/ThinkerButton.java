@@ -23,11 +23,11 @@ import java.util.List;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class CommonGuiButton extends GuiButton {
+public class ThinkerButton extends GuiButton {
     ResourceLocation baseTexture=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
     public long initTime=0;
     public int animeXModify=0,animeYModify=0,animeWidthModify=0,animeHeightModify=0;
-    public CommonGuiButton(int id, int xPos, int yPos, int width, int height, String displayText) {
+    public ThinkerButton(int id, int xPos, int yPos, int width, int height, String displayText) {
         super(id, xPos, yPos,width,height,displayText);
     }
     public void drawButton(Minecraft p_146112_1_, int mouseX, int mouseY)
@@ -58,11 +58,11 @@ public class CommonGuiButton extends GuiButton {
         }
     }
     public ArrayList<IGuiAnime> animeList=new ArrayList<>();
-    public CommonGuiButton addAnime(IGuiAnime anime){
+    public ThinkerButton addAnime(IGuiAnime anime){
         animeList.add(anime);
         return this;
     }
-    public CommonGuiButton addToList(List<CommonGuiButton> list){
+    public ThinkerButton addToList(List<ThinkerButton> list){
         list.add(this);
         return this;
     }

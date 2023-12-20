@@ -12,12 +12,14 @@ package cn.kuzuanpa.thinker.client.render.gui.button;
 
 import cn.kuzuanpa.thinker.client.configHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
 
 import java.awt.*;
 
-public class ThinkingBackground extends CommonGuiButton{
+public class ThinkingBackground extends ThinkerButton {
 
     public ThinkingBackground(int id,int width,int height){
         super(id, 0, 0,width,height,"");

@@ -1,6 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import org.lwjgl.opengl.GL11;
 
 public class animeScale implements IGuiAnime {
@@ -28,7 +28,11 @@ public class animeScale implements IGuiAnime {
     @Override
     public void animeDrawAfter(long initTime) {}
     @Override
-    public void updateButton(long initTime, CommonGuiButton button) {
+    public void updateButton(long initTime, ThinkerButton button) {
         //TODO
+    }
+    @Override
+    public String jsonName() {
+        return "Gui.Scale";
     }
 }

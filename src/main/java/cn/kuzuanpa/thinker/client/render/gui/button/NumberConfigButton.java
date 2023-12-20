@@ -11,8 +11,6 @@
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
 import cn.kuzuanpa.thinker.client.configHandler;
-import cn.kuzuanpa.thinker.util.GLUT;
-import cpw.mods.fml.client.config.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Mouse;
@@ -20,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.text.NumberFormat;
 
-public class NumberConfigButton extends CommonGuiButton {
+public class NumberConfigButton extends ThinkerButton {
     public NumberConfigButton(int id, int xPos, int yPos, int width, int height,String displayText, configHandler.configNumber config) {
         super(id, xPos, yPos,width,height,displayText);
         this.config=config;

@@ -11,6 +11,10 @@ import java.util.Collections;
 public class dummyWorldTileEntity {
     public TileEntity tile;
     public ArrayList<IDummyBlockAnime> animeList = new ArrayList<>();
+    public dummyWorldTileEntity(TileEntity tile, ArrayList<IDummyBlockAnime> animes){
+        this.tile=tile;
+        this.animeList=animes;
+    }
     public dummyWorldTileEntity(TileEntity tile, IDummyBlockAnime... animes){
         this.tile=tile;
         Collections.addAll(animeList,animes);

@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class ThinkingProfileList extends CommonGuiButton{
+public class ThinkingProfileList extends ThinkerButton {
 
     public ThinkingProfileList(int id, int x, int y,int height){
         super(id, x, y,64,height,"");

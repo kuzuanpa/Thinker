@@ -1,10 +1,10 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.CommonGuiButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
-public class customText extends CommonGuiButton {
+public class customText extends ThinkerButton {
     int color;
     String text;
     public customText(int id, String text, int posX, int posY){

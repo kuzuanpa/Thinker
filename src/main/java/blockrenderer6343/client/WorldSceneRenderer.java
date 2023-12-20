@@ -2,16 +2,13 @@ package blockrenderer6343.client;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnime;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -20,6 +17,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -114,12 +112,11 @@ public abstract class WorldSceneRenderer {
 
         // check lookingAt
         this.lastTraceResult = null;
-        if (onLookingAt != null && mouseX > positionedRect.position.x
-                && mouseX < positionedRect.position.x + positionedRect.size.width
-                && mouseY > positionedRect.position.y
-                && mouseY < positionedRect.position.y + positionedRect.size.height) {
+        if (onLookingAt != null) {
+            GL11.glTranslatef(100,0,0);
             Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);
             MovingObjectPosition result = rayTrace(hitPos);
+            GL11.glTranslatef(-100,0,0);
             if (result != null) {
                 this.lastTraceResult = result;
                 onLookingAt.accept(result);
@@ -149,6 +146,18 @@ public abstract class WorldSceneRenderer {
         this.worldUp = worldUp;
     }
 
+    public void sync(){
+        dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
+            world.setBlock(pos.x,pos.y,pos.z,block.block);
+            if (!block.block.hasTileEntity(block.meta)) return;
+            TileEntity tileEntity=block.block.createTileEntity(world,block.meta);
+            if(tileEntity!=null)dummyWorldHandler.dummyWorldTileEntityHashMap.put(pos,new dummyWorldTileEntity(tileEntity,block.animeList));
+        });
+        dummyWorldHandler.dummyWorldTileEntityHashMap.forEach((pos,tile)->{
+            world.setTileEntity(pos.x,pos.y,pos.z,tile.tile);
+            if(tile.tile.blockType!=null)world.setBlock(pos.x,pos.y,pos.z,tile.tile.blockType);
+        });
+        }
     public void setCameraLookAt(Vector3f lookAt, double radius, double rotationPitch, double rotationYaw) {
         this.lookAt = lookAt;
         Vector3 vecX = new Vector3(Math.cos(rotationPitch), 0, Math.sin(rotationPitch));
@@ -237,9 +246,10 @@ public abstract class WorldSceneRenderer {
         mc.gameSettings.ambientOcclusion = 0;
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
             GL11.glPushMatrix();
-            Tessellator.instance.startDrawingQuads();
             List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).animeList;
-            if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime));
+            if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime,this));
+            GL11.glTranslatef(100,0,0);
+            Tessellator.instance.startDrawingQuads();
             try {
                 Tessellator.instance.setBrightness(15 << 20 | 15 << 4);
                 if (block.block.equals(Blocks.air)) return;
@@ -264,19 +274,22 @@ public abstract class WorldSceneRenderer {
             ForgeHooksClient.setRenderPass(pass);
             int finalPass = pass;
             dummyWorldHandler.dummyWorldTileEntityHashMap.forEach((pos,t)->{
-                setDefaultPassRenderState(finalPass);
                 if(pos==null||t.tile == null)return;
-                TileEntity tile=(TileEntity) (t.tile);
-                if(tile.shouldRenderInPass(finalPass)){
+                GL11.glPushMatrix();
+                setDefaultPassRenderState(finalPass);
+                if(t.tile.shouldRenderInPass(finalPass)){
+                    GL11.glTranslatef(100,0,0);
+
                     List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).animeList;
-                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime));
+                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime,this));
                     int i = world.getLightBrightnessForSkyBlocks(pos.x,pos.y,pos.z, 0);
                     float j = i % 65536;
                     float k = i / 65536;
                     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,  j,  k);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                    TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, pos.x,pos.y,pos.z, 0);
+                    TileEntityRendererDispatcher.instance.renderTileEntityAt(t.tile, pos.x,pos.y,pos.z, 0);
                 }
+                GL11.glPopMatrix();
             });
         }
         ForgeHooksClient.setRenderPass(-1);

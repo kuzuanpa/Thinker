@@ -16,7 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-public class BooleanConfigButton extends CommonGuiButton {
+public class BooleanConfigButton extends ThinkerButton {
     public BooleanConfigButton(int id, int xPos, int yPos, int width, int height, String displayText, configHandler.configBoolean config) {
         super(id, xPos, yPos,width,height,displayText);
         this.config=config;
