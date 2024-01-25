@@ -182,14 +182,11 @@ public class DummyWorld extends ThinkerButton {
                     }else if(middleClickHeld){
                         int mouseDeltaX = guiMouseX - lastGuiMouseX;
                         int mouseDeltaY = guiMouseY - lastGuiMouseY;
-
-                        double rYaw=3.14*rotationYaw/180;
-                        double rPitch=3.14*rotationPitch/180;
-                        center.x-=(Math.sin(rPitch)*mouseDeltaX+Math.sin(rYaw)*Math.cos(rPitch)*mouseDeltaY)/20F;
-                        center.z+=(Math.cos(rPitch)*mouseDeltaX-Math.sin(rYaw)*Math.sin(rPitch)*mouseDeltaY)/20F;
+                        double rYaw=3.1415*rotationYaw/180;
+                        double rPitch=3.1415*rotationPitch/180;
+                        center.x-=(Math.sin(rPitch)*mouseDeltaX+Math.sin(rYaw)*Math.cos(rPitch)*mouseDeltaY)/(180/zoom);
+                        center.z+=(Math.cos(rPitch)*mouseDeltaX-Math.sin(rYaw)*Math.sin(rPitch)*mouseDeltaY)/(180/zoom);
                         center.y+=Math.cos(rYaw)*mouseDeltaY/20F;
-
-
                     }
                     renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
                     if (!(leftClickHeld || rightClickHeld) && rayTraceResult != null

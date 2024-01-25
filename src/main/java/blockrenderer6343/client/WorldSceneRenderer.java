@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnime;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnimeDrawAdditionalQuads;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
@@ -17,7 +18,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -247,8 +247,13 @@ public abstract class WorldSceneRenderer {
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
             GL11.glPushMatrix();
             List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).animeList;
-            if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime,this));
             GL11.glTranslatef(100,0,0);
+            if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
+                if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
+                GL11.glTranslatef(pos.x, pos.y, pos.z);
+                a.animeDraw(initTime,this);
+                GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
+            });
             Tessellator.instance.startDrawingQuads();
             try {
                 Tessellator.instance.setBrightness(15 << 20 | 15 << 4);
@@ -279,9 +284,10 @@ public abstract class WorldSceneRenderer {
                 setDefaultPassRenderState(finalPass);
                 if(t.tile.shouldRenderInPass(finalPass)){
                     GL11.glTranslatef(100,0,0);
-
+                    GL11.glTranslatef(pos.x, pos.y, pos.z);
                     List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).animeList;
                     if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime,this));
+                    GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                     int i = world.getLightBrightnessForSkyBlocks(pos.x,pos.y,pos.z, 0);
                     float j = i % 65536;
                     float k = i / 65536;

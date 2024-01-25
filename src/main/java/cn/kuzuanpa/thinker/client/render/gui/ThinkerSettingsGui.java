@@ -1,6 +1,7 @@
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import cn.kuzuanpa.thinker.client.configHandler;
+import cn.kuzuanpa.thinker.client.json.jsonReader;
 import cn.kuzuanpa.thinker.client.render.gui.anime.*;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -41,6 +42,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         displayHeight= FMLClientHandler.instance().getClient().currentScreen.height;
         buttonsHaveAnime.clear();
         buttonList.clear();
+
         buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
         buttonList.add(new thinkerImage(1,displayWidth-52,20,128,384,384,32,"textures/gui/think/base.png",""));
         buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png","").addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),-(displayWidth-56),-16)).addAnime(new animeRotate(0,configHandler.getConfiguredAnimeTime(1000),-720)).addToList(buttonsHaveAnime));

@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime{
+public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBlockAnimeDrawAdditionalQuads{
     public DummyBlockAnimeOutlineGlowth(int startTime,int endTime,BlockPosition pos,int color,float thickness){
         this.startTime=startTime;
         this.endTime=endTime;
@@ -27,8 +27,6 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime{
     public float thickness;
     @Override
     public void animeDraw(long initTime, WorldSceneRenderer renderer) {
-        long timer = System.currentTimeMillis()-initTime;
-        if(startTime<timer&&timer<endTime)renderBlockOutlineAt(pos,color,thickness);
     }
 
     @Override
@@ -94,5 +92,12 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime{
         tessellator.addVertex(ax, ay, iz);
         tessellator.addVertex(ax, ay, az);
         tessellator.draw();
+    }
+
+    @Override
+    public void drawAdditionalQuads(long initTime, WorldSceneRenderer renderer) {
+        long timer = System.currentTimeMillis()-initTime;
+        if(startTime<timer&&timer<endTime)renderBlockOutlineAt(pos,color,thickness);
+
     }
 }

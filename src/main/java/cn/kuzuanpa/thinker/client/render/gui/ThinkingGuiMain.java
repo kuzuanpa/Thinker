@@ -21,6 +21,9 @@ package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.configHandler;
+import cn.kuzuanpa.thinker.client.json.jsonReader;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
@@ -80,7 +83,8 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonsHaveAnime.clear();
 		dummyWorldBlocksHashMap.clear();
 		dummyWorldTileEntityHashMap.clear();
-		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
+		buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
+
 		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
@@ -89,10 +93,10 @@ public class ThinkingGuiMain extends GuiScreen {
 
 		HashMap<BlockPosition, dummyWorldBlock> blocks=new HashMap<>();
 		HashMap<BlockPosition, dummyWorldTileEntity> tiles=new HashMap<>();
-		blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest));
-		blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest));
-		blocks.put(new BlockPosition(0,2,0),new dummyWorldBlock(Blocks.dark_oak_stairs));
-		blocks.put(new BlockPosition(0,3,0),new dummyWorldBlock(Blocks.daylight_detector));
+		blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
+		blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
+		blocks.put(new BlockPosition(0,2,0),new dummyWorldBlock(Blocks.dark_oak_stairs,new DummyBlockAnimeRotateSteadily()));
+		blocks.put(new BlockPosition(0,3,0),new dummyWorldBlock(Blocks.daylight_detector,new DummyBlockAnimeRotateSteadily()));
 		blocks.put(new BlockPosition(1,2,0),new dummyWorldBlock(Blocks.double_wooden_slab));
 		blocks.put(new BlockPosition(3,2,0),new dummyWorldBlock(Blocks.fence));
 		blocks.put(new BlockPosition(0,2,1),new dummyWorldBlock(Blocks.command_block));
@@ -110,6 +114,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		profileList.add(new profileHandler.thinkingProfile(Items.string.getIconFromDamage(0),new thinkerImage(17,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 		profileList.add(new profileHandler.thinkingProfile(Items.diamond_axe.getIconFromDamage(0),new thinkerImage(18,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 		profileList.add(new profileHandler.thinkingProfile(Items.snowball.getIconFromDamage(0),new thinkerImage(19,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
+		try{profileHandler.profileList.add(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
@@ -154,6 +159,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		selectedProfile=newProfileID;
 	}
 	protected boolean onButtonPressed(GuiButton button) {
+		if(button.id==-1) try{profileHandler.profileList.add(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 		((DummyWorld)buttonList.get(1)).clickOnOtherButton=button.id!=1;
 		if(button.id==2) this.mc.displayGuiScreen(new ThinkerSettingsGui());
 		if(button.id==3) {

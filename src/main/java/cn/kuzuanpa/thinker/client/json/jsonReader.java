@@ -13,6 +13,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import cpw.mods.fml.common.Optional;
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -43,15 +46,15 @@ public class jsonReader {
             {
                 String jsonName = json.nextName();
                 if (jsonName.equalsIgnoreCase("icon")) {
-                    String iconString = json.nextString();
+                    icon=getIcon(json.nextString(),json,profileName);
                 } else if (jsonName.equalsIgnoreCase("iconR")) {
-                    iconR = json.nextInt();
+                    iconR = (float) json.nextDouble();
                 } else if (jsonName.equalsIgnoreCase("iconG")) {
-                    iconG = json.nextInt();
+                    iconG = (float) json.nextDouble();
                 } else if (jsonName.equalsIgnoreCase("iconB")) {
-                    iconB = json.nextInt();
+                    iconB = (float) json.nextDouble();
                 }else if (jsonName.equalsIgnoreCase("iconA")) {
-                    iconA = json.nextInt();
+                    iconA = (float) json.nextDouble();
                 } else if (jsonName.equalsIgnoreCase("Objects")) {
                     ThinkerObjects=readAllThinkerObjects(json,profileName);
                 } else if(jsonName.equalsIgnoreCase("comment")){
@@ -74,11 +77,40 @@ public class jsonReader {
             else return new profileHandler.thinkingProfile(icon,iconR,iconG,iconB,iconA,buttons);
         }
     }
+    public static IIcon getIcon(String iconString, JsonReader json, String fileName){
+        try {
+            String itemName="minecraft:stone";
+            int itemDamage=0;
+            String[] str=iconString.trim().split(":");
+            if(str.length==1)itemName="minecraft:"+str[0];
+            if(str.length==2){
+                try{
+                    itemDamage=Integer.parseInt(str[1]);
+                    itemName="minecraft:"+str[0];
+                }catch (NumberFormatException e){
+                    itemName=str[0]+":"+str[1];
+                }
+            }
+            if(str.length==3){
+                itemDamage=Integer.parseInt(str[2]);
+                itemName=str[0]+":"+str[1];
+            }
+            Item item=(Item)Item.itemRegistry.getObject(itemName);
+            if(item==null){
+                logError(json,fileName,"Invaild item name: "+itemName);
+                return null;
+            }
+            return item.getIconFromDamage(itemDamage);
+        }catch (Exception e){e.printStackTrace();}
+        return null;
+    }
     public static ArrayList<Object> readAllThinkerObjects(JsonReader json,String fileName)throws JsonParseException,IOException,IllegalArgumentException {
         ArrayList<Object> objects=new ArrayList<>();
         json.beginArray();
         while (json.hasNext()) {
-            objects.add(readThinkerObject(json,fileName));
+            Object obj = readThinkerObject(json,fileName);
+            if(obj==null)continue;
+            objects.add(obj);
         }
         json.endArray();
         return objects;
@@ -157,6 +189,7 @@ public class jsonReader {
                 default: logError(json,fileName,"Unknown Type:"+type);
             }
             json.endObject();
+            if(out==null)return null;
             return out;
         }
 
@@ -165,7 +198,7 @@ public class jsonReader {
         ArrayList<Object> objects=new ArrayList<>();
         json.beginArray();
         while (json.hasNext()) {
-            objects.add(readThinkerObject(json,fileName));
+            objects.add(readAnime(json,fileName));
         }
         json.endArray();
         return objects;
@@ -226,21 +259,20 @@ public class jsonReader {
         if(type==null){json.endObject();logMissing(json,fileName,"Type");return null;}
         Object out=null;
         switch (type){
-
             default: logError(json,fileName,"Unknown Anime Type:"+type);
         }
         json.endObject();
         return out;
     }
-    public static customImage getImage(JsonReader jsonReader, String fileName,int posX,int posY,int width,int height,String imagePath,ArrayList<IGuiAnime> guiAnimes,ArrayList<IDummyBlockAnime> blockAnimes) {
+    public static customImage getImage(JsonReader jsonReader, String fileName,int posX,int posY,int width,int height,String path,ArrayList<IGuiAnime> guiAnimes,ArrayList<IDummyBlockAnime> blockAnimes) {
         if(!blockAnimes.isEmpty())blockAnimes.forEach(anime->logError(jsonReader,fileName,"Invaild anime type: "+anime.jsonName()+"for block"));
 
-        if(imagePath==null){logMissing(jsonReader,fileName,"blockName");return null;}
+        if(path==null){logMissing(jsonReader,fileName,"path");return null;}
         if(posX==-2147483647){logMissing(jsonReader,fileName,"posX");return null;}
         if(posY==-2147483647){logMissing(jsonReader,fileName,"posY");return null;}
         if(width==0){logMissing(jsonReader,fileName,"Width");return null;}
         if(height==0){logMissing(jsonReader,fileName,"Height");return null;}
-        return new customImage(10,imagePath,posX,posY,width,height);
+        return new customImage(10,path,posX,posY,width,height);
     }
     public static customText getText(JsonReader jsonReader, String fileName,int posX,int posY,String text,int color,ArrayList<IGuiAnime> guiAnimes,ArrayList<IDummyBlockAnime> blockAnimes) {
         if(!blockAnimes.isEmpty())blockAnimes.forEach(anime->logError(jsonReader,fileName,"Invaild anime type: "+anime.jsonName()+"for block"));
@@ -269,7 +301,10 @@ public class jsonReader {
         if(posZ!=-2147483647)tileEntityNBT.setInteger("z",posZ);
         else posZ=tileEntityNBT.getInteger("z");
         TileEntity tile = TileEntity.createAndLoadEntity(tileEntityNBT);
-        if (tile==null)logError(jsonReader,fileName,"Invalid TileEntity");
+        if (tile==null){
+            logError(jsonReader,fileName,"Invalid TileEntity");
+            return null;
+        }
         return new dummyTileWithCoord(new BlockPosition(posX,posY,posZ),new dummyWorldTileEntity(tile,blockAnimes));
     }
 
@@ -278,6 +313,6 @@ public class jsonReader {
         /*FMLLog.log(Level.ERROR,*/System.out.println("Error: "+error+"\nIn file: "+fileName+jsonReader.toString().replaceAll("JsonReader",""));
     }
     public static void logMissing(JsonReader jsonReader, String fileName, String additionalText){
-        /*FMLLog.log(Level.ERROR,*/System.out.println("Error: Missing Required Element "+additionalText+"\nIn file: "+fileName+jsonReader.toString().replaceAll("JsonReader",""));
+        /*FMLLog.log(Level.ERROR,*/System.out.println("Error: Missing Required Element: "+additionalText+"\nIn file: "+fileName+jsonReader.toString().replaceAll("JsonReader",""));
     }
 }
