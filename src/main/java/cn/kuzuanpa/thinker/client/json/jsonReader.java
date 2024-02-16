@@ -30,11 +30,13 @@ import java.util.List;
 
 public class jsonReader {
     public static ArrayList<profileHandler.thinkingProfile> profileList=new ArrayList<>();
-    public static void readAllProfiles(){
-
+    public static ArrayList<profileHandler.thinkingProfile> readAllProfiles(){
+        ArrayList<profileHandler.thinkingProfile> profileList = new ArrayList<>();
+        return profileList;
     }
     public static profileHandler.thinkingProfile readProfiles(String profileName)throws JsonParseException,IOException,IllegalArgumentException {
         try (JsonReader json = new JsonReader(new InputStreamReader(Files.newInputStream(Paths.get(profileName)), StandardCharsets.UTF_8))) {
+            String id="";
             IIcon icon=null;
             float iconR=1.0F;
             float iconG=1.0F;
@@ -45,7 +47,9 @@ public class jsonReader {
             while (json.hasNext())
             {
                 String jsonName = json.nextName();
-                if (jsonName.equalsIgnoreCase("icon")) {
+                if (jsonName.equalsIgnoreCase("id")) {
+                    id =  json.nextString();
+                }else if (jsonName.equalsIgnoreCase("icon")) {
                     icon=getIcon(json.nextString(),json,profileName);
                 } else if (jsonName.equalsIgnoreCase("iconR")) {
                     iconR = (float) json.nextDouble();
@@ -73,8 +77,8 @@ public class jsonReader {
                 if(obj instanceof dummyTileWithCoord)tiles.put(((dummyTileWithCoord) obj).pos,((dummyTileWithCoord) obj).tile);
                 if(obj instanceof ThinkerButton)buttons.add((ThinkerButton) obj);
             });
-            if(!blocks.isEmpty()||!tiles.isEmpty())return new profileHandler.thinkingProfile(icon,iconR,iconG,iconB,iconA,blocks,tiles,buttons);
-            else return new profileHandler.thinkingProfile(icon,iconR,iconG,iconB,iconA,buttons);
+            if(!blocks.isEmpty()||!tiles.isEmpty())return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,blocks,tiles,buttons);
+            else return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons);
         }
     }
     public static IIcon getIcon(String iconString, JsonReader json, String fileName){

@@ -20,17 +20,15 @@
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
-import cn.kuzuanpa.thinker.client.configHandler;
 import cn.kuzuanpa.thinker.client.json.jsonReader;
+import cn.kuzuanpa.thinker.client.profileHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
-import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
-import cn.kuzuanpa.thinker.client.profileHandler;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -42,30 +40,30 @@ import net.minecraft.init.Items;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
-import static cn.kuzuanpa.thinker.client.profileHandler.displayProfileIDMap;
 import static cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler.dummyWorldBlocksHashMap;
 import static cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler.dummyWorldTileEntityHashMap;
-import static cn.kuzuanpa.thinker.client.profileHandler.YOffset;
-
 
 /**
  * @author kuzuanpa
  */
 @SideOnly(Side.CLIENT)
-public class ThinkingGuiMain extends GuiScreen {
+public class ThinkingGuiStart extends GuiScreen {
 
 	private int displayWidth,displayHeight;
-	public String selectedProfileID ="";
+	public String selectedProfileID="HelloThinker";
 	public boolean openByUser,themeSelectorFolded=false;
 	public long initTime=0,lastProfileSelectedTime=0;
 	private List<String> hoveringString=new ArrayList<>();
 	protected List<ThinkerButton> buttonsHaveAnime = new ArrayList<ThinkerButton>();
-	public static ArrayList<ThinkerButton> buttonsProfile= new ArrayList<ThinkerButton>();
-	public ThinkingGuiMain() {
+	public ThinkingGuiStart() {
 		openByUser=true;
 		allowUserInput = false;
 	}
@@ -81,13 +79,11 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonsHaveAnime.clear();
 		dummyWorldBlocksHashMap.clear();
 		dummyWorldTileEntityHashMap.clear();
-		buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
-		//buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
+		//buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
+		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
-		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
-		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
-		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
+
 
 		HashMap<BlockPosition, dummyWorldBlock> blocks=new HashMap<>();
 		HashMap<BlockPosition, dummyWorldTileEntity> tiles=new HashMap<>();
@@ -105,12 +101,19 @@ public class ThinkingGuiMain extends GuiScreen {
 		blocks.put(new BlockPosition(2,2,0),new dummyWorldBlock(Blocks.stained_glass));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 		try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
 
+		lastProfileSelectedTime= System.currentTimeMillis();
+		List<ThinkerButton> buttonsProfile= profileHandler.getProfile("HelloThinker").buttons;
+		buttonsProfile.forEach(button->button.updateInitTime(lastProfileSelectedTime));
+		buttonList.addAll(buttonsProfile);
+		profileHandler.onProfileChanged("HelloThinker");
+		dummyWorldHandler.onProfileChanged("HelloThinker");
+		((DummyWorld)buttonList.get(1)).onProfileChanged(lastProfileSelectedTime);
 	}
 
 	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
@@ -139,53 +142,15 @@ public class ThinkingGuiMain extends GuiScreen {
 				}
 			}
 	}
-	protected void onProfileChanged(String newProfileID){
-		lastProfileSelectedTime= System.currentTimeMillis();
-		buttonList.removeAll(buttonsProfile);
-		buttonsProfile= profileHandler.getProfile(newProfileID).buttons;
-		buttonsProfile.forEach(button->button.updateInitTime(lastProfileSelectedTime));
-		buttonList.addAll(buttonsProfile);
-		profileHandler.onProfileChanged(newProfileID);
-		dummyWorldHandler.onProfileChanged(newProfileID);
-		((DummyWorld)buttonList.get(1)).onProfileChanged(lastProfileSelectedTime);
-		selectedProfileID =newProfileID;
-	}
 	protected boolean onButtonPressed(GuiButton button) {
-		if(button.id==-1) try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
+		if(button.id==2) try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 		((DummyWorld)buttonList.get(1)).clickOnOtherButton=button.id!=1;
-		if(button.id==2) this.mc.displayGuiScreen(new ThinkerSettingsGui());
-		if(button.id==3) {
-			int mouseY=this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-			if(Mouse.isInsideWindow())for (int i : profileHandler.displayProfileIDMap.keySet())if(mouseY>=YOffset+i*(16+ configHandler.themeSelectorProfileGap.get()) && mouseY<=YOffset+16+i*(16+ configHandler.themeSelectorProfileGap.get())){
-				if(!Objects.equals(selectedProfileID, displayProfileIDMap.get(i)))onProfileChanged(displayProfileIDMap.get(i));
-				break;
-			}
-		}
-		if(button.id==4&&!themeSelectorFolded) {
-			((ThinkerButton)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),-80,0));
-			((ThinkerButton)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),-80,0));
-			((ThinkerButton)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(200)),16,0));
-			themeSelectorFolded=true;
-		}
-		if(button.id==5&&themeSelectorFolded) {
-			((ThinkerButton)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));
-			((ThinkerButton)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));
-			((ThinkerButton)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(200)),-16,0));
-			themeSelectorFolded=false;
-		}
 		return true;
 	}
-	public void handleMouseInput(){
-		super.handleMouseInput();
-		int x = Mouse.getX() * this.width / this.mc.displayWidth;
-		int y =this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
-		if(((ThinkerButton)buttonList.get(3)).visible&&Mouse.isInsideWindow()&&Mouse.getEventDWheel()!=0&& x< profileHandler.profileLayer*32+32&& x>0)
-			profileHandler.MouseWheelHandler();
-	}
 	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_){
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		super.drawScreen(p_73863_1_,p_73863_2_,p_73863_3_);
 		profileHandler.tick();
-
 		if(!Mouse.isInsideWindow())return;
 		int x = Mouse.getX() * this.width / this.mc.displayWidth;
 		int y = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;

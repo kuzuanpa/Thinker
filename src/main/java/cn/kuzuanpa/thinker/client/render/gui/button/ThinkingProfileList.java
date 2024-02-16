@@ -31,14 +31,14 @@ public class ThinkingProfileList extends ThinkerButton {
         GL11.glPushMatrix();
         animeList.forEach(anime->anime.animeDrawPre(initTime));
         ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
-        for (int i = 0; i< profileHandler.profileList.size(); i++){
+        for (int i : profileHandler.displayProfileIDMap.keySet()){
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
             mc.getTextureManager().bindTexture(buttontextures);
             animeList.forEach(anime->anime.animeDraw(initTime));
             this.drawTexturedModalRect(0, (int) (profileHandler.YOffset+i*(16+configHandler.themeSelectorProfileGap.get())), 64, 0, 64, 16);
-            if(profileHandler.profileList.get(i).icon==null){GL11.glPopMatrix();continue;}
-            profileHandler.thinkingProfile profile = profileHandler.profileList.get(i);
+            if(profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i)).icon==null){GL11.glPopMatrix();continue;}
+            profileHandler.thinkingProfile profile = profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i));
             GL11.glColor4f(profile.iconR,profile.iconG,profile.iconB,profile.iconA);
             mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
             this.drawTexturedModelRectFromIcon(0, (int) (profileHandler.YOffset+i*(16+configHandler.themeSelectorProfileGap.get())),profile.icon, 16, 16);
