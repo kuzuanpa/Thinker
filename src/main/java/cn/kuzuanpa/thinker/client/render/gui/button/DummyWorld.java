@@ -15,12 +15,14 @@ import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
 import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -72,11 +74,9 @@ public class DummyWorld extends ThinkerButton {
         ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
 
-        lookAt.setX((float) (100));
-
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
         Vector3f minPos = ((TrackedDummyWorld) renderer.world).getMinPos();
-        center = new Vector3f((minPos.x + size.x / 2)+100, minPos.y + size.y / 2, minPos.z + size.z / 2);
+        center = new Vector3f((minPos.x + size.x / 2), minPos.y + size.y / 2, minPos.z + size.z / 2);
 
         renderer.setOnLookingAt(ray -> {});
 
@@ -120,7 +120,7 @@ public class DummyWorld extends ThinkerButton {
         TrackedDummyWorld world = (TrackedDummyWorld) renderer.world;
         Vector3f size = world.getSize();
         Vector3f minPos = world.getMinPos();
-        center = new Vector3f((minPos.x + size.x / 2)+100, minPos.y + size.y / 2, minPos.z + size.z / 2);
+        center = new Vector3f((minPos.x + size.x / 2), minPos.y + size.y / 2, minPos.z + size.z / 2);
         renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
     }
     private void renderBlockOverLay(BlockPosition pos, IIcon icon) {
@@ -193,7 +193,11 @@ public class DummyWorld extends ThinkerButton {
                             && !renderer.world.isAirBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ)) {
                         Block block = renderer.world.getBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
                     }
-                    if(rayTraceResult!=null)System.out.println(rayTraceResult.blockX+"/"+rayTraceResult.blockY+ rayTraceResult.blockZ);
+                    if(rayTraceResult!=null) {
+                        renderer.pointedBlock = new BlockPosition(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
+                    }else {
+                        renderer.pointedBlock = null;
+                    }
 
                 }
 

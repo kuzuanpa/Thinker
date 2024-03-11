@@ -2,7 +2,6 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnime;
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;

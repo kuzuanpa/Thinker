@@ -36,7 +36,7 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBloc
     public String jsonName() {
         return "Block.OutlineGlowth";
     }
-    public void renderBlockOutlineAt(BlockPosition pos, int color, float thickness) {
+    public static void renderBlockOutlineAt(BlockPosition pos, int color, float thickness) {
         GL11.glPushMatrix();
         GL11.glPushAttrib(2896);
         GL11.glDisable(2929);
@@ -48,7 +48,7 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBloc
         AxisAlignedBB axis= AxisAlignedBB.getBoundingBox(pos.x, pos.y, pos.z, pos.x + 1, pos.y + 1, pos.z + 1);
         GL11.glLineWidth(thickness);
         GL11.glColor4ub((byte)colorRGB.getRed(), (byte)colorRGB.getGreen(), (byte)colorRGB.getBlue(), (byte)255);
-        this.renderBlockOutline(axis);
+        renderBlockOutline(axis);
 
         GL11.glPopMatrix();
         GL11.glEnable(2929);
@@ -58,7 +58,7 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBloc
         GL11.glPopMatrix();
     }
     /**Copied from Botania**/
-    private void renderBlockOutline(AxisAlignedBB aabb) {
+    private static void renderBlockOutline(AxisAlignedBB aabb) {
         Tessellator tessellator = Tessellator.instance;
         double ix = aabb.minX;
         double iy = aabb.minY;

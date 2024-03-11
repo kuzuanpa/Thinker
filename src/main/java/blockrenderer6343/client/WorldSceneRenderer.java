@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import java.util.List;
 import java.util.function.Consumer;
 
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnime;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnimeDrawAdditionalQuads;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
@@ -46,6 +47,7 @@ import codechicken.lib.vec.Vector3;
  * @Description: Abstract class, and extend a lot of features compared with the original one.
  */
 public abstract class WorldSceneRenderer {
+    public BlockPosition pointedBlock;
 
     public final World world;
     private Consumer<WorldSceneRenderer> beforeRender;
@@ -113,10 +115,8 @@ public abstract class WorldSceneRenderer {
         // check lookingAt
         this.lastTraceResult = null;
         if (onLookingAt != null) {
-            GL11.glTranslatef(100,0,0);
             Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);
             MovingObjectPosition result = rayTrace(hitPos);
-            GL11.glTranslatef(-100,0,0);
             if (result != null) {
                 this.lastTraceResult = result;
                 onLookingAt.accept(result);
@@ -247,7 +247,6 @@ public abstract class WorldSceneRenderer {
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
             GL11.glPushMatrix();
             List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).animeList;
-            GL11.glTranslatef(100,0,0);
             if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
                 if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
@@ -270,6 +269,7 @@ public abstract class WorldSceneRenderer {
                 GL11.glPopMatrix();
             }
         });
+
         mc.gameSettings.ambientOcclusion = savedAo;
         RenderHelper.enableStandardItemLighting();
         glEnable(GL_LIGHTING);
@@ -283,7 +283,6 @@ public abstract class WorldSceneRenderer {
                 GL11.glPushMatrix();
                 setDefaultPassRenderState(finalPass);
                 if(t.tile.shouldRenderInPass(finalPass)){
-                    GL11.glTranslatef(100,0,0);
                     GL11.glTranslatef(pos.x, pos.y, pos.z);
                     List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).animeList;
                     if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime,this));
@@ -298,6 +297,12 @@ public abstract class WorldSceneRenderer {
                 GL11.glPopMatrix();
             });
         }
+
+        //draw pointed block
+        GL11.glPushMatrix();
+        if(pointedBlock!=null)        DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+        GL11.glPopMatrix();
+
         ForgeHooksClient.setRenderPass(-1);
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
