@@ -95,9 +95,6 @@ public class ThinkingGuiMain extends GuiScreen {
 
 		HashMap<BlockPosition, dummyWorldBlock> blocks=new HashMap<>();
 		HashMap<BlockPosition, dummyWorldTileEntity> tiles=new HashMap<>();
-		tiles.put(new BlockPosition(10,1,1),new dummyWorldTileEntity(TileEntity.createAndLoadEntity((NBTTagCompound) Nbt.stringToNBT("{gt.mte.reg:1042s,gt.output.max:256s,x:10,gt.facing:1b,y:1,z:0,id:\"ktfru.multitileentity.multiblock.sunheater\",gt.mte.id:30007s}"))));
-		tiles.put(new BlockPosition(1,1,1),new dummyWorldTileEntity(TileEntity.createAndLoadEntity((NBTTagCompound) Nbt.stringToNBT("{gt.target.z:0s,gt.target.y:1b,gt.target.x:10s,gt.mte.reg:1042s,x:1,gt.facing:5b,y:1,z:1,id:\"ktfru.multitileentity.multiblock.sunheater.mirror\",gt.target:1b,gt.mte.id:31001s}"))));
-
 		//blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
 		//blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
 		blocks.put(new BlockPosition(0,2,0),new dummyWorldBlock(Blocks.dark_oak_stairs,new DummyBlockAnimeRotateSteadily()));
@@ -108,8 +105,8 @@ public class ThinkingGuiMain extends GuiScreen {
 		blocks.put(new BlockPosition(0,2,5),new dummyWorldBlock(Blocks.diamond_block));
 		blocks.put(new BlockPosition(2,2,0),new dummyWorldBlock(Blocks.stained_glass));
 		profileHandler.clearAllProfile();
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0)));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test"))));
 		try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 
 		if(openByUser)postInit();
