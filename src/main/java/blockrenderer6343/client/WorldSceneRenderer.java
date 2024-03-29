@@ -2,6 +2,7 @@ package blockrenderer6343.client;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -59,7 +60,8 @@ public abstract class WorldSceneRenderer {
     private Vector3f lookAt = new Vector3f(0, 0, 0);
     private Vector3f worldUp = new Vector3f(0, 1, 0);
     private boolean renderAllFaces = false;
-    public long initTime=0;
+    public long initTime=0,lastWorldUpdateTime=0;
+    public final int worldUpdateInterval = 20;
 
     public WorldSceneRenderer(World world) {
         this.world = world;
@@ -110,8 +112,6 @@ public abstract class WorldSceneRenderer {
         // render TrackedDummyWorld
         animeList.forEach(anime -> anime.animeDraw(initTime));
         drawWorld();
-
-
         // check lookingAt
         this.lastTraceResult = null;
         if (onLookingAt != null) {
@@ -147,17 +147,19 @@ public abstract class WorldSceneRenderer {
     }
 
     public void sync(){
+        HashMap<BlockPosition,dummyWorldTileEntity> tmp = new HashMap<>();
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
             world.setBlock(pos.x,pos.y,pos.z,block.block);
             if (!block.block.hasTileEntity(block.meta)) return;
             TileEntity tileEntity=block.block.createTileEntity(world,block.meta);
-            if(tileEntity!=null)dummyWorldHandler.dummyWorldTileEntityHashMap.put(pos,new dummyWorldTileEntity(tileEntity,block.animeList));
+            if(tileEntity!=null)tmp.put(pos,new dummyWorldTileEntity(tileEntity,block.animeList));
         });
         dummyWorldHandler.dummyWorldTileEntityHashMap.forEach((pos,tile)->{
             world.setTileEntity(pos.x,pos.y,pos.z,tile.tile);
             if(tile.tile.blockType!=null)world.setBlock(pos.x,pos.y,pos.z,tile.tile.blockType);
         });
-        }
+        dummyWorldHandler.dummyWorldTileEntityHashMap.putAll(tmp);
+    }
     public void setCameraLookAt(Vector3f lookAt, double radius, double rotationPitch, double rotationYaw) {
         this.lookAt = lookAt;
         Vector3 vecX = new Vector3(Math.cos(rotationPitch), 0, Math.sin(rotationPitch));
@@ -231,7 +233,10 @@ public abstract class WorldSceneRenderer {
         if (beforeRender != null) {
             beforeRender.accept(this);
         }
-
+        if (Math.abs(lastWorldUpdateTime-(System.currentTimeMillis()%100000))>worldUpdateInterval){
+            world.updateEntities();
+            lastWorldUpdateTime=System.currentTimeMillis()%100000;
+        }
         Minecraft mc = Minecraft.getMinecraft();
         glEnable(GL_CULL_FACE);
         glEnable(GL12.GL_RESCALE_NORMAL);
@@ -241,6 +246,7 @@ public abstract class WorldSceneRenderer {
         glDisable(GL_LIGHTING);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_ALPHA_TEST);
+        glEnable(GL_DEPTH_TEST);
 
         final int savedAo = mc.gameSettings.ambientOcclusion;
         mc.gameSettings.ambientOcclusion = 0;
@@ -248,7 +254,9 @@ public abstract class WorldSceneRenderer {
             GL11.glPushMatrix();
             List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).animeList;
             if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
-                if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
+                if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) {
+                    ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
+                }
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
                 a.animeDraw(initTime,this);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
@@ -300,11 +308,10 @@ public abstract class WorldSceneRenderer {
 
         //draw pointed block
         GL11.glPushMatrix();
-        if(pointedBlock!=null)        DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+        if(pointedBlock!=null) DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
         GL11.glPopMatrix();
 
         ForgeHooksClient.setRenderPass(-1);
-        glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         glDepthMask(true);
     }

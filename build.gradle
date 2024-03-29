@@ -21,6 +21,19 @@ plugins {
     id 'maven-publish'
 }
 
+targetCompatibility = 1.8
+repositories {
+    mavenCentral()
+    maven {
+        name = "forge"
+        url = "https://maven.minecraftforge.net/"
+    }
+    maven {
+        name = "gt"
+        url = "https://gregtech.mechaenetia.com/"
+    }
+}
+
 apply plugin: 'forge'
 
 // These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
@@ -48,6 +61,9 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    implementation "codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev"
+    implementation "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
 }
 
 processResources {

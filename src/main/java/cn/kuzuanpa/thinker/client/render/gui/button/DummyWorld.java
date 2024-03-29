@@ -176,8 +176,8 @@ public class DummyWorld extends ThinkerButton {
                         rotationYaw = (float) MathHelper.clip(rotationYaw + (guiMouseY - lastGuiMouseY), -89.9, 89.9);
                     } else if (rightClickHeld) {
                         int mouseDeltaY = guiMouseY - lastGuiMouseY;
-                        if (Math.abs(mouseDeltaY) > 1) {
-                            zoom = (float) MathHelper.clip(zoom + (mouseDeltaY > 0 ? 0.5 : -0.5), 3, 999);
+                        if (Math.abs(mouseDeltaY) > 0.1) {
+                            zoom = (float) MathHelper.clip(zoom + (mouseDeltaY > 0 ? 0.2 : -0.2), 3, 999);
                         }
                     }else if(middleClickHeld){
                         int mouseDeltaX = guiMouseX - lastGuiMouseX;

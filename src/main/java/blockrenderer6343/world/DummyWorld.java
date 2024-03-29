@@ -4,10 +4,18 @@ import javax.annotation.Nonnull;
 
 import blockrenderer6343.api.utils.world.DummyChunkProvider;
 import blockrenderer6343.api.utils.world.DummySaveHandler;
+import cpw.mods.fml.common.FMLLog;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ReportedException;
 import net.minecraft.world.*;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.common.ForgeModContainer;
+
+import java.util.Iterator;
 
 public class DummyWorld extends World {
 
@@ -32,7 +40,46 @@ public class DummyWorld extends World {
         this.calculateInitialWeatherBody();
     }
     @Override
-    public void updateEntities() {}
+    public void updateEntities() {
+
+        Iterator iterator = this.loadedTileEntityList.iterator();
+
+        while (iterator.hasNext())
+        {
+            TileEntity tileentity = (TileEntity)iterator.next();
+
+            if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord))
+            {
+                try
+                {
+                    tileentity.updateEntity();
+                }
+                catch (Throwable throwable)
+                {
+                    if (ForgeModContainer.removeErroringTileEntities)
+                    {
+                        tileentity.invalidate();
+                        setBlockToAir(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord);
+                    }
+                }
+            }
+
+            if (tileentity.isInvalid())
+            {
+                iterator.remove();
+
+                if (this.chunkExists(tileentity.xCoord >> 4, tileentity.zCoord >> 4))
+                {
+                    Chunk chunk = this.getChunkFromChunkCoords(tileentity.xCoord >> 4, tileentity.zCoord >> 4);
+
+                    if (chunk != null)
+                    {
+                        chunk.removeInvalidTileEntity(tileentity.xCoord & 15, tileentity.yCoord, tileentity.zCoord & 15);
+                    }
+                }
+            }
+        }
+    }
 
     public void updateEntitiesForNEI() {
         super.updateEntities();

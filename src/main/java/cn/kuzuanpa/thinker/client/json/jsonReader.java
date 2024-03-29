@@ -193,7 +193,6 @@ public class jsonReader {
                 default: logError(json,fileName,"Unknown Type:"+type);
             }
             json.endObject();
-            if(out==null)return null;
             return out;
         }
 

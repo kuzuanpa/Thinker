@@ -3,12 +3,14 @@ package cn.kuzuanpa.thinker;
 import cn.kuzuanpa.thinker.client.json.jsonReader;
 import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
 import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiStart;
+import cn.kuzuanpa.thinker.command.CommandGetTileNBT;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
@@ -27,7 +29,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 
-@Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION)
+@Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION, dependencies = "required-after:CodeChickenCore@[1.0.7,);")
 public class Thinker
 {
     public static final String MOD_ID = "thinker";
@@ -54,6 +56,10 @@ public class Thinker
         PROXY.init(event);
         jsonReader.readAllProfiles();
 
+    }
+    @EventHandler
+    public void registerCommands(FMLServerStartingEvent e){
+        e.registerServerCommand(new CommandGetTileNBT());
     }
     public static void error(Throwable err){
         err.printStackTrace();
