@@ -49,7 +49,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.add(new ThinkerButton(3,5, 45,132,20,l10n("thinker.settings.HUD"))             .addAnime(new animeMoveLinear(-1,0,-600,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 800),600,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButton(4,5, 70,132,20,l10n("thinker.settings.anime"))           .addAnime(new animeMoveLinear(-1,0,-550,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 900),550,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButton(5,5, 95,132,20,l10n("thinker.settings.profile_selector")).addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),500,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new ThinkerButton(6,5,120,132,20,l10n("thinker.settings.rocket_dev"))     .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1100),500,0)).addToList(buttonsHaveAnime));
+        buttonList.add(new ThinkerButton(6,5,120,132,20,l10n("thinker.settings.dummy_world"))     .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1100),500,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButton(7,5,145,132,20,l10n("thinker.settings.help"))            .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1200),500,0)).addToList(buttonsHaveAnime));
         buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/gui/think/base.png","").addAnime(new animeTransparency(-1,0,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
         buttonList.add( new NumberConfigButton(9 ,150,20 ,displayWidth-160,32,"ColorR",configHandler.HUDBackgroundColorR));
@@ -61,12 +61,6 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.add( new NumberConfigButton(15,150,60,displayWidth-160,32,"Profile Gap",configHandler.themeSelectorProfileGap));
         buttonList.add( new NumberConfigButton(16,150,100,displayWidth-160,32,"Scroll Inertia",configHandler.themeSelectorScrollInertia));
         buttonList.add( new NumberConfigButton(17,150,140,displayWidth-160,32,"Scroll Speed",configHandler.themeSelectorScrollSpeed));
-        buttonList.add( new NumberConfigButton(18,150,20 ,displayWidth-160,32,"Rocket Angle",configHandler.devRocketRocketAngle));
-        buttonList.add( new NumberConfigButton(19,150,60 ,displayWidth-160,32,"Rocket Speed",configHandler.devRocketRocketSpeed));
-        buttonList.add( new NumberConfigButton(20,150,100,displayWidth-160,32,"Rocket Speed Angle",configHandler.devRocketRocketSpeedAngle));
-        buttonList.add( new NumberConfigButton(21,150,140,displayWidth-160,32,"Rocket Speed Delta",configHandler.devRocketRocketSpeedDelta));
-        buttonList.add( new NumberConfigButton(22,150,180,displayWidth-160,32,"Star mass",configHandler.devRocketStarMass));
-        buttonList.add( new devRocketButton(23,150,180,displayWidth-160,32));
 
         if(openByUser)postInitGui();
         for (int i = 9; i < buttonList.size(); i++) {
@@ -104,7 +98,7 @@ public class ThinkerSettingsGui extends GuiScreen {
     protected boolean onButtonPressed(GuiButton button) {
         if(button.id==1||button.id==2)close();
         if(2<button.id&&button.id<9)updateButtonList(button.id);
-        devRocketButton.reset();
+        System.out.println(button.id);
         return true;
     }
     private void updateButtonList(int categoryId){
@@ -117,7 +111,6 @@ public class ThinkerSettingsGui extends GuiScreen {
             case 3:starti=9;endi=12;break;
             case 4:starti=13;endi=13;break;
             case 5:starti=14;endi=17;break;
-            case 6:starti=18;endi=23;break;
             default: return;
         }
         for (int i = starti; i <= endi; i++) {
