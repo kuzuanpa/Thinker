@@ -1,33 +1,20 @@
 package cn.kuzuanpa.thinker;
 
 import cn.kuzuanpa.thinker.client.json.jsonReader;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiStart;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiWelcome;
 import cn.kuzuanpa.thinker.command.CommandGetTileNBT;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.init.Blocks;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import org.apache.logging.log4j.Level;
 
 @Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION, dependencies = "required-after:CodeChickenCore@[1.0.7,);")
 public class Thinker
@@ -64,16 +51,20 @@ public class Thinker
     public static void error(Throwable err){
         err.printStackTrace();
     }
+    public static void error(String err){
+        System.err.println(err);
+    }
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (!welcomed && delay > 0 && event.phase == TickEvent.Phase.END) {
+        if(welcomed)return;
+        if (delay > 0 && event.phase == TickEvent.Phase.END) {
             --delay;
             if (delay == 0) {
-                FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGuiStart());
+                FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGuiWelcome());
                 welcomed=true;
                 config.get("main", "welcome", true, "Will thinker show the welcome screen").set(false);
+                config.save();
             }
         }
-        config.save();
     }
 }

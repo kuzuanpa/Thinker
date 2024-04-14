@@ -11,6 +11,7 @@ public class dummyWorldHandler {
     public static void onProfileChanged(String profileID){
         dummyWorldBlocksHashMap.clear();
         dummyWorldTileEntityHashMap.clear();
+        if(profileHandler.getProfile(profileID).dummyWorldBlocks.isEmpty()&&profileHandler.getProfile(profileID).dummyWorldTileEntities.isEmpty())return;
         dummyWorldBlocksHashMap.putAll(profileHandler.getProfile(profileID).dummyWorldBlocks);
         dummyWorldTileEntityHashMap.putAll(profileHandler.getProfile(profileID).dummyWorldTileEntities);
     }

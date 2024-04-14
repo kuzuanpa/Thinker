@@ -2,14 +2,8 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.WorldSceneRenderer;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -26,11 +20,11 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBloc
     public int startTime,endTime, color;
     public float thickness;
     @Override
-    public void animeDraw(long initTime, WorldSceneRenderer renderer) {
+    public void animeDraw(long initTime) {
     }
 
     @Override
-    public void updateButton(long initTime, WorldSceneRenderer renderer) {
+    public void updateButton(long initTime) {
     }
     @Override
     public String jsonName() {

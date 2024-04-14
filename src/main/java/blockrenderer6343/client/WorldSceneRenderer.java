@@ -4,8 +4,10 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnime;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnimeDrawAdditionalQuads;
@@ -19,6 +21,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -59,7 +62,6 @@ public abstract class WorldSceneRenderer {
     private Vector3f eyePos = new Vector3f(0, 0, -10f);
     private Vector3f lookAt = new Vector3f(0, 0, 0);
     private Vector3f worldUp = new Vector3f(0, 1, 0);
-    private boolean renderAllFaces = false;
     public long initTime=0,lastWorldUpdateTime=0;
     public final int worldUpdateInterval = 20;
 
@@ -82,9 +84,6 @@ public abstract class WorldSceneRenderer {
         return this;
     }
 
-    public void setRenderAllFaces(boolean renderAllFaces) {
-        this.renderAllFaces = renderAllFaces;
-    }
 
     public void setClearColor(int clearColor) {
         this.clearColor = clearColor;
@@ -115,12 +114,24 @@ public abstract class WorldSceneRenderer {
         // check lookingAt
         this.lastTraceResult = null;
         if (onLookingAt != null) {
-            Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);
-            MovingObjectPosition result = rayTrace(hitPos);
-            if (result != null) {
-                this.lastTraceResult = result;
-                onLookingAt.accept(result);
-            }
+            int mouseX1=mouseX;
+            int mouseY1=mouseY;
+            dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,blockDummy)->{
+                GL11.glPushMatrix();
+                if(blockDummy!=null&&!blockDummy.animeList.isEmpty())blockDummy.animeList.forEach(anime-> {
+                    if(anime instanceof IDummyBlockAnimeDrawAdditionalQuads)return;
+                    GL11.glTranslatef(pos.x,pos.y,pos.z);
+                    anime.animeDraw(initTime);
+                    GL11.glTranslatef(-pos.x,-pos.y,-pos.z);
+                });
+                Vector3f hitPos = ProjectionUtils.unProject(mouseX1, mouseY1);
+                GL11.glPopMatrix();
+                MovingObjectPosition result = rayTrace(hitPos,pos);
+                if (result != null) {
+                    this.lastTraceResult = result;
+                    onLookingAt.accept(result);
+                }
+            });
         }
 
         // resetcamera
@@ -149,7 +160,14 @@ public abstract class WorldSceneRenderer {
     public void sync(){
         HashMap<BlockPosition,dummyWorldTileEntity> tmp = new HashMap<>();
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
-            world.setBlock(pos.x,pos.y,pos.z,block.block);
+            if(block.itemStack !=null){
+                block.itemStack.tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer,world,pos.x,pos.y,pos.z,0,0,0,0);
+                block.block=world.getBlock(pos.x,pos.y,pos.z);
+                if(block.block==null||block.block==Blocks.air) {
+                    Thinker.error("Invalid Block Created From Item!"+block.itemStack.getDisplayName());
+                    block.block=Blocks.air;
+                }
+            }else world.setBlock(pos.x,pos.y,pos.z,block.block);
             if (!block.block.hasTileEntity(block.meta)) return;
             TileEntity tileEntity=block.block.createTileEntity(world,block.meta);
             if(tileEntity!=null)tmp.put(pos,new dummyWorldTileEntity(tileEntity,block.animeList));
@@ -258,7 +276,7 @@ public abstract class WorldSceneRenderer {
                     ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
                 }
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
-                a.animeDraw(initTime,this);
+                a.animeDraw(initTime);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             });
             Tessellator.instance.startDrawingQuads();
@@ -268,14 +286,16 @@ public abstract class WorldSceneRenderer {
                 RenderBlocks bufferBuilder = new RenderBlocks();
                 bufferBuilder.blockAccess = world;
                 bufferBuilder.setRenderBounds(0, 0, 0, 1, 1, 1);
-                bufferBuilder.renderAllFaces = renderAllFaces;
+                bufferBuilder.renderAllFaces = block.renderAllFaces;
                 bufferBuilder.renderBlockByRenderType(block.block, pos.x, pos.y, pos.z);
                 if (onRender != null) onRender.accept(this);
             } finally {
                 Tessellator.instance.draw();
                 Tessellator.instance.setTranslation(0, 0, 0);
+                if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
                 GL11.glPopMatrix();
             }
+
         });
 
         mc.gameSettings.ambientOcclusion = savedAo;
@@ -293,7 +313,7 @@ public abstract class WorldSceneRenderer {
                 if(t.tile.shouldRenderInPass(finalPass)){
                     GL11.glTranslatef(pos.x, pos.y, pos.z);
                     List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).animeList;
-                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime,this));
+                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime));
                     GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                     int i = world.getLightBrightnessForSkyBlocks(pos.x,pos.y,pos.z, 0);
                     float j = i % 65536;
@@ -301,6 +321,8 @@ public abstract class WorldSceneRenderer {
                     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,  j,  k);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     TileEntityRendererDispatcher.instance.renderTileEntityAt(t.tile, pos.x,pos.y,pos.z, 0);
+                    if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+
                 }
                 GL11.glPopMatrix();
             });
@@ -308,7 +330,6 @@ public abstract class WorldSceneRenderer {
 
         //draw pointed block
         GL11.glPushMatrix();
-        if(pointedBlock!=null) DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
         GL11.glPopMatrix();
 
         ForgeHooksClient.setRenderPass(-1);
@@ -329,14 +350,14 @@ public abstract class WorldSceneRenderer {
         }
     }
 
-    public MovingObjectPosition rayTrace(Vector3f hitPos) {
+    public MovingObjectPosition rayTrace(Vector3f hitPos,BlockPosition pos) {
         Vec3 startPos = Vec3.createVectorHelper(this.eyePos.x, this.eyePos.y, this.eyePos.z);
         hitPos.scale(2); // Double view range to ensure pos can be seen.
         Vec3 endPos = Vec3.createVectorHelper(
                 (hitPos.x - startPos.xCoord),
                 (hitPos.y - startPos.yCoord),
                 (hitPos.z - startPos.zCoord));
-        return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos, dummyWorldHandler.dummyWorldBlocksHashMap.keySet());
+        return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos, pos);
     }
 
     /***
@@ -353,12 +374,24 @@ public abstract class WorldSceneRenderer {
 
         drawWorld();
 
-        Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);
-        MovingObjectPosition result = rayTrace(hitPos);
+        AtomicReference<MovingObjectPosition> result = new AtomicReference<>();
+        dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,blockDummy)->{
+
+            GL11.glPushMatrix();
+            if(blockDummy!=null&&!blockDummy.animeList.isEmpty())blockDummy.animeList.forEach(anime-> {
+                if(anime instanceof IDummyBlockAnimeDrawAdditionalQuads)return;
+                GL11.glTranslatef(pos.x,pos.y,pos.z);
+                anime.animeDraw(initTime);
+                GL11.glTranslatef(-pos.x,-pos.y,-pos.z);
+            });
+            Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);
+            result.set(rayTrace(hitPos, pos));
+
+            GL11.glPopMatrix();
+        });
 
         resetCamera();
-
-        return result;
+        return result.get();
     }
 
     /***

@@ -55,7 +55,7 @@ import static cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler.dum
  * @author kuzuanpa
  */
 @SideOnly(Side.CLIENT)
-public class ThinkingGuiStart extends GuiScreen {
+public class ThinkingGuiWelcome extends GuiScreen {
 
 	private int displayWidth,displayHeight;
 	public String selectedProfileID="HelloThinker";
@@ -63,7 +63,7 @@ public class ThinkingGuiStart extends GuiScreen {
 	public long initTime=0,lastProfileSelectedTime=0;
 	private List<String> hoveringString=new ArrayList<>();
 	protected List<ThinkerButton> buttonsHaveAnime = new ArrayList<ThinkerButton>();
-	public ThinkingGuiStart() {
+	public ThinkingGuiWelcome() {
 		openByUser=true;
 		allowUserInput = false;
 	}

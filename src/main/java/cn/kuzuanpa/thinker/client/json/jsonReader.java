@@ -11,9 +11,7 @@ import cn.kuzuanpa.thinker.client.render.gui.button.custom.customImage;
 import cn.kuzuanpa.thinker.client.render.gui.button.custom.customText;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
-import cpw.mods.fml.common.Optional;
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -108,6 +106,33 @@ public class jsonReader {
         }catch (Exception e){e.printStackTrace();}
         return null;
     }
+    public static ItemStack getItemStack(String itemStackString, JsonReader json, String fileName){
+        try {
+            String itemName="minecraft:stone";
+            int itemDamage=0;
+            String[] str=itemStackString.trim().split(":");
+            if(str.length==1)itemName="minecraft:"+str[0];
+            if(str.length==2){
+                try{
+                    itemDamage=Integer.parseInt(str[1]);
+                    itemName="minecraft:"+str[0];
+                }catch (NumberFormatException e){
+                    itemName=str[0]+":"+str[1];
+                }
+            }
+            if(str.length==3){
+                itemDamage=Integer.parseInt(str[2]);
+                itemName=str[0]+":"+str[1];
+            }
+            Item item=(Item)Item.itemRegistry.getObject(itemName);
+            if(item==null){
+                logError(json,fileName,"Invaild item name: "+itemName);
+                return null;
+            }
+            return new ItemStack(item,1,itemDamage);
+        }catch (Exception e){e.printStackTrace();}
+        return null;
+    }
     public static ArrayList<Object> readAllThinkerObjects(JsonReader json,String fileName)throws JsonParseException,IOException,IllegalArgumentException {
         ArrayList<Object> objects=new ArrayList<>();
         json.beginArray();
@@ -132,6 +157,7 @@ public class jsonReader {
             int height=0;
             int color=0;
             int meta=0;
+            ItemStack blockFromItemStack = null;
             ArrayList<Object> unsortedAnimes=new ArrayList<>();
             json.beginObject();
             while (json.hasNext())
@@ -161,8 +187,8 @@ public class jsonReader {
                     meta = json.nextInt();
                 }else if (jsonName.equalsIgnoreCase("Animes")) {
                     unsortedAnimes=readAllAnime(json,fileName);
-                }else if (jsonName.equalsIgnoreCase("path")) {
-                    path = json.nextString();
+                }else if (jsonName.equalsIgnoreCase("blockFromItem")) {
+                    blockFromItemStack=getItemStack(json.nextString(),json,fileName);
                 }else if (jsonName.equalsIgnoreCase("path")) {
                     path = json.nextString();
                 }else if (jsonName.equalsIgnoreCase("path")) {
@@ -185,7 +211,7 @@ public class jsonReader {
                 case "text":
                 case "Text": out= getText(json,fileName,posX,posY,text,color,guiAnimes,dummyWorldAnimes);break;
                 case "block":
-                case "Block": out= getBlock(json,fileName,posX,posY,posZ,name,meta,guiAnimes,dummyWorldAnimes);break;
+                case "Block": out= blockFromItemStack==null?getBlock(json,fileName,posX,posY,posZ,name,meta,guiAnimes,dummyWorldAnimes):getBlockFromItem(json,fileName,posX,posY,posZ,blockFromItemStack,meta,guiAnimes,dummyWorldAnimes);break;
                 case "tile":
                 case "Tile":
                 case "tileEntity":
@@ -292,6 +318,15 @@ public class jsonReader {
         if(posY==-2147483647){logMissing(jsonReader,fileName,"posY");return null;}
         if(posZ==-2147483647){logMissing(jsonReader,fileName,"posZ");return null;}
         return new dummyBlockWithCoord(new BlockPosition(posX,posY,posZ),new dummyWorldBlock(Block.getBlockFromName(blockName),blockAnimes));
+    }
+    public static dummyBlockWithCoord getBlockFromItem(JsonReader jsonReader, String fileName, int posX, int posY, int posZ, ItemStack itemStack, int meta, ArrayList<IGuiAnime> guiAnimes, ArrayList<IDummyBlockAnime> blockAnimes) {
+        if(!guiAnimes.isEmpty())guiAnimes.forEach(anime->logError(jsonReader,fileName,"Invaild anime type: "+anime.jsonName()+"for block"));
+        if(itemStack==null){logMissing(jsonReader,fileName,"fromItem");return null;}
+        if(meta!=0)          {  logError(jsonReader,fileName,"Useless Element: meta in blockFromItem");return null;}
+        if(posX==-2147483647){logMissing(jsonReader,fileName,"posX");return null;}
+        if(posY==-2147483647){logMissing(jsonReader,fileName,"posY");return null;}
+        if(posZ==-2147483647){logMissing(jsonReader,fileName,"posZ");return null;}
+        return new dummyBlockWithCoord(new BlockPosition(posX,posY,posZ),new dummyWorldBlock(itemStack,blockAnimes));
     }
 
     public static dummyTileWithCoord getTileEntity(JsonReader jsonReader, String fileName,int posX,int posY,int posZ,String tileEntityNBTString,ArrayList<IGuiAnime> guiAnimes,ArrayList<IDummyBlockAnime> blockAnimes) {

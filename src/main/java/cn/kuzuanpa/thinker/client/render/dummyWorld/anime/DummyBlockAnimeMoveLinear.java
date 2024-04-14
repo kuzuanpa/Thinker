@@ -1,6 +1,5 @@
 package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
-import blockrenderer6343.client.WorldSceneRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class DummyBlockAnimeMoveLinear implements IDummyBlockAnime {
@@ -14,7 +13,7 @@ public class DummyBlockAnimeMoveLinear implements IDummyBlockAnime {
     public int startTime, endTime;
     public float dX, dY, dZ;
     @Override
-    public void animeDraw(long initTime, WorldSceneRenderer renderer) {
+    public void animeDraw(long initTime) {
         long timer = System.currentTimeMillis()-initTime;
         if(timer<startTime) return;
         float progress=(float)(timer - startTime)/(float)(endTime-startTime);
@@ -23,7 +22,7 @@ public class DummyBlockAnimeMoveLinear implements IDummyBlockAnime {
     }
 
     @Override
-    public void updateButton(long initTime, WorldSceneRenderer renderer) {
+    public void updateButton(long initTime) {
 
     }
 

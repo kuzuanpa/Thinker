@@ -22,6 +22,7 @@ package cn.kuzuanpa.thinker.client.render.gui;
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.configHandler;
 import cn.kuzuanpa.thinker.client.json.jsonReader;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
@@ -36,6 +37,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
+import gregapi.data.MT;
+import gregapi.data.OP;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Blocks;
@@ -104,17 +109,19 @@ public class ThinkingGuiMain extends GuiScreen {
 		blocks.put(new BlockPosition(1,1,0),new dummyWorldBlock(Blocks.acacia_stairs));
 		blocks.put(new BlockPosition(0,2,5),new dummyWorldBlock(Blocks.diamond_block));
 		blocks.put(new BlockPosition(2,2,0),new dummyWorldBlock(Blocks.stained_glass));
+		blocks.put(new BlockPosition(2,2,1),new dummyWorldBlock(MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32700), new DummyBlockAnimeMoveLinear(0,1000,10,10,10)));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0)));
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test"))));
-		try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
+
+		try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception ignored){}
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
 
 	}
 
-	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
+	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);return text1.equals("")? key: text1;}
 	protected void keyTyped(char p_73869_1_, int p_73869_2_)
 	{
 		if (p_73869_2_ == 1|| p_73869_2_== keyThink.getKeyCode())
@@ -158,7 +165,11 @@ public class ThinkingGuiMain extends GuiScreen {
 		if(button.id==3) {
 			int mouseY=this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 			if(Mouse.isInsideWindow())for (int i : profileHandler.displayProfileIDMap.keySet())if(mouseY>=YOffset+i*(16+ configHandler.themeSelectorProfileGap.get()) && mouseY<=YOffset+16+i*(16+ configHandler.themeSelectorProfileGap.get())){
-				if(!Objects.equals(selectedProfileID, displayProfileIDMap.get(i)))onProfileChanged(displayProfileIDMap.get(i));
+				if(!Objects.equals(selectedProfileID, displayProfileIDMap.get(i))){
+					onProfileChanged(displayProfileIDMap.get(i));
+					onButtonPressed((GuiButton) buttonList.get(4));
+					((DummyWorld)buttonList.get(1)).clickOnOtherButton=false;
+				}
 				break;
 			}
 		}
