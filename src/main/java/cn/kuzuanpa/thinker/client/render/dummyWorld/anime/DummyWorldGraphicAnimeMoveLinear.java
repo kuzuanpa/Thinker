@@ -2,8 +2,8 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
 import org.lwjgl.opengl.GL11;
 
-public class DummyBlockAnimeMoveLinear implements IDummyBlockAnime {
-    public DummyBlockAnimeMoveLinear(int startTime, int endTime, float dX, float dY,float dZ){
+public class DummyWorldGraphicAnimeMoveLinear implements IDummyWorldGraphicAnime {
+    public DummyWorldGraphicAnimeMoveLinear(int startTime, int endTime, float dX, float dY, float dZ){
         this.startTime=startTime;
         this.endTime=endTime;
         this.dX =dX;

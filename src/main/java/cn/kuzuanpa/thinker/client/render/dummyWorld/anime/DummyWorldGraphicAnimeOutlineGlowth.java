@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBlockAnimeDrawAdditionalQuads{
-    public DummyBlockAnimeOutlineGlowth(int startTime,int endTime,BlockPosition pos,int color,float thickness){
+public class DummyWorldGraphicAnimeOutlineGlowth implements IDummyBlockAnimeDrawAdditionalQuads{
+    public DummyWorldGraphicAnimeOutlineGlowth(int startTime, int endTime, BlockPosition pos, int color, float thickness){
         this.startTime=startTime;
         this.endTime=endTime;
         this.pos=pos;
@@ -19,13 +19,6 @@ public class DummyBlockAnimeOutlineGlowth implements IDummyBlockAnime,IDummyBloc
     public BlockPosition pos;
     public int startTime,endTime, color;
     public float thickness;
-    @Override
-    public void animeDraw(long initTime) {
-    }
-
-    @Override
-    public void updateButton(long initTime) {
-    }
     @Override
     public String jsonName() {
         return "Block.OutlineGlowth";

@@ -8,9 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnime;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnimeDrawAdditionalQuads;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
@@ -118,10 +116,10 @@ public abstract class WorldSceneRenderer {
             int mouseY1=mouseY;
             dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,blockDummy)->{
                 GL11.glPushMatrix();
-                if(blockDummy!=null&&!blockDummy.animeList.isEmpty())blockDummy.animeList.forEach(anime-> {
-                    if(anime instanceof IDummyBlockAnimeDrawAdditionalQuads)return;
+                if(blockDummy!=null&&!blockDummy.animeList.isEmpty())blockDummy.animeList.forEach(gAnime-> {
+                    if(!(gAnime instanceof IDummyWorldGraphicAnime))return;
                     GL11.glTranslatef(pos.x,pos.y,pos.z);
-                    anime.animeDraw(initTime);
+                    ((IDummyWorldGraphicAnime)gAnime).animeDraw(initTime);
                     GL11.glTranslatef(-pos.x,-pos.y,-pos.z);
                 });
                 Vector3f hitPos = ProjectionUtils.unProject(mouseX1, mouseY1);
@@ -270,14 +268,16 @@ public abstract class WorldSceneRenderer {
         mc.gameSettings.ambientOcclusion = 0;
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
             GL11.glPushMatrix();
-            List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).animeList;
+            List<IDummyWorldAnimes> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).animeList;
             if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
-                if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) {
-                    ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
+                if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
+                if(a instanceof IDummyWorldGraphicAnime){
+                    GL11.glTranslatef(pos.x, pos.y, pos.z);
+                    ((IDummyWorldGraphicAnime)a).animeDraw(initTime);
+                    GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                 }
-                GL11.glTranslatef(pos.x, pos.y, pos.z);
-                a.animeDraw(initTime);
-                GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
+                if(a instanceof IDummyWorldTilePropertiesAnime){
+                }
             });
             Tessellator.instance.startDrawingQuads();
             try {
@@ -292,7 +292,7 @@ public abstract class WorldSceneRenderer {
             } finally {
                 Tessellator.instance.draw();
                 Tessellator.instance.setTranslation(0, 0, 0);
-                if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+                if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
                 GL11.glPopMatrix();
             }
 
@@ -312,8 +312,18 @@ public abstract class WorldSceneRenderer {
                 setDefaultPassRenderState(finalPass);
                 if(t.tile.shouldRenderInPass(finalPass)){
                     GL11.glTranslatef(pos.x, pos.y, pos.z);
-                    List<IDummyBlockAnime> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).animeList;
-                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->a.animeDraw(initTime));
+                    List<IDummyWorldAnimes> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).animeList;
+                    if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
+                        if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
+                        if(a instanceof IDummyWorldGraphicAnime){
+                            GL11.glTranslatef(pos.x, pos.y, pos.z);
+                            ((IDummyWorldGraphicAnime)a).animeDraw(initTime);
+                            GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
+                        }
+                        if(a instanceof IDummyWorldTilePropertiesAnime){
+                            ((IDummyWorldTilePropertiesAnime) a).doAnime(t.tile);
+                        }
+                    });
                     GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                     int i = world.getLightBrightnessForSkyBlocks(pos.x,pos.y,pos.z, 0);
                     float j = i % 65536;
@@ -321,7 +331,7 @@ public abstract class WorldSceneRenderer {
                     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,  j,  k);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     TileEntityRendererDispatcher.instance.renderTileEntityAt(t.tile, pos.x,pos.y,pos.z, 0);
-                    if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyBlockAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+                    if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
 
                 }
                 GL11.glPopMatrix();
@@ -378,11 +388,11 @@ public abstract class WorldSceneRenderer {
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,blockDummy)->{
 
             GL11.glPushMatrix();
-            if(blockDummy!=null&&!blockDummy.animeList.isEmpty())blockDummy.animeList.forEach(anime-> {
-                if(anime instanceof IDummyBlockAnimeDrawAdditionalQuads)return;
-                GL11.glTranslatef(pos.x,pos.y,pos.z);
-                anime.animeDraw(initTime);
-                GL11.glTranslatef(-pos.x,-pos.y,-pos.z);
+            if(blockDummy!=null&&!blockDummy.animeList.isEmpty())blockDummy.animeList.forEach(gAnime->{
+                if(!(gAnime instanceof IDummyWorldGraphicAnime))return;
+                GL11.glTranslatef(pos.x, pos.y, pos.z);
+                ((IDummyWorldGraphicAnime)gAnime).animeDraw(initTime);
+                GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             });
             Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);
             result.set(rayTrace(hitPos, pos));

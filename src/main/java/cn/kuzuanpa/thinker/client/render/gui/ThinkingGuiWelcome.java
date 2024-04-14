@@ -22,8 +22,8 @@ package cn.kuzuanpa.thinker.client.render.gui;
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.json.jsonReader;
 import cn.kuzuanpa.thinker.client.profileHandler;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeOutlineGlowth;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyBlockAnimeRotateSteadily;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeOutlineGlowth;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
@@ -87,10 +87,10 @@ public class ThinkingGuiWelcome extends GuiScreen {
 
 		HashMap<BlockPosition, dummyWorldBlock> blocks=new HashMap<>();
 		HashMap<BlockPosition, dummyWorldTileEntity> tiles=new HashMap<>();
-		blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
-		blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
-		blocks.put(new BlockPosition(0,2,0),new dummyWorldBlock(Blocks.dark_oak_stairs,new DummyBlockAnimeRotateSteadily()));
-		blocks.put(new BlockPosition(0,3,0),new dummyWorldBlock(Blocks.daylight_detector,new DummyBlockAnimeRotateSteadily()));
+		blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyWorldGraphicAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
+		blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyWorldGraphicAnimeRotateSteadily()));
+		blocks.put(new BlockPosition(0,2,0),new dummyWorldBlock(Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()));
+		blocks.put(new BlockPosition(0,3,0),new dummyWorldBlock(Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily()));
 		blocks.put(new BlockPosition(1,2,0),new dummyWorldBlock(Blocks.double_wooden_slab));
 		blocks.put(new BlockPosition(3,2,0),new dummyWorldBlock(Blocks.fence));
 		blocks.put(new BlockPosition(0,2,1),new dummyWorldBlock(Blocks.command_block));
