@@ -24,6 +24,7 @@ import cn.kuzuanpa.thinker.client.configHandler;
 import cn.kuzuanpa.thinker.client.json.jsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.SetTileNBT;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
@@ -31,6 +32,7 @@ import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.util.Nbt;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -40,6 +42,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Mouse;
@@ -82,8 +85,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonsHaveAnime.clear();
 		dummyWorldBlocksHashMap.clear();
 		dummyWorldTileEntityHashMap.clear();
-		buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
-		//buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
+		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
@@ -101,7 +103,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		blocks.put(new BlockPosition(1,1,0),new dummyWorldBlock(Blocks.acacia_stairs).setRenderAllFace(true));
 		blocks.put(new BlockPosition(0,2,5),new dummyWorldBlock(Blocks.diamond_block));
 		blocks.put(new BlockPosition(2,2,0),new dummyWorldBlock(Blocks.stained_glass));
-		blocks.put(new BlockPosition(2,2,1),new dummyWorldBlock(MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32700), new DummyWorldGraphicAnimeMoveLinear(0,1000,10,10,10)));
+		blocks.put(new BlockPosition(2,2,1),new dummyWorldBlock(MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(31016), new DummyWorldGraphicAnimeMoveLinear(0,1000,10,10,10)));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0)));
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test"))));
@@ -151,7 +153,6 @@ public class ThinkingGuiMain extends GuiScreen {
 		selectedProfileID =newProfileID;
 	}
 	protected boolean onButtonPressed(GuiButton button) {
-		if(button.id==-1) try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 		((DummyWorld)buttonList.get(1)).clickOnOtherButton=button.id!=1;
 		if(button.id==2) this.mc.displayGuiScreen(new ThinkerSettingsGui());
 		if(button.id==3) {

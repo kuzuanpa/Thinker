@@ -61,7 +61,7 @@ public abstract class WorldSceneRenderer {
     private Vector3f lookAt = new Vector3f(0, 0, 0);
     private Vector3f worldUp = new Vector3f(0, 1, 0);
     public long initTime=0,lastWorldUpdateTime=0;
-    public final int worldUpdateInterval = 20;
+    public final int worldUpdateInterval = 50;
 
     public WorldSceneRenderer(World world) {
         this.world = world;
@@ -165,6 +165,7 @@ public abstract class WorldSceneRenderer {
                     Thinker.error("Invalid Block Created From Item!"+block.itemStack.getDisplayName());
                     block.block=Blocks.air;
                 }
+                if(world.getTileEntity(pos.x,pos.y,pos.z)!=null) tmp.put(pos, new dummyWorldTileEntity(world.getTileEntity(pos.x,pos.y,pos.z)));
             }else world.setBlock(pos.x,pos.y,pos.z,block.block);
             if (!block.block.hasTileEntity(block.meta)) return;
             TileEntity tileEntity=block.block.createTileEntity(world,block.meta);
@@ -250,8 +251,8 @@ public abstract class WorldSceneRenderer {
             beforeRender.accept(this);
         }
         if (Math.abs(lastWorldUpdateTime-(System.currentTimeMillis()%100000))>worldUpdateInterval){
-            world.updateEntities();
             lastWorldUpdateTime=System.currentTimeMillis()%100000;
+            world.updateEntities();
         }
         Minecraft mc = Minecraft.getMinecraft();
         glEnable(GL_CULL_FACE);
@@ -277,6 +278,7 @@ public abstract class WorldSceneRenderer {
                     GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                 }
                 if(a instanceof IDummyWorldTilePropertiesAnime){
+                    if(dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos)!=null)((IDummyWorldTilePropertiesAnime) a).doAnime(dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).tile);
                 }
             });
             Tessellator.instance.startDrawingQuads();

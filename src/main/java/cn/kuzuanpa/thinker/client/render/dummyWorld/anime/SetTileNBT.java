@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 public class SetTileNBT implements IDummyWorldTilePropertiesAnime {
-    public NBTTagCompound tag=new NBTTagCompound();
+    public NBTTagCompound tag;
     public SetTileNBT(NBTTagCompound tag){
         this.tag=tag;
     }
