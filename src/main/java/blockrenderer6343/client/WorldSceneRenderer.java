@@ -2,13 +2,17 @@ package blockrenderer6343.client;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
@@ -51,19 +55,18 @@ import codechicken.lib.vec.Vector3;
 public abstract class WorldSceneRenderer {
     public BlockPosition pointedBlock;
 
-    public final World world;
+    public final DummyWorld world;
     private Consumer<WorldSceneRenderer> beforeRender;
     private Consumer<WorldSceneRenderer> onRender;
     private Consumer<MovingObjectPosition> onLookingAt;
     private int clearColor;
     private MovingObjectPosition lastTraceResult;
-    private Vector3f eyePos = new Vector3f(0, 0, -10f);
+    private Vector3f eyePos = new Vector3f(0, 0, 0);
     private Vector3f lookAt = new Vector3f(0, 0, 0);
     private Vector3f worldUp = new Vector3f(0, 1, 0);
-    public long initTime=0,lastWorldUpdateTime=0;
-    public final int worldUpdateInterval = 50;
+    public long initTime=0;
 
-    public WorldSceneRenderer(World world) {
+    public WorldSceneRenderer(DummyWorld world) {
         this.world = world;
     }
 
@@ -90,6 +93,7 @@ public abstract class WorldSceneRenderer {
     public MovingObjectPosition getLastTraceResult() {
         return lastTraceResult;
     }
+
 
     /**
      * Renders scene on given coordinates with given width and height, and RGB background color Note that this will
@@ -156,26 +160,29 @@ public abstract class WorldSceneRenderer {
     }
 
     public void sync(){
-        HashMap<BlockPosition,dummyWorldTileEntity> tmp = new HashMap<>();
-        dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
-            if(block.itemStack !=null){
-                block.itemStack.tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer,world,pos.x,pos.y,pos.z,0,0,0,0);
-                block.block=world.getBlock(pos.x,pos.y,pos.z);
-                if(block.block==null||block.block==Blocks.air) {
-                    Thinker.error("Invalid Block Created From Item!"+block.itemStack.getDisplayName());
-                    block.block=Blocks.air;
+        while(world.lock) {try{wait(0,1000);}catch (Exception ignored){}}
+        HashMap<BlockPosition, dummyWorldTileEntity> tmp = new HashMap<>();
+        dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos, block) -> {
+            if (block.itemStack != null) {
+                block.itemStack.tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer, world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
+                block.block = world.getBlock(pos.x, pos.y, pos.z);
+                if (block.block == null || block.block == Blocks.air) {
+                    Thinker.error("Invalid Block Created From Item!" + block.itemStack.getDisplayName());
+                    block.block = Blocks.air;
                 }
-                if(world.getTileEntity(pos.x,pos.y,pos.z)!=null) tmp.put(pos, new dummyWorldTileEntity(world.getTileEntity(pos.x,pos.y,pos.z)));
-            }else world.setBlock(pos.x,pos.y,pos.z,block.block);
+                if (world.getTileEntity(pos.x, pos.y, pos.z) != null)
+                    tmp.put(pos, new dummyWorldTileEntity(world.getTileEntity(pos.x, pos.y, pos.z),block.animeList));
+            } else world.setBlock(pos.x, pos.y, pos.z, block.block);
             if (!block.block.hasTileEntity(block.meta)) return;
-            TileEntity tileEntity=block.block.createTileEntity(world,block.meta);
-            if(tileEntity!=null)tmp.put(pos,new dummyWorldTileEntity(tileEntity,block.animeList));
+            TileEntity tileEntity = block.block.createTileEntity(world, block.meta);
+            if (tileEntity != null) tmp.put(pos, new dummyWorldTileEntity(tileEntity, block.animeList));
         });
-        dummyWorldHandler.dummyWorldTileEntityHashMap.forEach((pos,tile)->{
-            world.setTileEntity(pos.x,pos.y,pos.z,tile.tile);
-            if(tile.tile.blockType!=null)world.setBlock(pos.x,pos.y,pos.z,tile.tile.blockType);
+        dummyWorldHandler.dummyWorldTileEntityHashMap.forEach((pos, tile) -> {
+            world.setTileEntity(pos.x, pos.y, pos.z, tile.tile);
+            if (tile.tile.blockType != null) world.setBlock(pos.x, pos.y, pos.z, tile.tile.blockType);
         });
         dummyWorldHandler.dummyWorldTileEntityHashMap.putAll(tmp);
+        if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).onProfileChanged();
     }
     public void setCameraLookAt(Vector3f lookAt, double radius, double rotationPitch, double rotationYaw) {
         this.lookAt = lookAt;
@@ -250,10 +257,6 @@ public abstract class WorldSceneRenderer {
         if (beforeRender != null) {
             beforeRender.accept(this);
         }
-        if (Math.abs(lastWorldUpdateTime-(System.currentTimeMillis()%100000))>worldUpdateInterval){
-            lastWorldUpdateTime=System.currentTimeMillis()%100000;
-            world.updateEntities();
-        }
         Minecraft mc = Minecraft.getMinecraft();
         glEnable(GL_CULL_FACE);
         glEnable(GL12.GL_RESCALE_NORMAL);
@@ -294,7 +297,7 @@ public abstract class WorldSceneRenderer {
             } finally {
                 Tessellator.instance.draw();
                 Tessellator.instance.setTranslation(0, 0, 0);
-                if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+                if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 2F);
                 GL11.glPopMatrix();
             }
 
@@ -333,7 +336,7 @@ public abstract class WorldSceneRenderer {
                     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit,  j,  k);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     TileEntityRendererDispatcher.instance.renderTileEntityAt(t.tile, pos.x,pos.y,pos.z, 0);
-                    if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 1F);
+                    if(pointedBlock!=null&&pointedBlock.equals(pos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pointedBlock, 0xCCCCCC, 2F);
 
                 }
                 GL11.glPopMatrix();
@@ -369,6 +372,7 @@ public abstract class WorldSceneRenderer {
                 (hitPos.x - startPos.xCoord),
                 (hitPos.y - startPos.yCoord),
                 (hitPos.z - startPos.zCoord));
+
         return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos, pos);
     }
 

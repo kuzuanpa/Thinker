@@ -36,12 +36,13 @@ public class ThinkingProfileList extends ThinkerButton {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
             mc.getTextureManager().bindTexture(buttontextures);
             animeList.forEach(anime->anime.animeDraw(initTime));
-            this.drawTexturedModalRect(0, (int) (profileHandler.YOffset+i*(16+configHandler.themeSelectorProfileGap.get())), 64, 0, 64, 16);
+            this.drawTexturedModalRect(0, (int) (Math.floor(profileHandler.YOffset)+i*(16+configHandler.themeSelectorProfileGap.get())), 64, 0, 64, 16);
             if(profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i)).icon==null){GL11.glPopMatrix();continue;}
             profileHandler.thinkingProfile profile = profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i));
             GL11.glColor4f(profile.iconR,profile.iconG,profile.iconB,profile.iconA);
             mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-            this.drawTexturedModelRectFromIcon(0, (int) (profileHandler.YOffset+i*(16+configHandler.themeSelectorProfileGap.get())),profile.icon, 16, 16);
+            this.drawTexturedModelRectFromIcon(0, (int) (Math.floor(profileHandler.YOffset)+i*(16+configHandler.themeSelectorProfileGap.get())),profile.icon, 16, 16);
+            this.drawCenteredString(mc.fontRenderer,profile.id,40, (int) (Math.floor(profileHandler.YOffset)+i*(16+configHandler.themeSelectorProfileGap.get()))+4, 0xffffff);
             GL11.glPopMatrix();
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

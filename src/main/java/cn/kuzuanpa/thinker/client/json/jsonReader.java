@@ -12,6 +12,7 @@ import cn.kuzuanpa.thinker.client.render.gui.button.custom.customImage;
 import cn.kuzuanpa.thinker.client.render.gui.button.custom.customText;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.util.IIcon;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +31,23 @@ import java.util.List;
 
 public class jsonReader {
     public static ArrayList<profileHandler.thinkingProfile> profileList=new ArrayList<>();
-    public static ArrayList<profileHandler.thinkingProfile> readAllProfiles(){
+    public static void readAllProfiles(String path) throws IOException {
         ArrayList<profileHandler.thinkingProfile> profileList = new ArrayList<>();
-        return profileList;
+        Files.list(Paths.get(path)).forEach(file -> {
+            try (JsonReader json = new JsonReader(new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8))) {
+                if(Files.size(file)> 67108864 /*64MiB*/) throw new IOException("Too large file");
+                json.setLenient(true);
+                profileHandler.thinkingProfile obj = readProfiles(json, String.valueOf(file));
+                if(obj != null)profileList.add(obj);
+            } catch (Exception e) {
+                System.out.println("Exception in "+file+": "+e.getMessage());
+            }
+        });
+        //profileHandler.clearAllProfile();
+        profileHandler.addProfiles(profileList);
+
     }
-    public static profileHandler.thinkingProfile readProfiles(String profileName)throws JsonParseException,IOException,IllegalArgumentException {
-        try (JsonReader json = new JsonReader(new InputStreamReader(Files.newInputStream(Paths.get(profileName)), StandardCharsets.UTF_8))) {
+    public static profileHandler.thinkingProfile readProfiles(JsonReader json,String profileName)throws IOException,IllegalArgumentException {
             String id="";
             IIcon icon=null;
             float iconR=1.0F;
@@ -76,9 +89,9 @@ public class jsonReader {
                 if(obj instanceof dummyTileWithCoord)tiles.put(((dummyTileWithCoord) obj).pos,((dummyTileWithCoord) obj).tile);
                 if(obj instanceof ThinkerButton)buttons.add((ThinkerButton) obj);
             });
+            if(id.equals("")||ThinkerObjects.isEmpty()){logError(json,profileName,"Invaild Profile");return null;}
             if(!blocks.isEmpty()||!tiles.isEmpty())return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,blocks,tiles,buttons);
             else return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons);
-        }
     }
     public static IIcon getIcon(String iconString, JsonReader json, String fileName){
         try {
@@ -161,6 +174,8 @@ public class jsonReader {
             boolean renderAllFaces=false;
             ItemStack blockFromItemStack = null;
             ArrayList<Object> unsortedAnimes=new ArrayList<>();
+            ArrayList<IGuiAnime> guiAnimes=new ArrayList<>();
+            ArrayList<IDummyWorldAnimes> dummyWorldAnimes=new ArrayList<>();
             json.beginObject();
             while (json.hasNext())
             {
@@ -187,8 +202,9 @@ public class jsonReader {
                     tileEntityNBTString = json.nextString();
                 }else if (jsonName.equalsIgnoreCase("meta")) {
                     meta = json.nextInt();
-                }else if (jsonName.equalsIgnoreCase("Animes")) {
+                }else if (jsonName.equalsIgnoreCase("animes")) {
                     unsortedAnimes=readAllAnime(json,fileName);
+                    unsortedAnimes.forEach(anime->{if(anime instanceof IGuiAnime)guiAnimes.add((IGuiAnime) anime);else dummyWorldAnimes.add((IDummyWorldAnimes) anime);});
                 }else if (jsonName.equalsIgnoreCase("blockFromItem")) {
                     blockFromItemStack=getItemStack(json.nextString(),json,fileName);
                 }else if (jsonName.equalsIgnoreCase("renderAllFaces")||
@@ -205,9 +221,7 @@ public class jsonReader {
             }
             if(type==null){json.endObject();logMissing(json,fileName,"Type");return null;}
             Object out=null;
-            ArrayList<IGuiAnime> guiAnimes=new ArrayList<>();
-            ArrayList<IDummyWorldAnimes> dummyWorldAnimes=new ArrayList<>();
-            unsortedAnimes.forEach(anime->{if(anime instanceof IGuiAnime)guiAnimes.add((IGuiAnime) anime);else dummyWorldAnimes.add((IDummyWorldAnimes) anime);});
+
             switch (type){
                 case "image":
                 case "Image": out= getImage(json,fileName,posX,posY,width,height,path,guiAnimes,dummyWorldAnimes);break;

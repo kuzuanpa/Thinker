@@ -3,9 +3,11 @@ package blockrenderer6343.world;
 import java.util.*;
 
 import blockrenderer6343.api.utils.BlockPosition;
+import cn.kuzuanpa.ktfruaddon.code.BoundingBox;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnimeDrawAdditionalQuads;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
+import codechicken.lib.vec.BlockCoord;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
@@ -23,8 +25,8 @@ public class TrackedDummyWorld extends DummyWorld {
 
     public final Set<BlockPosition> placedBlocks = new HashSet<>();
 
-    private final Vector3f minPos = new Vector3f(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-    private final Vector3f maxPos = new Vector3f(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+    private Vector3f minPos = new Vector3f(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    private Vector3f maxPos = new Vector3f(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     @Override
     public boolean setBlock(int x, int y, int z, Block block, int meta, int flags) {
@@ -106,6 +108,20 @@ public class TrackedDummyWorld extends DummyWorld {
         return result;
     }
 
+    public void onProfileChanged(){
+        int minX=Integer.MAX_VALUE,minY=Integer.MAX_VALUE,minZ=Integer.MAX_VALUE;
+        int maxX=Integer.MIN_VALUE,maxY=Integer.MIN_VALUE,maxZ=Integer.MIN_VALUE;
+        for (BlockPosition placedBlock : this.placedBlocks) {
+            minX=Math.min(minX,placedBlock.x);
+            minY=Math.min(minY,placedBlock.y);
+            minZ=Math.min(minZ,placedBlock.z);
+            maxX=Math.max(maxX,placedBlock.x);
+            maxY=Math.max(maxY,placedBlock.y);
+            maxZ=Math.max(maxZ,placedBlock.z);
+        }
+        minPos=new Vector3f(minX-10,minY-10,minZ-10);
+        maxPos=new Vector3f(maxX+10,maxY+10,maxZ+10);
+    }
     public Vector3f getMinPos() {
         return minPos;
     }
@@ -114,6 +130,7 @@ public class TrackedDummyWorld extends DummyWorld {
         return maxPos;
     }
 
+    public boolean isPosInWorld(double x,double y,double z){return x>minPos.x&&y>minPos.y&&z>minPos.z&&x<maxPos.x&&y<maxPos.y&&z<maxPos.z;}
     public MovingObjectPosition rayTraceBlockswithTargetMap(Vec3 start, Vec3 end, BlockPosition targetedBlocks) {
         return rayTraceBlockswithTargetMap(start, end, targetedBlocks, false, false, false);
     }
@@ -122,6 +139,7 @@ public class TrackedDummyWorld extends DummyWorld {
             boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         if (!Double.isNaN(start.xCoord) && !Double.isNaN(start.yCoord) && !Double.isNaN(start.zCoord)) {
             if (!Double.isNaN(end.xCoord) && !Double.isNaN(end.yCoord) && !Double.isNaN(end.zCoord)) {
+                if(!isPosInWorld(end.xCoord,end.yCoord,end.zCoord))return null;
                 int i = MathHelper.floor_double(end.xCoord);
                 int j = MathHelper.floor_double(end.yCoord);
                 int k = MathHelper.floor_double(end.zCoord);

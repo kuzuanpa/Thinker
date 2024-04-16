@@ -16,14 +16,17 @@ public class profileHandler {
     private static HashMap<String,thinkingProfile> profileMap =new HashMap<>();
     public static Map<Integer,String> displayProfileIDMap = new HashMap<>();
     public static int profileLayer=1;
-    public static void MouseWheelHandler(){
+    public static void handleMouseWheel(){
         oldWheel+=Mouse.getEventDWheel();
     }
     public static void tick(){
+
         oldWheel+=oldWheel>0?-configHandler.themeSelectorScrollInertia.get() : configHandler.themeSelectorScrollInertia.get();
         if(Math.abs(oldWheel)<= configHandler.themeSelectorScrollInertia.get())oldWheel=0;
         YOffset+=oldWheel/300*(configHandler.themeSelectorScrollSpeed.get());
-        if(!configHandler.themeSelectorFreelyScroll.get()&&YOffset>0)YOffset=0;
+        if(!configHandler.themeSelectorFreelyScroll.get()&&(YOffset)>0){YOffset=0;oldWheel=0;return;}
+        int i1=-((profileMap.size()-1)*(16+configHandler.themeSelectorProfileGap.getI()));
+        if(!configHandler.themeSelectorFreelyScroll.get()&&(YOffset)<i1){YOffset=i1;oldWheel=0;}
     }
     public static void onProfileChanged(String profileID){
         selectedProfile= profileMap.get(profileID);

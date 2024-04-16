@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import blockrenderer6343.api.utils.world.DummyChunkProvider;
 import blockrenderer6343.api.utils.world.DummySaveHandler;
+import cn.kuzuanpa.thinker.Thinker;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
@@ -27,7 +28,7 @@ public class DummyWorld extends World {
             WorldType.DEFAULT);
 
     public static final DummyWorld INSTANCE = new DummyWorld();
-
+    public boolean lock=false;
     public DummyWorld() {
         super(new DummySaveHandler(), "DummyWorld", DEFAULT_SETTINGS, new WorldProviderSurface(), new Profiler());
         // Guarantee the dimension ID was not reset by the provider
@@ -38,6 +39,7 @@ public class DummyWorld extends World {
         this.chunkProvider = this.createChunkProvider();
         this.calculateInitialSkylight();
         this.calculateInitialWeatherBody();
+        Thinker.dummyWorldTickThread.trackedDummyWorld=this;
     }
     @Override
     public void updateEntities() {

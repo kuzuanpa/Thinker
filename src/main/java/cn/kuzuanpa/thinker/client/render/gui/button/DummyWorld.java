@@ -69,7 +69,6 @@ public class DummyWorld extends ThinkerButton {
 
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
         renderer.initTime=System.currentTimeMillis();
-        ((blockrenderer6343.world.DummyWorld) renderer.world).updateEntitiesForNEI();
         renderer.setClearColor(0xC6C6C6);
 
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
@@ -99,20 +98,13 @@ public class DummyWorld extends ThinkerButton {
             if (renderer != null) {
                 resetCenter();
             }
+
         } else {
             renderer.setCameraLookAt(eyePos, lookAt, worldUp);
         }
     }
     public void onRendererRender(WorldSceneRenderer renderer) {
-        BlockPosition look = renderer.getLastTraceResult() == null ? null
-                : new BlockPosition(
-                renderer.getLastTraceResult().blockX,
-                renderer.getLastTraceResult().blockY,
-                renderer.getLastTraceResult().blockZ);
-        if (look != null && look.equals(selectedBlock)) {
-            renderBlockOverLay(selectedBlock, Blocks.glass.getIcon(0, 6));
-            return;
-        }
+
     }
     private void resetCenter() {
         TrackedDummyWorld world = (TrackedDummyWorld) renderer.world;
@@ -187,10 +179,6 @@ public class DummyWorld extends ThinkerButton {
                         center.y+=Math.cos(rYaw)*mouseDeltaY/20F;
                     }
                     renderer.setCameraLookAt(center, zoom, Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
-                    if (!(leftClickHeld || rightClickHeld) && rayTraceResult != null
-                            && !renderer.world.isAirBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ)) {
-                        Block block = renderer.world.getBlock(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
-                    }
                     if(rayTraceResult!=null) {
                         renderer.pointedBlock = new BlockPosition(rayTraceResult.blockX, rayTraceResult.blockY, rayTraceResult.blockZ);
                     }else {

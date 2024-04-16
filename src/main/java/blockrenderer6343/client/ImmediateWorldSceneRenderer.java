@@ -1,5 +1,6 @@
 package blockrenderer6343.client;
 
+import blockrenderer6343.world.DummyWorld;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.world.World;
@@ -24,7 +25,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 @SideOnly(Side.CLIENT)
 public class ImmediateWorldSceneRenderer extends WorldSceneRenderer {
 
-    public ImmediateWorldSceneRenderer(World world) {
+    public ImmediateWorldSceneRenderer(DummyWorld world) {
         super(world);
     }
 

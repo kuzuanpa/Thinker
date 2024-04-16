@@ -102,7 +102,6 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
-		try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
@@ -143,7 +142,6 @@ public class ThinkingGuiWelcome extends GuiScreen {
 			}
 	}
 	protected boolean onButtonPressed(GuiButton button) {
-		if(button.id==2) try{profileHandler.addProfile(jsonReader.readProfiles("testJson"));}catch (Exception e){e.printStackTrace();}
 		((DummyWorld)buttonList.get(1)).clickOnOtherButton=button.id!=1;
 		return true;
 	}
