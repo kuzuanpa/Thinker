@@ -2,6 +2,8 @@ package cn.kuzuanpa.thinker.client;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModelContainer;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import net.minecraft.util.IIcon;
@@ -113,6 +115,7 @@ public class profileHandler {
         public float iconR,iconG,iconB,iconA;
         public HashMap<BlockPosition,dummyWorldBlock> dummyWorldBlocks = new HashMap<>();
         public HashMap<BlockPosition, dummyWorldTileEntity> dummyWorldTileEntities = new HashMap<>();
+        public HashMap<BlockPosition, dummyWorldGeckoModel> dummyWorldGeckoModels = new HashMap<>();
         public ArrayList<ThinkerButton> buttons = new ArrayList<>();
         public String id;
     }

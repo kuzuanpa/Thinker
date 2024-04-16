@@ -1,19 +1,18 @@
 package blockrenderer6343.client;
 
+import static cn.kuzuanpa.thinker.Thinker.isGeckoLibLoaded;
+import static cn.kuzuanpa.thinker.client.dummyWorldHandler.dummyWorldGeckoModelHashMap;
 import static org.lwjgl.opengl.GL11.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
@@ -28,7 +27,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
@@ -342,10 +340,13 @@ public abstract class WorldSceneRenderer {
                 GL11.glPopMatrix();
             });
         }
+        //Render GeckoLib Models
 
-        //draw pointed block
-        GL11.glPushMatrix();
-        GL11.glPopMatrix();
+        if(isGeckoLibLoaded) dummyWorldGeckoModelHashMap.forEach((pos,geckoModel)->{
+            try{
+            geckoModel.render(world, pos.x,pos.y, pos.z,initTime);
+            }catch (Exception e){Thinker.error(e);}
+        });
 
         ForgeHooksClient.setRenderPass(-1);
         glDisable(GL_BLEND);
@@ -373,7 +374,7 @@ public abstract class WorldSceneRenderer {
                 (hitPos.y - startPos.yCoord),
                 (hitPos.z - startPos.zCoord));
 
-        return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos, pos);
+        return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos,dummyWorldHandler.dummyWorldBlocksHashMap.keySet(), pos);
     }
 
     /***

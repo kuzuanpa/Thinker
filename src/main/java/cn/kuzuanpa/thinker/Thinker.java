@@ -7,6 +7,7 @@ import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiWelcome;
 import cn.kuzuanpa.thinker.command.CommandGetTileNBT;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -17,7 +18,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION, dependencies = "required-after:CodeChickenCore@[1.0.7,);")
+@Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION, dependencies = "required-after:CodeChickenCore@[1.0.7,);after:geckolib3")
 public class Thinker
 {
     public static final String MOD_ID = "thinker";
@@ -25,12 +26,14 @@ public class Thinker
     public static final String VERSION = "0.0.1";
     public static final DummyWorldTickThread dummyWorldTickThread=new DummyWorldTickThread();
     public static int delay = 5;
+    public static boolean isGeckoLibLoaded=false;
     @SidedProxy(clientSide = "cn.kuzuanpa.thinker.clientProxy",
             serverSide = "cn.kuzuanpa.thinker.commonProxy")
     public static commonProxy PROXY;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        isGeckoLibLoaded= Loader.isModLoaded("geckolib3");
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         configHandler.preInit(event);

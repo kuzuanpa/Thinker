@@ -3,11 +3,6 @@ package blockrenderer6343.world;
 import java.util.*;
 
 import blockrenderer6343.api.utils.BlockPosition;
-import cn.kuzuanpa.ktfruaddon.code.BoundingBox;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyBlockAnimeDrawAdditionalQuads;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
-import codechicken.lib.vec.BlockCoord;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
@@ -131,11 +126,11 @@ public class TrackedDummyWorld extends DummyWorld {
     }
 
     public boolean isPosInWorld(double x,double y,double z){return x>minPos.x&&y>minPos.y&&z>minPos.z&&x<maxPos.x&&y<maxPos.y&&z<maxPos.z;}
-    public MovingObjectPosition rayTraceBlockswithTargetMap(Vec3 start, Vec3 end, BlockPosition targetedBlocks) {
-        return rayTraceBlockswithTargetMap(start, end, targetedBlocks, false, false, false);
+    public MovingObjectPosition rayTraceBlockswithTargetMap(Vec3 start, Vec3 end,Set<BlockPosition> allBlocks, BlockPosition targetedBlocks) {
+        return rayTraceBlockswithTargetMap(start, end,allBlocks, targetedBlocks, false, false, false);
     }
 
-    public MovingObjectPosition rayTraceBlockswithTargetMap(Vec3 start, Vec3 end, BlockPosition targetedBlocks,
+    public MovingObjectPosition rayTraceBlockswithTargetMap(Vec3 start, Vec3 end,Set<BlockPosition> allBlocks, BlockPosition targetedBlock,
             boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         if (!Double.isNaN(start.xCoord) && !Double.isNaN(start.yCoord) && !Double.isNaN(start.zCoord)) {
             if (!Double.isNaN(end.xCoord) && !Double.isNaN(end.yCoord) && !Double.isNaN(end.zCoord)) {
@@ -153,7 +148,7 @@ public class TrackedDummyWorld extends DummyWorld {
                         && block.canCollideCheck(k1, stopOnLiquid)) {
                     MovingObjectPosition movingobjectposition = block.collisionRayTrace(this, l, i1, j1, start, end);
 
-                    if (movingobjectposition != null && isBlockTargeted(movingobjectposition, targetedBlocks)) {
+                    if (movingobjectposition != null && isBlockTargeted(movingobjectposition, targetedBlock)) {
                         return movingobjectposition;
                     }
                 }
@@ -282,8 +277,9 @@ public class TrackedDummyWorld extends DummyWorld {
                     if (!ignoreBlockWithoutBoundingBox || block1.getCollisionBoundingBoxFromPool(this, l, i1, j1) != null) {
                         if (block1.canCollideCheck(l1, stopOnLiquid)) {
                             MovingObjectPosition movingobjectposition1 = block1.collisionRayTrace(this, l, i1, j1, start, end);
-                            if (movingobjectposition1 != null && isBlockTargeted(movingobjectposition1, targetedBlocks)) {
-                                return movingobjectposition1;
+                            if (movingobjectposition1 != null && isBlockTargeted2(movingobjectposition1, allBlocks)) {
+                                if(isBlockTargeted(movingobjectposition1,targetedBlock))return movingobjectposition1;
+                                else break;
                             }
                         } else {
                             movingobjectposition2 = new MovingObjectPosition(l, i1, j1, b0, start, false);
@@ -301,5 +297,8 @@ public class TrackedDummyWorld extends DummyWorld {
 
     private boolean isBlockTargeted(MovingObjectPosition result, BlockPosition pos) {
         return pos.equals(new BlockPosition(result.blockX, result.blockY, result.blockZ));
+    }
+    private boolean isBlockTargeted2(MovingObjectPosition result, Set<BlockPosition> pos) {
+        return pos.contains(new BlockPosition(result.blockX, result.blockY, result.blockZ));
     }
 }

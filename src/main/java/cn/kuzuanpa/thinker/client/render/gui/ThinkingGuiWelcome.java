@@ -20,12 +20,11 @@
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
-import cn.kuzuanpa.thinker.client.json.jsonReader;
 import cn.kuzuanpa.thinker.client.profileHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntity;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
@@ -47,9 +46,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static cn.kuzuanpa.thinker.Thinker.isGeckoLibLoaded;
+import static cn.kuzuanpa.thinker.client.dummyWorldHandler.*;
 import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
-import static cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler.dummyWorldBlocksHashMap;
-import static cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldHandler.dummyWorldTileEntityHashMap;
 
 /**
  * @author kuzuanpa
@@ -79,6 +78,7 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		buttonsHaveAnime.clear();
 		dummyWorldBlocksHashMap.clear();
 		dummyWorldTileEntityHashMap.clear();
+		if(isGeckoLibLoaded) dummyWorldGeckoModelHashMap.clear();
 		//buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
