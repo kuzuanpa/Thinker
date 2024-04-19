@@ -1,14 +1,11 @@
 package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
-import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.geckominecraft.client.renderer.GlStateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import software.bernie.geckolib3.core.IAnimatableModel;
@@ -16,15 +13,16 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
+import java.util.ArrayList;
 import java.util.Map;
-
-import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 /**This is actually a renderer, but "new Render(new Model(..))" seems stupid...**/
 public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModelContainer>, IAnimatableThinkerObject {
+
+    public static final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
+    public static final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
 
     public static boolean doesMapHaveValidContents(Map<String,Object> values) {
         return values.containsKey("modelPath")&&
@@ -82,4 +80,7 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModelCo
         });
     }
 
+    public ArrayList<IGuiAnime> getGuiAnimeList() {return GuiAnimeList;}
+
+    public ArrayList<IDummyWorldAnimes> getWorldAnimeList() {return WorldAnimeList;};
     }

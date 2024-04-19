@@ -2,6 +2,8 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -14,7 +16,7 @@ import static cn.kuzuanpa.thinker.Thinker.getInt;
 import static cn.kuzuanpa.thinker.client.json.jsonReader.getItemStack;
 
 public class dummyWorldBlockContainer implements IAnimatableThinkerObject {
-
+    public final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
     public Block block;
     public ItemStack itemStack;
     public boolean renderAllFaces;
@@ -47,7 +49,7 @@ public class dummyWorldBlockContainer implements IAnimatableThinkerObject {
     }
     public dummyWorldBlockContainer(ItemStack itemStack, ArrayList<IDummyWorldAnimes> animes){
         this.itemStack =itemStack;
-        this.WorldAnimeList.addAll(animes);
+        WorldAnimeList.addAll(animes);
     }
     public dummyWorldBlockContainer(Block block, int meta, IDummyWorldAnimes... animes){
         this.block=block;
@@ -57,6 +59,10 @@ public class dummyWorldBlockContainer implements IAnimatableThinkerObject {
     public dummyWorldBlockContainer(Block block, int meta, ArrayList<IDummyWorldAnimes> animes){
         this.block=block;
         this.meta=meta;
-        this.WorldAnimeList.addAll(animes);
+        WorldAnimeList.addAll(animes);
     }
+
+    public ArrayList<IGuiAnime> getGuiAnimeList() {return null;}
+
+    public ArrayList<IDummyWorldAnimes> getWorldAnimeList() {return WorldAnimeList;};
 }

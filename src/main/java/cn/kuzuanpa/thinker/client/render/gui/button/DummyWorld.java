@@ -129,7 +129,7 @@ public class DummyWorld extends ThinkerButton {
         {
             try {
                 updateHoverState(mouseX,mouseY);
-                animeList.forEach(anime -> anime.animeDrawPre(initTime));
+                GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
 
                 int RECIPE_LAYOUT_X = xPosition;
                 int RECIPE_LAYOUT_Y = yPosition;
@@ -145,7 +145,7 @@ public class DummyWorld extends ThinkerButton {
                         sceneHeight,
                         lastGuiMouseX,
                         lastGuiMouseY,
-                        animeList);
+                        GuiAnimeList);
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -189,7 +189,7 @@ public class DummyWorld extends ThinkerButton {
 
                 lastGuiMouseX = guiMouseX;
                 lastGuiMouseY = guiMouseY;
-                animeList.forEach(anime -> anime.animeDrawAfter(initTime));
+                GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
             }catch (Throwable t){
                 t.printStackTrace();
             }

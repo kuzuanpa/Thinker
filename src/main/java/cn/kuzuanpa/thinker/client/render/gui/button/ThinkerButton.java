@@ -11,6 +11,7 @@
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,6 +26,7 @@ import java.util.List;
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject {
+    public final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
     ResourceLocation baseTexture=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
     public long initTime=0;
     public int animeXModify=0,animeYModify=0,animeWidthModify=0,animeHeightModify=0;
@@ -75,4 +77,7 @@ public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject
     }
     public void updateInitTime(long initTime){this.initTime=initTime;}
     public void onButtonPressed(int posX,int posY){}
+    public ArrayList<IGuiAnime> getGuiAnimeList() {return GuiAnimeList;}
+
+    public ArrayList<IDummyWorldAnimes> getWorldAnimeList() {return null;};
 }

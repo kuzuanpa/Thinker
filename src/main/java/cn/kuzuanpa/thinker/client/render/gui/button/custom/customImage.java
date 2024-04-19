@@ -1,6 +1,7 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import cpw.mods.fml.client.config.GuiUtils;
@@ -16,11 +17,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class customImage extends ThinkerButton implements IAnimatableThinkerObject {
+    public static final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
+    public static final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
+
     public customImage(int id, String texturePath, int posX, int posY, int width, int height){
         super(id,posX,posY,width,height,"");
         this.texturePath=texturePath;

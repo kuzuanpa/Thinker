@@ -29,16 +29,16 @@ public class BooleanConfigButton extends ThinkerButton {
         if (this.visible)
         {
             GL11.glPushMatrix();
-            animeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
             FontRenderer fontrenderer = p_146112_1_.fontRenderer;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean isMouseHovering=this.updateHoverState(mouseX,mouseY);
             int k = this.getHoverState(isMouseHovering);
-            animeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
             drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,-2132680325);
             if(k==2&& Mouse.isButtonDown(0))config.set(!config.get());
             this.drawString(fontrenderer, this.displayString, this.xPosition, this.yPosition, -1);
-            animeList.forEach(anime -> anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();
         }
     }

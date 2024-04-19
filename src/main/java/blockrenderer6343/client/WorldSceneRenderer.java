@@ -15,6 +15,7 @@ import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntityContainer;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -270,7 +271,7 @@ public abstract class WorldSceneRenderer {
         mc.gameSettings.ambientOcclusion = 0;
         dummyWorldHandler.dummyWorldBlocksHashMap.forEach((pos,block)->{
             GL11.glPushMatrix();
-            List<IDummyWorldAnimes> anime = dummyWorldHandler.dummyWorldBlocksHashMap.get(pos).WorldAnimeList;
+            List<IDummyWorldAnimes> anime = block.getWorldAnimeList();
             if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
                 if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
                 if(a instanceof IDummyWorldGraphicAnime){
@@ -315,7 +316,7 @@ public abstract class WorldSceneRenderer {
                 setDefaultPassRenderState(finalPass);
                 if(t.tile.shouldRenderInPass(finalPass)){
                     GL11.glTranslatef(pos.x, pos.y, pos.z);
-                    List<IDummyWorldAnimes> anime = dummyWorldHandler.dummyWorldTileEntityHashMap.get(pos).WorldAnimeList;
+                    List<IDummyWorldAnimes> anime = t.getWorldAnimeList();
                     if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
                         if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime,this);
                         if(a instanceof IDummyWorldGraphicAnime){

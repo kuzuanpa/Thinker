@@ -2,6 +2,8 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import cn.kuzuanpa.thinker.util.Nbt;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,10 +15,11 @@ import java.util.Map;
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class dummyWorldTileEntityContainer implements IAnimatableThinkerObject {
+    public final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
     public TileEntity tile;
     public dummyWorldTileEntityContainer(TileEntity tile, ArrayList<IDummyWorldAnimes> animes){
         this.tile=tile;
-        this.WorldAnimeList.addAll(animes);
+        WorldAnimeList.addAll(animes);
     }
     public dummyWorldTileEntityContainer(TileEntity tile, IDummyWorldAnimes... animes){
         this.tile=tile;
@@ -38,4 +41,7 @@ public class dummyWorldTileEntityContainer implements IAnimatableThinkerObject {
         return (values.containsKey("block") && values.containsKey("meta") )|| values.containsKey("fromItem");
     }
 
+    public ArrayList<IGuiAnime> getGuiAnimeList() {return null;}
+
+    public ArrayList<IDummyWorldAnimes> getWorldAnimeList() {return WorldAnimeList;};
 }

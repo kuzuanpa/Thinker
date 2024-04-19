@@ -27,14 +27,14 @@ public class thinkerImage extends ThinkerButton {
         if (this.visible) {
             GL11.glPushMatrix();
             GL11.glDisable(GL11.GL_ALPHA_TEST);
-            animeList.forEach(anime->anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime->anime.animeDrawPre(initTime));
             GL11.glColor4f(1.0F,1.0F,1.0F,1.0F);
             mc.getTextureManager().bindTexture(new ResourceLocation(MOD_ID,path));
             GL11.glTranslatef(x + (height / 2F), y + (width / 2F),0);
-            animeList.forEach(anime->anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime->anime.animeDraw(initTime));
             GL11.glTranslatef(-(x + (height / 2F)), -(y + (width / 2F)),0);
             this.drawTexturedModalRect(x, y, u, v, this.width, this.height);
-            animeList.forEach(anime->anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime->anime.animeDrawAfter(initTime));
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             GL11.glPopMatrix();
         }
