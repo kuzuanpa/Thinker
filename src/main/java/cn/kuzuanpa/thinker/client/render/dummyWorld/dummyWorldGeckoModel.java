@@ -1,6 +1,8 @@
 package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
+import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
+import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import net.geckominecraft.client.renderer.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -8,6 +10,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.util.Color;
@@ -16,10 +19,22 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getInt;
+
 /**This is actually a renderer, but "new Render(new Model(..))" seems stupid...**/
-public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModelContainer>{
+public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModelContainer>, IAnimatableThinkerObject {
 
+    public static boolean doesMapHaveValidContents(Map<String,Object> values) {
+        return values.containsKey("modelPath")&&
+                values.containsKey("texturePath")&&
+                values.containsKey("animePath");
+    }
 
+    public static dummyWorldGeckoModel create(Map<String, Object> values) {
+        return new dummyWorldGeckoModel((String) values.get("modelPath"),(String) values.get("texturePath"),(String) values.get("animePath"));
+    }
         private final dummyWorldGeckoModelContainer dummyGeckoModel;
         public dummyWorldGeckoModel(String modelLocation, String textureLocation, String animeLocation) {
             dummyGeckoModel =new dummyWorldGeckoModelContainer(modelLocation, textureLocation, animeLocation);
@@ -43,7 +58,7 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModelCo
             GlStateManager.translate(x, y, z);
             GlStateManager.translate(0.0F, 0.01F, 0.0F);
             GlStateManager.translate(0.5, 0.0, 0.5);
-            Minecraft.getMinecraft().renderEngine.bindTexture(getGeoModelProvider().getTextureLocation(dummyGeckoModel));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, dummyGeckoModel.thinkerModel.getTextureID());
             Color renderColor = this.getRenderColor(dummyGeckoModel, partialTicks);
             this.render(model, dummyGeckoModel, partialTicks, (float)renderColor.getRed() / 255.0F, (float)renderColor.getGreen() / 255.0F, (float)renderColor.getBlue() / 255.0F, (float)renderColor.getAlpha() / 255.0F);
             GlStateManager.popMatrix();

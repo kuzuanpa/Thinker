@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
+import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import cpw.mods.fml.client.config.GuiUtils;
@@ -15,8 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
-public class customImage extends ThinkerButton {
+import static cn.kuzuanpa.thinker.Thinker.getInt;
+
+public class customImage extends ThinkerButton implements IAnimatableThinkerObject {
     public customImage(int id, String texturePath, int posX, int posY, int width, int height){
         super(id,posX,posY,width,height,"");
         this.texturePath=texturePath;
@@ -36,6 +40,18 @@ public class customImage extends ThinkerButton {
         loadTexture();
         for (IGuiAnime anime : animes) this.addAnime(anime);
     }
+    public static boolean doesMapHaveValidContents(Map<String,Object> values) {
+        return values.containsKey("path")&&
+                values.containsKey("posX")&&
+                values.containsKey("posY")&&
+                values.containsKey("width")&&
+                values.containsKey("height");
+    }
+
+    public static customImage create(Map<String, Object> values) {
+        return new customImage(10,(String) values.get("path"),getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("width")),getInt(values.get("height")));
+    }
+
     String texturePath;
     int posX,posY,width,height,glTextureId=-1;
     public void loadTexture(){
@@ -58,9 +74,10 @@ public class customImage extends ThinkerButton {
         if (this.visible) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, glTextureId);
             GL11.glTranslatef(xPosition + (height / 2F), yPosition + (width / 2F),0);
-            animeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
             GL11.glTranslatef(-(xPosition + (height / 2F)), -(yPosition + (width / 2F)),0);
             GuiUtils.drawContinuousTexturedBox(posX, posY, 0, 0, width, height, width, height, 0, zLevel);
         }
     }
+
 }

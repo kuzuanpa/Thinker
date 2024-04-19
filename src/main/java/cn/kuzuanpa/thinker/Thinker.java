@@ -56,6 +56,20 @@ public class Thinker
     public static void error(String err){
         System.err.println(err);
     }
+    public static int getInt(Object str){
+        return Integer.parseInt((String) str);
+    }
+    public static long getLong(Object str){
+        return Long.parseLong((String) str);
+    }
+    public static double getDouble(Object str){
+        return Double.parseDouble((String) str);
+    }
+    public static float getFloat(Object str){
+        return Float.parseFloat((String) str);
+    }
+    public static boolean getBoolean(Object str){return Boolean.parseBoolean((String) str);}
+
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if(!configHandler.welcome.get())return;

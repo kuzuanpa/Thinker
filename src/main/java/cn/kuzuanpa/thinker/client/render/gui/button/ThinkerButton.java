@@ -10,6 +10,7 @@
 
 package cn.kuzuanpa.thinker.client.render.gui.button;
 
+import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class ThinkerButton extends GuiButton {
+public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject {
     ResourceLocation baseTexture=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
     public long initTime=0;
     public int animeXModify=0,animeYModify=0,animeWidthModify=0,animeHeightModify=0;
@@ -35,7 +36,7 @@ public class ThinkerButton extends GuiButton {
         if (this.visible)
         {
             GL11.glPushMatrix();
-            animeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
             FontRenderer fontrenderer = p_146112_1_.fontRenderer;
             p_146112_1_.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -48,18 +49,17 @@ public class ThinkerButton extends GuiButton {
             if (packedFGColour != 0)l = packedFGColour;
             else if (!this.enabled)l = 10526880;
             else if (isMouseHovering)l = 16777120;
-            animeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + k * 20, this.width / 2, this.height);
             this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + k * 20, this.width / 2, this.height);
             this.mouseDragged(p_146112_1_, mouseX, mouseY);
             this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, l);
-            animeList.forEach(anime -> anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();
         }
     }
-    public ArrayList<IGuiAnime> animeList=new ArrayList<>();
     public ThinkerButton addAnime(IGuiAnime anime){
-        animeList.add(anime);
+        GuiAnimeList.add(anime);
         return this;
     }
     public ThinkerButton addToList(List<ThinkerButton> list){
@@ -70,8 +70,9 @@ public class ThinkerButton extends GuiButton {
     public boolean updateHoverState(int mouseX, int mouseY)
     {
         animeXModify=animeYModify=animeHeightModify=animeWidthModify=0;
-        animeList.forEach(anime -> anime.updateButton(initTime,this));
+        GuiAnimeList.forEach(anime -> anime.updateButton(initTime,this));
         return this.enabled && this.visible && mouseX >= this.xPosition+animeXModify && mouseY >= this.yPosition+animeYModify && mouseX < this.xPosition+animeXModify + this.width+animeWidthModify && mouseY < this.yPosition+animeYModify + this.height+animeHeightModify;
     }
     public void updateInitTime(long initTime){this.initTime=initTime;}
+    public void onButtonPressed(int posX,int posY){}
 }

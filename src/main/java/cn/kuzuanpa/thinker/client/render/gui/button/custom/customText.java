@@ -1,8 +1,16 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class customText extends ThinkerButton {
     int color;
@@ -19,16 +27,26 @@ public class customText extends ThinkerButton {
         this.color=color;
         this.initTime=System.currentTimeMillis();
     }
+    public static boolean doesMapHaveValidContents(Map<String,Object> values) {
+        return values.containsKey("text")&&
+                values.containsKey("posX")&&
+                values.containsKey("posY");
+    }
 
+    public static customText create(Map<String, Object> values) {
+        int color = 0xffffff;
+        if(values.containsKey("color")) color = getInt(values.get("color"));
+        return new customText(10, (String) values.get("text"), getInt(values.get("posX")), getInt(values.get("posY")),color);
+    }
     public void drawButton(Minecraft mc, int mouseX, int mouseY){
         if (this.visible) {
             GL11.glPushMatrix();
-            animeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
             GL11.glTranslatef(xPosition + (height / 2F), yPosition + (width / 2F),0);
-            animeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
             GL11.glTranslatef(-(xPosition + (height / 2F)), -(yPosition + (width / 2F)),0);
             this.drawString(Minecraft.getMinecraft().fontRenderer, text, xPosition, yPosition, color);
-            animeList.forEach(anime -> anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
             GL11.glPopMatrix();
         }
     }
