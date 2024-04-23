@@ -1,22 +1,17 @@
-/**
- * Copyright (c) 2019 Gregorius Techneticies
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
  *
- * This file is part of GregTech.
- *
- * GregTech is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * GregTech is distributed in the hope that it will be useful,
+ * Thinker is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with GregTech. If not, see <http://www.gnu.org/licenses/>.
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
  */
-
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
@@ -25,9 +20,7 @@ import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlockContainer;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntityContainer;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -86,18 +79,6 @@ public class ThinkingGuiWelcome extends GuiScreen {
 
 
 		ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
-		blocks.add(new dummyWorldBlock(new BlockPosition(4,2,4),new dummyWorldBlockContainer(Blocks.chest,new DummyWorldGraphicAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4))));
-		blocks.add(new dummyWorldBlock(new BlockPosition(5,2,5),new dummyWorldBlockContainer(Blocks.chest,new DummyWorldGraphicAnimeRotateSteadily())));
-		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,0),new dummyWorldBlockContainer(Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily())));
-		blocks.add(new dummyWorldBlock(new BlockPosition(0,3,0),new dummyWorldBlockContainer(Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily())));
-		blocks.add(new dummyWorldBlock(new BlockPosition(1,2,0),new dummyWorldBlockContainer(Blocks.double_wooden_slab)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(3,2,0),new dummyWorldBlockContainer(Blocks.fence)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,1),new dummyWorldBlockContainer(Blocks.command_block)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(4,2,0),new dummyWorldBlockContainer(Blocks.command_block)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(1,1,0),new dummyWorldBlockContainer(Blocks.acacia_stairs)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,5),new dummyWorldBlockContainer(Blocks.diamond_block)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(0,1,0),new dummyWorldBlockContainer(Blocks.jukebox)));
-		blocks.add(new dummyWorldBlock(new BlockPosition(2,2,0),new dummyWorldBlockContainer(Blocks.stained_glass)));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));

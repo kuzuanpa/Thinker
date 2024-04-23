@@ -12,7 +12,7 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
+package cn.kuzuanpa.thinker.client.render;
 
-public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
+public interface IThinkerAnime {
 }

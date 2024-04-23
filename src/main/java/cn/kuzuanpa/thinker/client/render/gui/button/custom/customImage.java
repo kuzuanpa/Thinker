@@ -1,7 +1,22 @@
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
@@ -46,13 +61,14 @@ public class customImage extends ThinkerButton implements IAnimatableThinkerObje
         loadTexture();
         for (IGuiAnime anime : animes) this.addAnime(anime);
     }
-    public static boolean doesMapHaveValidContents(Map<String,Object> values) {
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
         boolean result = values.containsKey("path")&&
                 values.containsKey("posX")&&
                 values.containsKey("posY")&&
                 values.containsKey("width")&&
                 values.containsKey("height");
-        if(!result) Thinker.err("Not Enough contents for customImage: path, posX, posY, width, height");
+        if(!result)
+            thinkerJsonReader.requestLogError("Not Enough contents for customImage: path, posX, posY, width, height");
         return result;
     }
 

@@ -1,3 +1,17 @@
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
 package cn.kuzuanpa.thinker.client.json;
 
 import cn.kuzuanpa.thinker.Thinker;
@@ -13,28 +27,26 @@ import java.util.Map;
 public class defaultObjectsAdaptor implements IThinkerObjectsAdaptor {
 
     public defaultObjectsAdaptor(){}
-    public boolean doesMapHaveValidContents(Map<String,Object> values){
+    public boolean isMapHaveValidContents(Map<String,Object> values){
         if(!values.containsKey("type"))return false;
         switch ((String) values.get("type")){
-            case "image":
-            case "Image": return customImage.doesMapHaveValidContents(values);
-            case "text":
-            case "Text": return customText.doesMapHaveValidContents(values);
-            case "block":
-            case "Block": return dummyWorldBlock.doesMapHaveValidContents(values);
-            case "tile":
+            case "Image": Thinker.log("syntax improvable: First Letter should be lower case.(type=image)");
+            case "image": return customImage.isMapHaveValidContents(values);
+            case "Text": Thinker.log("syntax improvable: First Letter should be lower case.(type=text)");
+            case "text": return customText.isMapHaveValidContents(values);
+            case "Block": Thinker.log("syntax improvable: First Letter should be lower case.(type=block)");
+            case "block": return dummyWorldBlock.isMapHaveValidContents(values);
             case "Tile":
-            case "tileEntity":
-            case "TileEntity": return dummyWorldTile.doesMapHaveValidContents(values);
-            case "geoModel":
+            case "TileEntity":Thinker.log("syntax improvable: First Letter should be lower case.(type=tileEntity)");
+            case "tile":
+            case "tileEntity": return dummyWorldTile.isMapHaveValidContents(values);
             case "GeoModel":
             case "GeckoModel":
+            case "Gecko": Thinker.log("syntax improvable: First Letter should be lower case.(type=geckoModel)");
+            case "geoModel":
             case "geckoModel":
-            case "Gecko":
-            case "gecko": return dummyWorldGeckoModel.doesMapHaveValidContents(values);
-            default:
-                Thinker.err("Unknown type: " + values.get("type"));
-                return false;
+            case "gecko": return dummyWorldGeckoModel.isMapHaveValidContents(values);
+            default: return false;
         }
     }
     public IThinkerObject create(Map<String,Object> values){

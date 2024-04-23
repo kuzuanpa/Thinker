@@ -1,14 +1,28 @@
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
 package cn.kuzuanpa.thinker.client.json;
 
-import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.api.IThinkerObject;
 import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.client.render.IThinkerAnime;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
-import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -21,7 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class jsonReader {
+
+public class thinkerJsonReader {
     public static ArrayList<IThinkerObjectsAdaptor> objectsAdaptors=new ArrayList<>();
     public static ArrayList<IThinkerAnimeAdaptor> animesAdaptors=new ArrayList<>();
 
@@ -149,80 +164,39 @@ public class jsonReader {
         json.endArray();
         return objects;
     }
-        public static Object readThinkerObject(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException{
-            String name = null;
-            String type = null;
-            String path = null;
-            String text = null;
-            String tileEntityNBTString = null;
-            int posX=-2147483647;
-            int posY=-2147483647;
-            int posZ=-2147483647;
-            int width=0;
-            int height=0;
-            int color=0;
-            int meta=0;
-            boolean renderAllFaces=false;
-            ItemStack blockFromItemStack = null;
-            ArrayList<Object> unsortedAnimes=new ArrayList<>();
-            ArrayList<IGuiAnime> guiAnimes=new ArrayList<>();
-            ArrayList<IDummyWorldAnimes> dummyWorldAnimes=new ArrayList<>();
-            json.beginObject();
-            while (json.hasNext())
-            {
-                String jsonName = json.nextName();
-                if (jsonName.equalsIgnoreCase("name")) {
-                    name = json.nextString();
-                } else if (jsonName.equalsIgnoreCase("type")) {
-                    type = json.nextString();
-                } else if (jsonName.equalsIgnoreCase("posX")) {
-                    posX = json.nextInt();
-                } else if (jsonName.equalsIgnoreCase("posY")) {
-                    posY = json.nextInt();
-                } else if (jsonName.equalsIgnoreCase("posZ")) {
-                    posZ = json.nextInt();
-                }else if (jsonName.equalsIgnoreCase("width")) {
-                    width = json.nextInt();
-                }else if (jsonName.equalsIgnoreCase("height")) {
-                    height = json.nextInt();
-                }else if (jsonName.equalsIgnoreCase("color")) {
-                    color = json.nextInt();
-                }else if (jsonName.equalsIgnoreCase("text")) {
-                    text  = json.nextString();
-                }else if (jsonName.equalsIgnoreCase("tileEntityNBT")) {
-                    tileEntityNBTString = json.nextString();
-                }else if (jsonName.equalsIgnoreCase("meta")) {
-                    meta = json.nextInt();
-                }else if (jsonName.equalsIgnoreCase("animes")) {
-                    unsortedAnimes=readAllAnime(json,fileName);
-                    unsortedAnimes.forEach(anime->{if(anime instanceof IGuiAnime)guiAnimes.add((IGuiAnime) anime);else dummyWorldAnimes.add((IDummyWorldAnimes) anime);});
-                }else if (jsonName.equalsIgnoreCase("blockFromItem")) {
-                    blockFromItemStack=getItemStack(json.nextString());
-                }else if (jsonName.equalsIgnoreCase("renderAllFaces")||
-                          jsonName.equalsIgnoreCase("renderAllFace")) {
-                    renderAllFaces = json.nextBoolean();
-                }else if (jsonName.equalsIgnoreCase("path")) {
-                    path = json.nextString();
-                } else if(jsonName.equalsIgnoreCase("comment")){
-                    json.skipValue();
-                } else {
-                    logError(json,fileName,"unknown Element:"+jsonName);
-                    json.skipValue();
-                }
+    public static IThinkerObject readThinkerObject(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException{
+        HashMap<String,Object> values=new HashMap<>();
+        ArrayList<IThinkerAnime> animes=new ArrayList<>();
+        json.beginObject();
+        while (json.hasNext())
+        {
+            String jsonName = json.nextName();
+            if(jsonName.equalsIgnoreCase("comment")){
+                json.skipValue();
+            } else if(jsonName.equalsIgnoreCase("animes")){
+                animes=readAllAnime(json, fileName);
+            } else {
+                if(json.peek().equals(JsonToken.BOOLEAN))values.put(jsonName,Boolean.toString(json.nextBoolean()));
+                else values.put(jsonName,json.nextString());//Why can't you just give a string of boolean instead of throw an error..
             }
-            if(type==null){json.endObject();logMissing(json,fileName,"Type");return null;}
-            Object out=null;
-
-            switch (type){
-                default: logError(json,fileName,"Unknown Type:"+type);
-            }
-            json.endObject();
-            return out;
         }
+        if(!values.containsKey("type")){requestedErr="Missing Required Element: type";errored=true;}
+        else for (IThinkerObjectsAdaptor objectsAdaptor : objectsAdaptors) {
+            if(objectsAdaptor.isMapHaveValidContents(values)){
+                json.endObject();
+                return objectsAdaptor.create(values);
+            }
+        }
+        if(errored)logError(json,fileName,requestedErr);   //If error occurred when creating object:
+        else logError(json,fileName,"Unknown object type");//If no match type:
+        errored=false;
+        json.endObject();
+        return null;
+    }
 
 
-    public static ArrayList<Object> readAllAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException {
-        ArrayList<Object> objects=new ArrayList<>();
+    public static ArrayList<IThinkerAnime> readAllAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException {
+        ArrayList<IThinkerAnime> objects=new ArrayList<>();
         json.beginArray();
         while (json.hasNext()) {
             objects.add(readAnime(json,fileName));
@@ -230,7 +204,7 @@ public class jsonReader {
         json.endArray();
         return objects;
     }
-    public static Object readAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException{
+    public static IThinkerAnime readAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException{
         String name = null;
         String type = null;
         String path = null;
@@ -269,7 +243,6 @@ public class jsonReader {
             }else if (jsonName.equalsIgnoreCase("meta")) {
                 meta = json.nextInt();
             }else if (jsonName.equalsIgnoreCase("Animes")) {
-                unsortedAnimes=readAllAnime(json,fileName);
             }else if (jsonName.equalsIgnoreCase("path")) {
                 path = json.nextString();
             }else if (jsonName.equalsIgnoreCase("path")) {
@@ -284,7 +257,7 @@ public class jsonReader {
             }
         }
         if(type==null){json.endObject();logMissing(json,fileName,"Type");return null;}
-        Object out=null;
+        IThinkerAnime out=null;
         switch (type){
             default: logError(json,fileName,"Unknown Anime Type:"+type);
         }
@@ -292,8 +265,12 @@ public class jsonReader {
         return out;
     }
 
-
-
+    public static boolean errored =false;
+    public static String requestedErr ="";
+    public static void requestLogError(String error){
+        requestedErr=error;
+        errored=true;
+    }
     public static void logError(JsonReader jsonReader, String fileName,String error){
         /*FMLLog.log(Level.ERROR,*/System.out.println("Error: "+error+"\nIn file: "+fileName+jsonReader.toString().replaceAll("JsonReader",""));
     }

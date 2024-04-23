@@ -1,34 +1,28 @@
-/**
- * Copyright (c) 2019 Gregorius Techneticies
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
  *
- * This file is part of GregTech.
- *
- * GregTech is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * GregTech is distributed in the hope that it will be useful,
+ * Thinker is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with GregTech. If not, see <http://www.gnu.org/licenses/>.
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
  */
 
 package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.configHandler;
-import cn.kuzuanpa.thinker.client.json.jsonReader;
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlockContainer;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntityContainer;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
@@ -48,7 +42,6 @@ import org.lwjgl.input.Mouse;
 
 import java.util.*;
 
-import static cn.kuzuanpa.thinker.Thinker.isGeckoLibLoaded;
 import static cn.kuzuanpa.thinker.client.dummyWorldHandler.*;
 import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
 import static cn.kuzuanpa.thinker.client.profileHandler.displayProfileIDMap;
@@ -93,25 +86,25 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 
 		ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
-		HashMap<BlockPosition, dummyWorldTileEntityContainer> tiles=new HashMap<>();
 		//blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
 		//blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
-		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,0),new dummyWorldBlockContainer(Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()).setRenderAllFace(true)));
-		//blocks.put(new BlockPosition(0,3,0),new dummyWorldBlock(Blocks.daylight_detector,new DummyBlockAnimeRotateSteadily()));
-		blocks.add(new dummyWorldBlock( new BlockPosition(1,2,0),new dummyWorldBlockContainer(Blocks.double_wooden_slab)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(3,2,0),new dummyWorldBlockContainer(Blocks.fence)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(1,1,0),new dummyWorldBlockContainer(Blocks.acacia_stairs).setRenderAllFace(true)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,5),new dummyWorldBlockContainer(Blocks.diamond_block)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,4),new dummyWorldBlockContainer(Blocks.diamond_block)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,0),new dummyWorldBlockContainer(Blocks.stained_glass)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,1),new dummyWorldBlockContainer(MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(10005), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1))));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,3,1),new dummyWorldBlockContainer(MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1))));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,4,1),new dummyWorldBlockContainer(MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1))));
+		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,0), Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()).setRenderAllFace(true));
+		blocks.add(new dummyWorldBlock( new BlockPosition(0,3,0), Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily()));
+		blocks.add(new dummyWorldBlock( new BlockPosition(1,2,0), Blocks.double_wooden_slab));
+		blocks.add(new dummyWorldBlock( new BlockPosition(3,2,0), Blocks.fence));
+		blocks.add(new dummyWorldBlock( new BlockPosition(1,1,0), Blocks.acacia_stairs).setRenderAllFace(true));
+		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,5), Blocks.diamond_block));
+		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,4), Blocks.diamond_block));
+		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,0), Blocks.stained_glass));
+		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,1), MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(10005), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
+		blocks.add(new dummyWorldBlock( new BlockPosition(2,3,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
+		blocks.add(new dummyWorldBlock( new BlockPosition(2,4,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0)));
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test"))));
 
-		try {jsonReader.readAllProfiles("ideas");}catch (Exception ignored){}
+		try {
+			thinkerJsonReader.readAllProfiles("ideas");}catch (Exception ignored){}
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));

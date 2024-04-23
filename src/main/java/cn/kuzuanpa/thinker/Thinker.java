@@ -1,3 +1,17 @@
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
 package cn.kuzuanpa.thinker;
 
 import blockrenderer6343.world.DummyWorldTickThread;
@@ -18,8 +32,8 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-import static cn.kuzuanpa.thinker.client.json.jsonReader.animesAdaptors;
-import static cn.kuzuanpa.thinker.client.json.jsonReader.objectsAdaptors;
+import static cn.kuzuanpa.thinker.client.json.thinkerJsonReader.animesAdaptors;
+import static cn.kuzuanpa.thinker.client.json.thinkerJsonReader.objectsAdaptors;
 
 @Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION, dependencies = "required-after:CodeChickenCore@[1.0.7,);after:geckolib3")
 public class Thinker
@@ -45,7 +59,8 @@ public class Thinker
     public void init(FMLInitializationEvent event)
     {
         PROXY.init(event);
-        try {jsonReader.readAllProfiles("ideas");}catch (Exception ignored){}
+        try {
+            thinkerJsonReader.readAllProfiles("ideas");}catch (Exception ignored){}
         dummyWorldTickThread.start();
         configHandler.saveAll();
         registerObjectAdaptor(new defaultObjectsAdaptor());
@@ -60,6 +75,9 @@ public class Thinker
     }
     public static void err(String err){
         System.err.println(err);
+    }
+    public static void log(String log){
+        System.out.println(log);
     }
     public static int getInt(Object str){
         return Integer.parseInt((String) str);

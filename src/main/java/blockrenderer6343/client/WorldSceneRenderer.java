@@ -160,7 +160,7 @@ public abstract class WorldSceneRenderer {
         dummyWorldHandler.dummyWorldObjects.forEach((obj) -> {
             BlockPosition pos = obj.getPos();
             if(obj instanceof dummyWorldBlock) {
-                dummyWorldBlockContainer block = ((dummyWorldBlock) obj).block;
+                dummyWorldBlock block = ((dummyWorldBlock) obj);
                 if (block.itemStack != null) {
                     block.itemStack.tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer, world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
                     block.block = world.getBlock(pos.x, pos.y, pos.z);
@@ -169,14 +169,14 @@ public abstract class WorldSceneRenderer {
                         block.block = Blocks.air;
                     }
                     if (world.getTileEntity(pos.x, pos.y, pos.z) != null)
-                        tmp.add(new dummyWorldTile(pos,new dummyWorldTileEntityContainer(world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList)));
+                        tmp.add(new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
                 } else world.setBlock(pos.x, pos.y, pos.z, block.block);
                 if (!block.block.hasTileEntity(block.meta)) return;
                 TileEntity tileEntity = block.block.createTileEntity(world, block.meta);
                 if (tileEntity != null)
-                    tmp.add( new dummyWorldTile(pos,new dummyWorldTileEntityContainer(world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList)));
+                    tmp.add( new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
             }else if(obj instanceof dummyWorldTile) {
-                dummyWorldTileEntityContainer tile = ((dummyWorldTile) obj).tile;
+                dummyWorldTile tile = ((dummyWorldTile) obj);
                 world.setTileEntity(pos.x, pos.y, pos.z, tile.tile);
                 if (tile.tile.blockType != null) world.setBlock(pos.x, pos.y, pos.z, tile.tile.blockType);
             }

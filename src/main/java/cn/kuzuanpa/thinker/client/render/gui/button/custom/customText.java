@@ -1,6 +1,21 @@
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
 import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
@@ -24,11 +39,11 @@ public class customText extends ThinkerButton {
         this.color=color;
         this.initTime=System.currentTimeMillis();
     }
-    public static boolean doesMapHaveValidContents(Map<String,Object> values) {
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
         boolean result = values.containsKey("text")&&
                 values.containsKey("posX")&&
                 values.containsKey("posY");
-        if(!result) Thinker.err("Not Enough contents for customText: text, posX, posY");
+        if(!result) thinkerJsonReader.requestLogError("Not Enough contents for customText: text, posX, posY");
         return result;
     }
 
