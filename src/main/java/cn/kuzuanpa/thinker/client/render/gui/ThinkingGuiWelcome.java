@@ -21,8 +21,10 @@ package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeOutlineGlowth;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlockContainer;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntityContainer;
@@ -76,32 +78,29 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		displayHeight= FMLClientHandler.instance().getClient().currentScreen.height;
 		buttonList.clear();
 		buttonsHaveAnime.clear();
-		dummyWorldBlocksHashMap.clear();
-		dummyWorldTileEntityHashMap.clear();
-		if(isGeckoLibLoaded) dummyWorldGeckoModelHashMap.clear();
+		dummyWorldObjects.clear();
 		//buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 
 
-		HashMap<BlockPosition, dummyWorldBlockContainer> blocks=new HashMap<>();
-		HashMap<BlockPosition, dummyWorldTileEntityContainer> tiles=new HashMap<>();
-		blocks.put(new BlockPosition(4,2,4),new dummyWorldBlockContainer(Blocks.chest,new DummyWorldGraphicAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
-		blocks.put(new BlockPosition(5,2,5),new dummyWorldBlockContainer(Blocks.chest,new DummyWorldGraphicAnimeRotateSteadily()));
-		blocks.put(new BlockPosition(0,2,0),new dummyWorldBlockContainer(Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()));
-		blocks.put(new BlockPosition(0,3,0),new dummyWorldBlockContainer(Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily()));
-		blocks.put(new BlockPosition(1,2,0),new dummyWorldBlockContainer(Blocks.double_wooden_slab));
-		blocks.put(new BlockPosition(3,2,0),new dummyWorldBlockContainer(Blocks.fence));
-		blocks.put(new BlockPosition(0,2,1),new dummyWorldBlockContainer(Blocks.command_block));
-		blocks.put(new BlockPosition(4,2,0),new dummyWorldBlockContainer(Blocks.command_block));
-		blocks.put(new BlockPosition(1,1,0),new dummyWorldBlockContainer(Blocks.acacia_stairs));
-		blocks.put(new BlockPosition(0,2,5),new dummyWorldBlockContainer(Blocks.diamond_block));
-		blocks.put(new BlockPosition(0,1,0),new dummyWorldBlockContainer(Blocks.jukebox));
-		blocks.put(new BlockPosition(2,2,0),new dummyWorldBlockContainer(Blocks.stained_glass));
+		ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
+		blocks.add(new dummyWorldBlock(new BlockPosition(4,2,4),new dummyWorldBlockContainer(Blocks.chest,new DummyWorldGraphicAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4))));
+		blocks.add(new dummyWorldBlock(new BlockPosition(5,2,5),new dummyWorldBlockContainer(Blocks.chest,new DummyWorldGraphicAnimeRotateSteadily())));
+		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,0),new dummyWorldBlockContainer(Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily())));
+		blocks.add(new dummyWorldBlock(new BlockPosition(0,3,0),new dummyWorldBlockContainer(Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily())));
+		blocks.add(new dummyWorldBlock(new BlockPosition(1,2,0),new dummyWorldBlockContainer(Blocks.double_wooden_slab)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(3,2,0),new dummyWorldBlockContainer(Blocks.fence)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,1),new dummyWorldBlockContainer(Blocks.command_block)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(4,2,0),new dummyWorldBlockContainer(Blocks.command_block)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(1,1,0),new dummyWorldBlockContainer(Blocks.acacia_stairs)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(0,2,5),new dummyWorldBlockContainer(Blocks.diamond_block)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(0,1,0),new dummyWorldBlockContainer(Blocks.jukebox)));
+		blocks.add(new dummyWorldBlock(new BlockPosition(2,2,0),new dummyWorldBlockContainer(Blocks.stained_glass)));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
-		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,tiles,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));

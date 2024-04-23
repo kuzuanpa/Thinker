@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker.client.json;
 
+import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTile;
@@ -9,8 +10,9 @@ import cn.kuzuanpa.thinker.client.render.gui.button.custom.customText;
 
 import java.util.Map;
 
-public class ThinkerObjectsAdaptor {
+public class defaultObjectsAdaptor implements IThinkerObjectsAdaptor {
 
+    public defaultObjectsAdaptor(){}
     public boolean doesMapHaveValidContents(Map<String,Object> values){
         if(!values.containsKey("type"))return false;
         switch ((String) values.get("type")){
@@ -30,7 +32,9 @@ public class ThinkerObjectsAdaptor {
             case "geckoModel":
             case "Gecko":
             case "gecko": return dummyWorldGeckoModel.doesMapHaveValidContents(values);
-            default: return false;
+            default:
+                Thinker.err("Unknown type: " + values.get("type"));
+                return false;
         }
     }
     public IThinkerObject create(Map<String,Object> values){

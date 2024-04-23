@@ -1,7 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
 import blockrenderer6343.api.utils.BlockPosition;
-import blockrenderer6343.client.WorldSceneRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
@@ -82,7 +81,7 @@ public class DummyWorldGraphicAnimeOutlineGlowth implements IDummyBlockAnimeDraw
     }
 
     @Override
-    public void drawAdditionalQuads(long initTime, WorldSceneRenderer renderer) {
+    public void drawAdditionalQuads(long initTime) {
         long timer = System.currentTimeMillis()-initTime;
         if(startTime<timer&&timer<endTime)renderBlockOutlineAt(pos,color,thickness);
 

@@ -22,7 +22,7 @@ public class animeRGBA implements IGuiAnime {
     public void animeDraw(long initTime) {
         long timer = System.currentTimeMillis()-initTime;
 
-        if((startR+dR)>255||(startG+dG)>255||(startB+dB)>255||(startA+dA)>255) Thinker.error(new IllegalArgumentException("RGBA value is too big: dR:"+dR+",dG:"+dG+",dB:"+dB+",dA:"+dA));
+        if((startR+dR)>255||(startG+dG)>255||(startB+dB)>255||(startA+dA)>255) Thinker.err(new IllegalArgumentException("RGBA value is too big: dR:"+dR+",dG:"+dG+",dB:"+dB+",dA:"+dA));
         if(timer<startTime) return;
         if(timer<endTime){
             float f1=((float)(timer - startTime)/(float)(endTime-startTime));

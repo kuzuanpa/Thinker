@@ -38,7 +38,7 @@ public class dummyWorldTileEntityContainer implements IAnimatableThinkerObject {
         return new dummyWorldTileEntityContainer(tile);
     }
     public static boolean doesMapHaveValidContents(Map<String,Object> values) {
-        return (values.containsKey("block") && values.containsKey("meta") )|| values.containsKey("fromItem");
+        return (values.containsKey("tileEntityNBT"));
     }
 
     public ArrayList<IGuiAnime> getGuiAnimeList() {return null;}

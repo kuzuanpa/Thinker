@@ -1,5 +1,6 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
+import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
@@ -46,11 +47,13 @@ public class customImage extends ThinkerButton implements IAnimatableThinkerObje
         for (IGuiAnime anime : animes) this.addAnime(anime);
     }
     public static boolean doesMapHaveValidContents(Map<String,Object> values) {
-        return values.containsKey("path")&&
+        boolean result = values.containsKey("path")&&
                 values.containsKey("posX")&&
                 values.containsKey("posY")&&
                 values.containsKey("width")&&
                 values.containsKey("height");
+        if(!result) Thinker.err("Not Enough contents for customImage: path, posX, posY, width, height");
+        return result;
     }
 
     public static customImage create(Map<String, Object> values) {

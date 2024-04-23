@@ -1,13 +1,10 @@
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
-import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
-import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.getInt;
@@ -28,9 +25,11 @@ public class customText extends ThinkerButton {
         this.initTime=System.currentTimeMillis();
     }
     public static boolean doesMapHaveValidContents(Map<String,Object> values) {
-        return values.containsKey("text")&&
+        boolean result = values.containsKey("text")&&
                 values.containsKey("posX")&&
                 values.containsKey("posY");
+        if(!result) Thinker.err("Not Enough contents for customText: text, posX, posY");
+        return result;
     }
 
     public static customText create(Map<String, Object> values) {

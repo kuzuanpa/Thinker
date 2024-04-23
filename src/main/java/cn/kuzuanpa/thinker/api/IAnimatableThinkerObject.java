@@ -12,9 +12,9 @@ public interface IAnimatableThinkerObject extends IThinkerObject{
 
     ArrayList<IDummyWorldAnimes> getWorldAnimeList();
     default IAnimatableThinkerObject addAnimes(List<IGuiAnime> guiAnimes, List<IDummyWorldAnimes> dummyWorldAnimes){
-        if(this.getGuiAnimeList()==null&&!guiAnimes.isEmpty()) Thinker.error("Object "+this.toString()+ "don't support GUIAnime!");
+        if(this.getGuiAnimeList()==null&&!guiAnimes.isEmpty()) Thinker.err("Object "+this.toString()+ "don't support GUIAnime!");
             else this.getGuiAnimeList().addAll(guiAnimes);
-        if(this.getWorldAnimeList()==null&&!dummyWorldAnimes.isEmpty())Thinker.error("Object "+this.toString()+ "don't support World Anime!");
+        if(this.getWorldAnimeList()==null&&!dummyWorldAnimes.isEmpty())Thinker.err("Object "+this.toString()+ "don't support World Anime!");
             else this.getWorldAnimeList().addAll(dummyWorldAnimes);
         return this;
     }

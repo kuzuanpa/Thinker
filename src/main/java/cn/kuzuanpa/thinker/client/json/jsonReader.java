@@ -3,11 +3,8 @@ package cn.kuzuanpa.thinker.client.json;
 import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTile;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlockContainer;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTileEntityContainer;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import com.google.gson.JsonParseException;
@@ -25,7 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class jsonReader {
-    public static ArrayList<profileHandler.thinkingProfile> profileList=new ArrayList<>();
+    public static ArrayList<IThinkerObjectsAdaptor> objectsAdaptors=new ArrayList<>();
+    public static ArrayList<IThinkerAnimeAdaptor> animesAdaptors=new ArrayList<>();
+
     public static void readAllProfiles(String path) throws IOException {
         ArrayList<profileHandler.thinkingProfile> profileList = new ArrayList<>();
         Files.list(Paths.get(path)).forEach(file -> {
@@ -76,16 +75,13 @@ public class jsonReader {
                 }
             }
             json.endObject();
-            HashMap<BlockPosition, dummyWorldBlockContainer> blocks=new HashMap<>();
-            HashMap<BlockPosition, dummyWorldTileEntityContainer> tiles=new HashMap<>();
+            ArrayList<IdummyWorldThinkerObject> objs=new ArrayList<>();
             List<ThinkerButton> buttons=new ArrayList<>();
             ThinkerObjects.forEach(obj->{
-                if(obj instanceof dummyWorldBlock) blocks.put(((dummyWorldBlock) obj).pos,((dummyWorldBlock) obj).block);
-                if(obj instanceof dummyWorldTile)tiles.put(((dummyWorldTile) obj).pos,((dummyWorldTile) obj).tile);
-                if(obj instanceof ThinkerButton)buttons.add((ThinkerButton) obj);
+                if(obj instanceof IdummyWorldThinkerObject) objs.add(((IdummyWorldThinkerObject)obj));
             });
             if(id.equals("")||ThinkerObjects.isEmpty()){logError(json,profileName,"Invaild Profile");return null;}
-            if(!blocks.isEmpty()||!tiles.isEmpty())return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,blocks,tiles,buttons);
+            if(!objs.isEmpty())return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,objs,buttons);
             else return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons);
     }
     public static IIcon getIcon(String iconString, JsonReader json, String fileName){
@@ -135,7 +131,7 @@ public class jsonReader {
             }
             Item item=(Item)Item.itemRegistry.getObject(itemName);
             if(item==null){
-                Thinker.error("Invaild item name: " + itemName);
+                Thinker.err("Invaild item name: " + itemName);
                 return null;
             }
             return new ItemStack(item,1,itemDamage);

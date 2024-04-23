@@ -2,7 +2,7 @@ package cn.kuzuanpa.thinker;
 
 import blockrenderer6343.world.DummyWorldTickThread;
 import cn.kuzuanpa.thinker.client.configHandler;
-import cn.kuzuanpa.thinker.client.json.jsonReader;
+import cn.kuzuanpa.thinker.client.json.*;
 import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiWelcome;
 import cn.kuzuanpa.thinker.command.CommandGetTileNBT;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -17,6 +17,9 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.common.MinecraftForge;
+
+import static cn.kuzuanpa.thinker.client.json.jsonReader.animesAdaptors;
+import static cn.kuzuanpa.thinker.client.json.jsonReader.objectsAdaptors;
 
 @Mod(modid = Thinker.MOD_ID, version = Thinker.VERSION, dependencies = "required-after:CodeChickenCore@[1.0.7,);after:geckolib3")
 public class Thinker
@@ -45,15 +48,17 @@ public class Thinker
         try {jsonReader.readAllProfiles("ideas");}catch (Exception ignored){}
         dummyWorldTickThread.start();
         configHandler.saveAll();
+        registerObjectAdaptor(new defaultObjectsAdaptor());
+        registerAnimeAdaptor(new defaultAnimeAdaptor());
     }
     @EventHandler
     public void registerCommands(FMLServerStartingEvent e){
         e.registerServerCommand(new CommandGetTileNBT());
     }
-    public static void error(Throwable err){
+    public static void err(Throwable err){
         err.printStackTrace();
     }
-    public static void error(String err){
+    public static void err(String err){
         System.err.println(err);
     }
     public static int getInt(Object str){
@@ -81,5 +86,12 @@ public class Thinker
                 configHandler.welcome.save();
             }
         }
+    }
+
+    public void registerObjectAdaptor(IThinkerObjectsAdaptor adaptor){
+        objectsAdaptors.add(adaptor);
+    }
+    public void registerAnimeAdaptor(IThinkerAnimeAdaptor adaptor){
+        animesAdaptors.add(adaptor);
     }
 }
