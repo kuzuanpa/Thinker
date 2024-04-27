@@ -24,9 +24,11 @@ public class DummyWorldTickThread extends Thread{
             if(trackedDummyWorld!=null&&(int)Math.abs((System.currentTimeMillis()%100000)-lastTickTime) > intervalBetweenTicks){
                 lastTickTime = (int)(System.currentTimeMillis()%100000);
                 trackedDummyWorld.lock=true;
-                trackedDummyWorld.updateEntities();
+                try {
+                    trackedDummyWorld.updateEntities();
+                }catch (Exception e){Thinker.err("Exception occurred when ticking Dummy world");e.printStackTrace();}
                 trackedDummyWorld.lock=false;
-                if(configHandler.recordDummyWorldTickTooLong.get()&&System.currentTimeMillis()%100000-lastTickTime>intervalBetweenTicks)System.out.println("A Tick of DummyWorld takes too long: "+(System.currentTimeMillis()%100000-lastTickTime)+"ms");
+                if(configHandler.recordDummyWorldTickTooLong.get()&&System.currentTimeMillis()%100000-lastTickTime>2*intervalBetweenTicks)System.out.println("A Tick of DummyWorld takes too long: "+(System.currentTimeMillis()%100000-lastTickTime)+"ms");
             }else {
                 try {
                     sleep(0,100000);

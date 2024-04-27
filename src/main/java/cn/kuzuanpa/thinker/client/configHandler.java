@@ -30,6 +30,7 @@ public class configHandler {
     public static configNumber themeSelectorScrollSpeed =new configNumber(0.01F,1.0F,10.0F);
 
     public static configNumber themeSelectorScrollInertia =new configNumber(0.01F,8F,50.0F);
+    public static configNumber keyPressedTimeNeededToStartThink =new configNumber(10,100,500);
     public static configBoolean recordDummyWorldTickTooLong = new configBoolean(false,"recordDummyWorldTickTooLong","main","Will thinker show a message while a dummyWorld tick takes too long");
 
     public static int getConfiguredAnimeTime(int originalTime){return (int) (originalTime*((float)1/animeSpeed.get()));}

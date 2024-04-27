@@ -36,8 +36,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.util.*;
@@ -65,6 +67,12 @@ public class ThinkingGuiMain extends GuiScreen {
 	public ThinkingGuiMain() {
 		openByUser=true;
 		allowUserInput = false;
+	}
+	public ThinkingGuiMain(ItemStack item) {
+		openByUser=true;
+		allowUserInput = false;
+		profileHandler.getProfile(item.getUnlocalizedName());
+		selectedProfileID = "TestJson";
 	}
 	public void postInit(){
 		initTime=System.currentTimeMillis();
@@ -108,16 +116,13 @@ public class ThinkingGuiMain extends GuiScreen {
 
 		if(openByUser)postInit();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
-
+		if(!selectedProfileID.equals(""))onProfileChanged(selectedProfileID);
 	}
 
 	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);return text1.equals("")? key: text1;}
 	protected void keyTyped(char p_73869_1_, int p_73869_2_)
 	{
-		if (p_73869_2_ == 1|| p_73869_2_== keyThink.getKeyCode())
-		{
-			close();
-		}
+		if (p_73869_2_ == Keyboard.KEY_ESCAPE) close();
 	}
 	@Override
 	protected void mouseClicked(int p_73864_1_, int p_73864_2_, int mouseButton)

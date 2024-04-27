@@ -32,6 +32,5 @@ public class keyBindHandler {
         if (keyThink.isPressed()) {
                 FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGuiMain());
         }
-
     }
 }

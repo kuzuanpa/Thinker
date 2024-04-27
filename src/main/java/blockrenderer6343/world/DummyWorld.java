@@ -43,7 +43,7 @@ public class DummyWorld extends World {
     }
     @Override
     public void updateEntities() {
-
+        if(!lock)System.out.println("World missing lock when ticking!");
         Iterator iterator = this.loadedTileEntityList.iterator();
 
         while (iterator.hasNext())
@@ -84,7 +84,9 @@ public class DummyWorld extends World {
     }
 
     public void updateEntitiesForNEI() {
+        lock=true;
         super.updateEntities();
+        lock=false;
     }
 
     @Override
