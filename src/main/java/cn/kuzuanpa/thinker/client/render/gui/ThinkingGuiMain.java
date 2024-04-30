@@ -15,15 +15,9 @@
 
 package cn.kuzuanpa.thinker.client.render.gui;
 
-import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.configHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeMoveLinear;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
@@ -32,11 +26,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,7 +37,6 @@ import org.lwjgl.input.Mouse;
 import java.util.*;
 
 import static cn.kuzuanpa.thinker.client.dummyWorldHandler.*;
-import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
 import static cn.kuzuanpa.thinker.client.profileHandler.displayProfileIDMap;
 import static cn.kuzuanpa.thinker.client.profileHandler.YOffset;
 
@@ -74,7 +64,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		allowUserInput = false;
 		selectedProfileID = item.getDisplayName();
 	}
-	public void postInit(){
+	public void onOpenByUser(){
 		initTime=System.currentTimeMillis();
 		openByUser=false;
 	}
@@ -93,29 +83,28 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 
-		ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
-		//blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
-		//blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
-		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,0), Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()).setRenderAllFace(true));
-		blocks.add(new dummyWorldBlock( new BlockPosition(0,3,0), Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily()));
-		blocks.add(new dummyWorldBlock( new BlockPosition(1,2,0), Blocks.double_wooden_slab));
-		blocks.add(new dummyWorldBlock( new BlockPosition(3,2,0), Blocks.fence));
-		blocks.add(new dummyWorldBlock( new BlockPosition(1,1,0), Blocks.acacia_stairs).setRenderAllFace(true));
-		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,5), Blocks.diamond_block));
-		blocks.add(new dummyWorldBlock( new BlockPosition(0,2,4), Blocks.diamond_block));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,0), Blocks.stained_glass));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,1), MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(10005), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,3,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
-		blocks.add(new dummyWorldBlock( new BlockPosition(2,4,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
-		blocks.add(new dummyWorldGeckoModel( new BlockPosition(2,5,1), "botarium.geo.json","ideas/botarium.png","botarium.animation.json"));
+		//ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
+		////blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
+		////blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(0,2,0), Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()).setRenderAllFace(true));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(0,3,0), Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily()));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(1,2,0), Blocks.double_wooden_slab));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(3,2,0), Blocks.fence));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(1,1,0), Blocks.acacia_stairs).setRenderAllFace(true));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(0,2,5), Blocks.diamond_block));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(0,2,4), Blocks.diamond_block));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(2,2,0), Blocks.stained_glass));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(2,2,1), MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(10005), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(2,3,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
+		//blocks.add(new dummyWorldBlock( new BlockPosition(2,4,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
+		//blocks.add(new dummyWorldGeckoModel( new BlockPosition(2,5,1), "botarium.geo.json","ideas/botarium.png","botarium.animation.json"));
 		profileHandler.clearAllProfile();
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0)));
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks));
 
 		try {
-			thinkerJsonReader.readAllProfiles("ideas");}catch (Exception ignored){}
+			thinkerJsonReader.readAllProfiles("ideas");
+		}catch (Exception ignored){}
 
-		if(openByUser)postInit();
+		if(openByUser) onOpenByUser();
 		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
 		if(!selectedProfileID.equals(""))onProfileChanged(selectedProfileID);
 	}

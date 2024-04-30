@@ -36,6 +36,7 @@ public class ThinkingProfileList extends ThinkerButton {
         GuiAnimeList.forEach(anime->anime.animeDrawPre(initTime));
         ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
         for (int i : profileHandler.displayProfileIDMap.keySet()){
+            if(profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i))==null)return;
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
             mc.getTextureManager().bindTexture(buttontextures);

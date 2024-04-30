@@ -44,6 +44,7 @@ public class thinkerJsonReader {
     public static void readAllProfiles(String path) throws IOException {
         ArrayList<profileHandler.thinkingProfile> profileList = new ArrayList<>();
         Files.list(Paths.get(path)).forEach(file -> {
+            if(file.toString().equalsIgnoreCase("ideas/resources")||file.toString().equalsIgnoreCase("ideas/ignore"))return;
             try (JsonReader json = new JsonReader(new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8))) {
                 if(Files.size(file)> 67108864 /*64MiB*/) throw new IOException("Too large file");
                 json.setLenient(true);
