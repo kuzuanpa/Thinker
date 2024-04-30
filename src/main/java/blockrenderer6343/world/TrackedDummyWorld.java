@@ -22,14 +22,12 @@ public class TrackedDummyWorld extends DummyWorld {
 
     private Vector3f minPos = new Vector3f(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private Vector3f maxPos = new Vector3f(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
-
+    private boolean isClearingBlocks =false;
     @Override
     public boolean setBlock(int x, int y, int z, Block block, int meta, int flags) {
-        if (block == Blocks.air) {
-            placedBlocks.remove(new BlockPosition(x, y, z));
-        } else {
-            placedBlocks.add(new BlockPosition(x, y, z));
-        }
+        if(!isClearingBlocks)if (block == Blocks.air) placedBlocks.remove(new BlockPosition(x, y, z));
+                             else placedBlocks.add(new BlockPosition(x, y, z));
+
         minPos.x = Math.min(minPos.x, x);
         minPos.y = Math.min(minPos.y, y);
         minPos.z = Math.min(minPos.z, z);
@@ -300,5 +298,11 @@ public class TrackedDummyWorld extends DummyWorld {
     }
     private boolean isBlockTargeted2(MovingObjectPosition result, Set<BlockPosition> pos) {
         return pos.contains(new BlockPosition(result.blockX, result.blockY, result.blockZ));
+    }
+    public void clearBlocks(){
+        this.isClearingBlocks=true;
+        this.placedBlocks.forEach(pos->this.setBlockToAir(pos.x,pos.y,pos.z));
+        this.isClearingBlocks=false;
+        this.placedBlocks.clear();
     }
 }

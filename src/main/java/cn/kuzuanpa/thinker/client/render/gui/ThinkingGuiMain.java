@@ -23,6 +23,7 @@ import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnime
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
@@ -71,8 +72,7 @@ public class ThinkingGuiMain extends GuiScreen {
 	public ThinkingGuiMain(ItemStack item) {
 		openByUser=true;
 		allowUserInput = false;
-		profileHandler.getProfile(item.getUnlocalizedName());
-		selectedProfileID = "TestJson";
+		selectedProfileID = item.getDisplayName();
 	}
 	public void postInit(){
 		initTime=System.currentTimeMillis();
@@ -107,9 +107,10 @@ public class ThinkingGuiMain extends GuiScreen {
 		blocks.add(new dummyWorldBlock( new BlockPosition(2,2,1), MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(10005), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
 		blocks.add(new dummyWorldBlock( new BlockPosition(2,3,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
 		blocks.add(new dummyWorldBlock( new BlockPosition(2,4,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
+		blocks.add(new dummyWorldGeckoModel( new BlockPosition(2,5,1), "botarium.geo.json","ideas/botarium.png","botarium.animation.json"));
 		profileHandler.clearAllProfile();
 		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0)));
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test"))));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("test2",Items.string.getIconFromDamage(0),blocks));
 
 		try {
 			thinkerJsonReader.readAllProfiles("ideas");}catch (Exception ignored){}

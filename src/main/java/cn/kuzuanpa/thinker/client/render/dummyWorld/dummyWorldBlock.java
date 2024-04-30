@@ -16,16 +16,21 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
+import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -77,8 +82,9 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         return pos;
     }
     @Override
-    public void render(DummyWorld world, long initTime, boolean isMousePointed) {
+    public void render(DummyWorld world, long initTime, BlockPosition mousePointingPos) {
         GL11.glPushMatrix();
+        RenderHelper.disableStandardItemLighting();
         List<IDummyWorldAnimes> anime = getWorldAnimeList();
         if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
             if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime);
@@ -103,13 +109,34 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         } finally {
             Tessellator.instance.draw();
             Tessellator.instance.setTranslation(0, 0, 0);
-            if(isMousePointed) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pos, 0xCCCCCC, 2F);
+            if(pos.equals(mousePointingPos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pos, 0xCCCCCC, 2F);
             GL11.glPopMatrix();
         }
 
     }
 
-//JsonReader
+    @Override
+    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+        dummyWorldBlock block = ((dummyWorldBlock) this);
+        List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
+        if (block.itemStack != null) {
+            block.itemStack.copy().tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer, world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
+            block.block = world.getBlock(pos.x, pos.y, pos.z);
+            if (block.block == null || block.block == Blocks.air) {
+                Thinker.err("Invalid Block Created From Item!" + block.itemStack.getDisplayName());
+                block.block = Blocks.air;
+            }
+            if (world.getTileEntity(pos.x, pos.y, pos.z) != null)
+                tmp.add(new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
+        } else world.setBlock(pos.x, pos.y, pos.z, block.block);
+        if (!block.block.hasTileEntity(block.meta)) return tmp;
+        TileEntity tileEntity = block.block.createTileEntity(world, block.meta);
+        if (tileEntity != null)
+            tmp.add( new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
+        return tmp;
+    }
+
+    //JsonReader
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
         boolean result= values.containsKey("posX")&& values.containsKey("posY")&& values.containsKey("posZ")&&
                 ((values.containsKey("block") && values.containsKey("meta")) || values.containsKey("fromItem"));//block+meta or fromItem

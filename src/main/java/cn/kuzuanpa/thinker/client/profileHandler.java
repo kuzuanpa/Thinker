@@ -14,9 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client;
 
-import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
 import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Mouse;
@@ -57,6 +55,8 @@ public class profileHandler {
     }
 
     public static thinkingProfile getProfile(String id){return profileMap.get(id);}
+    public static boolean isItemHaveProfile(String itemId){return profileMap.values().stream().anyMatch(v-> v.bindItemId.equals(itemId));}
+    public static thinkingProfile getProfileFromItem(String itemId){return profileMap.values().stream().filter(v->v.bindItemId.equalsIgnoreCase(itemId)).findFirst().orElse(null);}
     public static class thinkingProfile{
         public thinkingProfile(String id, ThinkerButton... buttons){this(id,null,0,0,0,0,buttons);}
         public thinkingProfile(String id, IIcon icon, ThinkerButton... buttons){this(id,icon,1,1,1,1,buttons);}
@@ -121,5 +121,10 @@ public class profileHandler {
         public List<IdummyWorldThinkerObject> dummyWorldThinkerObjects = new ArrayList<>();
         public ArrayList<ThinkerButton> buttons = new ArrayList<>();
         public String id;
+        public String bindItemId = "";
+        public thinkingProfile setBindItemId(String unlocalizedName){
+            bindItemId = unlocalizedName;
+            return this;
+        }
     }
 }

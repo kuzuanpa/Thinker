@@ -16,13 +16,13 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
-import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.util.Nbt;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -87,7 +87,9 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
     }
 
     @Override
-    public void render(DummyWorld world, long initTime, boolean isMousePointed) {
+    public void render(DummyWorld world, long initTime, BlockPosition mousePointingPos) {
+        RenderHelper.enableStandardItemLighting();
+
         for (int pass = 0; pass < 2; pass++) {
             ForgeHooksClient.setRenderPass(pass);
             if (pos == null || tile == null) return;
@@ -115,10 +117,17 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, pos.x, pos.y, pos.z, 0);
-                if (isMousePointed) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pos, 0xCCCCCC, 2F);
             }
             GL11.glPopMatrix();
         }
+
+    }
+
+    @Override
+    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+        world.setTileEntity(pos.x, pos.y, pos.z, tile);
+        if (tile.blockType != null) world.setBlock(pos.x, pos.y, pos.z, tile.blockType);
+        return new ArrayList<>();
     }
 
     @Override

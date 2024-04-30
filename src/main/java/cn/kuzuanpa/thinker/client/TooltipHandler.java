@@ -35,7 +35,7 @@ public class TooltipHandler {
         if(!isThinkerGoingToDisplay)pressedTime=0;
         else pressedTime++;
 
-        if(event.itemStack.getItem() == Item.getItemFromBlock(Blocks.dirt)) {
+        if(profileHandler.isItemHaveProfile(event.itemStack.getItem().getUnlocalizedName())) {
             StringBuilder processBar = new StringBuilder();
             if(isThinkerGoingToDisplay) {
                 for (int i = 0; i < 20; i++) {

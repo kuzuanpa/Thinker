@@ -3,8 +3,12 @@ package blockrenderer6343.client;
 import static cn.kuzuanpa.thinker.client.dummyWorldHandler.dummyWorldObjects;
 import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -16,15 +20,14 @@ import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.GLU;
@@ -109,27 +112,6 @@ public abstract class WorldSceneRenderer {
         drawWorld();
         // check lookingAt
         this.lastTraceResult = null;
-        if (onLookingAt != null) {
-            int mouseX1=mouseX;
-            int mouseY1=mouseY;
-            dummyWorldHandler.dummyWorldObjects.forEach((blockDummy)->{
-                GL11.glPushMatrix();
-                if(!blockDummy.getWorldAnimeList().isEmpty())blockDummy.getWorldAnimeList().forEach(gAnime-> {
-                    if(!(gAnime instanceof IDummyWorldGraphicAnime))return;
-                    BlockPosition pos = blockDummy.getPos();
-                    GL11.glTranslatef(pos.x,pos.y,pos.z);
-                    ((IDummyWorldGraphicAnime)gAnime).animeDraw(initTime);
-                    GL11.glTranslatef(-pos.x,-pos.y,-pos.z);
-                });
-                Vector3f hitPos = ProjectionUtils.unProject(mouseX1, mouseY1);
-                GL11.glPopMatrix();
-                MovingObjectPosition result = rayTrace(hitPos,blockDummy.getPos());
-                if (result != null) {
-                    this.lastTraceResult = result;
-                    onLookingAt.accept(result);
-                }
-            });
-        }
 
         // resetcamera
         resetCamera();
@@ -156,32 +138,10 @@ public abstract class WorldSceneRenderer {
 
     public void sync(){
         while(world.lock) {try{wait(0,1000);}catch (Exception ignored){}}
+        if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).clearBlocks();
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
-        dummyWorldHandler.dummyWorldObjects.forEach((obj) -> {
-            BlockPosition pos = obj.getPos();
-            if(obj instanceof dummyWorldBlock) {
-                dummyWorldBlock block = ((dummyWorldBlock) obj);
-                if (block.itemStack != null) {
-                    block.itemStack.tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer, world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
-                    block.block = world.getBlock(pos.x, pos.y, pos.z);
-                    if (block.block == null || block.block == Blocks.air) {
-                        Thinker.err("Invalid Block Created From Item!" + block.itemStack.getDisplayName());
-                        block.block = Blocks.air;
-                    }
-                    if (world.getTileEntity(pos.x, pos.y, pos.z) != null)
-                        tmp.add(new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
-                } else world.setBlock(pos.x, pos.y, pos.z, block.block);
-                if (!block.block.hasTileEntity(block.meta)) return;
-                TileEntity tileEntity = block.block.createTileEntity(world, block.meta);
-                if (tileEntity != null)
-                    tmp.add( new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
-            }else if(obj instanceof dummyWorldTile) {
-                dummyWorldTile tile = ((dummyWorldTile) obj);
-                world.setTileEntity(pos.x, pos.y, pos.z, tile.tile);
-                if (tile.tile.blockType != null) world.setBlock(pos.x, pos.y, pos.z, tile.tile.blockType);
-            }
-        });
-        dummyWorldObjects.addAll(tmp);
+        dummyWorldHandler.dummyWorldObjects.forEach((obj) -> tmp.addAll(obj.syncWithWorld(world)));
+        dummyWorldHandler.dummyWorldObjects.addAll( tmp);
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).onProfileChanged();
     }
     public void setCameraLookAt(Vector3f lookAt, double radius, double rotationPitch, double rotationYaw) {
@@ -252,38 +212,128 @@ public abstract class WorldSceneRenderer {
         glPopAttrib();
     }
 
+    public void onMouseMoved(int x,int y){
+
+        glSelectBuffer(selectBuffer);
+        glEnable(GL_DEPTH_TEST);
+        glRenderMode(GL_SELECT);
+        IntBuffer viewport = BufferUtils.createIntBuffer(16);
+        GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
+        int[] viewportArray = new int[4];
+        viewport.get(viewportArray);
+
+
+        GL11.glMatrixMode(GL_PROJECTION);
+        Minecraft mc =Minecraft.getMinecraft();
+        ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+        // compute window size from scaled width & height
+        int scaleMultiplier = (int) (mc.displayWidth / (resolution.getScaledWidth() * 1.0));
+        int scale1=1024/ (scaleMultiplier);
+        glScalef(scale1,scale1,1);
+        glTranslatef(-(Mouse.getX()- (mc.displayWidth/2F)) / (float)scale1,-(Mouse.getY()- (mc.displayHeight/2F))/(float)scale1,0);
+
+        glMatrixMode(GL_MODELVIEW);
+
+        // 然后重绘场景，这次是在选择模式下
+
+        renderSceneForPicking();
+    }
+
+    void renderSceneForPicking() {
+
+        GL11.glInitNames(); // 初始化名称堆栈
+
+
+        int i=0;
+        try {
+            Minecraft mc = Minecraft.getMinecraft();
+            glEnable(GL_CULL_FACE);
+            glEnable(GL12.GL_RESCALE_NORMAL);
+            mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_ALPHA_TEST);
+            glInitNames();
+            glPushName(-1);
+
+            for (IdummyWorldThinkerObject obj : dummyWorldObjects) {
+                try {
+
+                    glEnable(GL_DEPTH_TEST);
+                    glClear(GL_DEPTH_BUFFER_BIT);
+
+                    glLoadName(i++);
+                    glPushAttrib(GL_ALL_ATTRIB_BITS);
+                    obj.render(world, initTime, null);
+                    glPopAttrib();
+
+                } catch (Exception e) {
+                    Thinker.err(e);
+                }
+            }
+            glPopName();
+            ForgeHooksClient.setRenderPass(-1);
+            glDisable(GL_BLEND);
+            glDepthMask(true);
+            glFlush();
+        }catch (Exception e){e.printStackTrace();}
+
+        {
+
+            int hits = GL11.glRenderMode(GL11.GL_RENDER); // 返回到正常渲染模式，并获取命中数
+
+            if (hits > 0) {
+                System.out.println("Selected object num: " + hits);
+
+                int offset = 0;
+
+                while (offset < hits * 4) { // 每个命中有4个值：名字堆栈深度、最接近的、最远的、对象ID
+
+                    int name = selectBuffer.get(offset + 3); // 最后一个值是对象ID
+
+                    //System.out.println("Selected object ID: " + name);
+
+                    offset += 4;
+
+                }
+
+            } else {
+
+                System.out.println("No object selected.");
+
+            }
+
+        }
+
+    }
 
     protected void drawWorld() {
         if (beforeRender != null) {
             beforeRender.accept(this);
         }
-        Minecraft mc = Minecraft.getMinecraft();
-        glEnable(GL_CULL_FACE);
-        glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.disableStandardItemLighting();
-        mc.entityRenderer.disableLightmap(0);
-        mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_ALPHA_TEST);
-        glEnable(GL_DEPTH_TEST);
+        try {
+            Minecraft mc = Minecraft.getMinecraft();
+            glEnable(GL_CULL_FACE);
+            glEnable(GL12.GL_RESCALE_NORMAL);
+            mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_ALPHA_TEST);
+            glEnable(GL_DEPTH_TEST);
 
-        final int savedAo = mc.gameSettings.ambientOcclusion;
-        RenderHelper.enableStandardItemLighting();
-        glEnable(GL_LIGHTING);
-        mc.gameSettings.ambientOcclusion = 0;
-        dummyWorldObjects.forEach((obj)->{
-            try{
-                GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-                obj.render(world, initTime,false);
-                GL11.glPopAttrib();
-            }catch (Exception e){Thinker.err(e);}
-        });
+            dummyWorldObjects.forEach((obj) -> {
+                try {
+                    obj.render(world, initTime, null);
+                } catch (Exception e) {
+                    Thinker.err(e);
+                }
+            });
 
-        mc.gameSettings.ambientOcclusion = savedAo;
-        ForgeHooksClient.setRenderPass(-1);
-        glDisable(GL_BLEND);
-        glDepthMask(true);
+            //onMouseMoved(Mouse.getX(),Mouse.getY());
+
+            ForgeHooksClient.setRenderPass(-1);
+            glDisable(GL_BLEND);
+            glDepthMask(true);
+
+        }catch (Exception e){e.printStackTrace();}
     }
 
     public static void setDefaultPassRenderState(int pass) {
@@ -343,7 +393,8 @@ public abstract class WorldSceneRenderer {
         resetCamera();
         return result.get();
     }
-
+    private static final IntBuffer selectBuffer = ByteBuffer.allocateDirect(1024).order(ByteOrder.nativeOrder())
+            .asIntBuffer();
     /***
      * For better performance, You'd better do project in setOnWorldRender(Consumer)
      *

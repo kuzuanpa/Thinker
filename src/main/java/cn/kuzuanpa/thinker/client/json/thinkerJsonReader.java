@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class thinkerJsonReader {
@@ -57,7 +58,8 @@ public class thinkerJsonReader {
 
     }
     public static profileHandler.thinkingProfile readProfiles(JsonReader json,String profileName)throws IOException,IllegalArgumentException {
-            String id="";
+        String id="";
+        String bindItemID="";
             IIcon icon=null;
             float iconR=1.0F;
             float iconG=1.0F;
@@ -72,6 +74,8 @@ public class thinkerJsonReader {
                     id =  json.nextString();
                 }else if (jsonName.equalsIgnoreCase("icon")) {
                     icon=getIcon(json.nextString(),json,profileName);
+                }else if (jsonName.equalsIgnoreCase("bindItemID")) {
+                    bindItemID = json.nextString();
                 } else if (jsonName.equalsIgnoreCase("iconR")) {
                     iconR = (float) json.nextDouble();
                 } else if (jsonName.equalsIgnoreCase("iconG")) {
@@ -96,8 +100,9 @@ public class thinkerJsonReader {
                 if(obj instanceof IdummyWorldThinkerObject) objs.add(((IdummyWorldThinkerObject)obj));
             });
             if(id.equals("")||ThinkerObjects.isEmpty()){logError(json,profileName,"Invaild Profile");return null;}
-            if(!objs.isEmpty())return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,objs,buttons);
-            else return new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons);
+            profileHandler.thinkingProfile returnProfile = objs.isEmpty() ? new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons) : new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,objs,buttons);
+            returnProfile.setBindItemId(bindItemID);
+            return returnProfile;
     }
     public static IIcon getIcon(String iconString, JsonReader json, String fileName){
         try {
@@ -176,8 +181,10 @@ public class thinkerJsonReader {
             } else if(jsonName.equalsIgnoreCase("animes")){
                 animes=readAllAnime(json, fileName);
             } else {
-                if(json.peek().equals(JsonToken.BOOLEAN))values.put(jsonName,Boolean.toString(json.nextBoolean()));
-                else values.put(jsonName,json.nextString());//Why can't you just give a string of boolean instead of throw an error..
+                JsonToken token = json.peek();
+                if(token.equals(JsonToken.BOOLEAN))values.put(jsonName,Boolean.toString(json.nextBoolean()));
+                else if(token.equals(JsonToken.BEGIN_OBJECT))values.put(jsonName,readCompounds(json,fileName));
+                else values.put(jsonName,json.nextString());
             }
         }
         if(!values.containsKey("type")){requestedErr="Missing Required Element: type";errored=true;}
@@ -194,7 +201,24 @@ public class thinkerJsonReader {
         return null;
     }
 
-
+    public static Map<String ,Object> readCompounds(JsonReader json, String fileName) throws JsonParseException,IOException,IllegalArgumentException {
+        json.beginObject();
+        Map<String, Object> values = new HashMap<>();
+        String jsonName;
+        while (json.hasNext()) {
+            jsonName = json.nextName();
+            if (jsonName.equals("comment")) {
+                json.skipValue();
+            }else {
+                JsonToken token = json.peek();
+                if(token.equals(JsonToken.BOOLEAN))values.put(jsonName,Boolean.toString(json.nextBoolean()));
+                else if(token.equals(JsonToken.BEGIN_OBJECT))values.put(jsonName,readCompounds(json,fileName));
+                else values.put(jsonName,json.nextString());
+            }
+        }
+        json.endObject();
+        return values;
+    }
     public static ArrayList<IThinkerAnime> readAllAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException {
         ArrayList<IThinkerAnime> objects=new ArrayList<>();
         json.beginArray();

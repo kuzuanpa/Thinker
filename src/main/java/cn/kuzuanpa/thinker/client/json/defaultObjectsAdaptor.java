@@ -17,6 +17,7 @@ package cn.kuzuanpa.thinker.client.json;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBundle;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTile;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
 import cn.kuzuanpa.thinker.client.render.gui.button.custom.customImage;
@@ -46,6 +47,8 @@ public class defaultObjectsAdaptor implements IThinkerObjectsAdaptor {
             case "geoModel":
             case "geckoModel":
             case "gecko": return dummyWorldGeckoModel.isMapHaveValidContents(values);
+            case "Bundle": Thinker.log("syntax improvable: First Letter should be lower case.(type=bundle)");
+            case "bundle": return dummyWorldBundle.isMapHaveValidContents(values);
             default: return false;
         }
     }
@@ -67,6 +70,8 @@ public class defaultObjectsAdaptor implements IThinkerObjectsAdaptor {
             case "geckoModel":
             case "Gecko":
             case "gecko": return dummyWorldGeckoModel.create(values);
+            case "Bundle":
+            case "bundle": return dummyWorldBundle.create(values);
             default: return null;
         }
     }

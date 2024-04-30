@@ -16,7 +16,6 @@ package cn.kuzuanpa.thinker.client.render.dummyWorld;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
-import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
@@ -48,6 +47,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
@@ -80,7 +80,7 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
             dummyGeckoModel =new dummyWorldGeckoModelContainer(modelLocation, textureLocation, animeLocation);
         }
 
-        public void render(DummyWorld world, long initTime, boolean isMousePointed) {
+        public void render(DummyWorld world, long initTime, BlockPosition mousePointingPos) {
             GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(dummyGeckoModel));
             getGeoModelProvider().setLivingAnimations(dummyGeckoModel, this.getUniqueID(dummyGeckoModel));
             int light = 15;
@@ -102,6 +102,11 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
             GlStateManager.popMatrix();
 
         }
+
+    @Override
+    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+            return new ArrayList<>();
+    }
 
     @Override
     public BlockPosition getPos() {
