@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class ThinkingProfileList extends ThinkerButton {
+public class ThinkingProfileList extends ThinkerButtonBase {
 
     public ThinkingProfileList(int id, int x, int y,int height){
         super(id, x, y,64,height,"");
@@ -33,14 +33,14 @@ public class ThinkingProfileList extends ThinkerButton {
         updateHoverState(mouseX,mouseY);
         if (!this.visible)return;
         GL11.glPushMatrix();
-        GuiAnimeList.forEach(anime->anime.animeDrawPre(initTime));
+        GuiAnimeList.forEach(anime->anime.animeDrawPre(timer));
         ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
         for (int i : profileHandler.displayProfileIDMap.keySet()){
             if(profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i))==null)return;
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
             mc.getTextureManager().bindTexture(buttontextures);
-            GuiAnimeList.forEach(anime->anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime->anime.animeDraw(timer));
             this.drawTexturedModalRect(0, (int) (Math.floor(profileHandler.YOffset)+i*(16+configHandler.themeSelectorProfileGap.get())), 64, 0, 64, 16);
             if(profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i)).icon==null){GL11.glPopMatrix();continue;}
             profileHandler.thinkingProfile profile = profileHandler.getProfile(profileHandler.displayProfileIDMap.get(i));
@@ -51,7 +51,7 @@ public class ThinkingProfileList extends ThinkerButton {
             GL11.glPopMatrix();
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GuiAnimeList.forEach(anime->anime.animeDrawAfter(initTime));
+        GuiAnimeList.forEach(anime->anime.animeDrawAfter(timer));
         GL11.glPopMatrix();
     }
 }

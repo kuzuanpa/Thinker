@@ -27,17 +27,11 @@ public class DummyWorldGraphicAnimeMoveLinear implements IDummyWorldGraphicAnime
     public int startTime, endTime;
     public float dX, dY, dZ;
     @Override
-    public void animeDraw(long initTime) {
-        long timer = System.currentTimeMillis()-initTime;
+    public void animeDraw(long timer) {
         if(timer<startTime) return;
         float progress=(float)(timer - startTime)/(float)(endTime-startTime);
         if (timer < endTime) GL11.glTranslatef(progress * dX,progress * dY, progress*dZ);
         else GL11.glTranslatef(dX, dY, dZ);
-    }
-
-    @Override
-    public void updateButton(long initTime) {
-
     }
 
     @Override

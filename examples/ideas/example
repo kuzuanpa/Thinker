@@ -1,6 +1,6 @@
 {
  "id":"HelloThinker",
- "bindItemID":"tile.dirt",
+ "bindItemID":"tile.dirt.default",
  "icon":"minecraft:paper",
  "iconR":"0.5",
  "iconG":"0.5",

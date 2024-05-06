@@ -14,12 +14,8 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui;
 
-import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.profileHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeOutlineGlowth;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.DummyWorldGraphicAnimeRotateSteadily;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.render.gui.button.*;
@@ -29,7 +25,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,10 +33,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
-import static cn.kuzuanpa.thinker.Thinker.isGeckoLibLoaded;
 import static cn.kuzuanpa.thinker.client.dummyWorldHandler.*;
 import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
 
@@ -56,7 +49,7 @@ public class ThinkingGuiWelcome extends GuiScreen {
 	public boolean openByUser,themeSelectorFolded=false;
 	public long initTime=0,lastProfileSelectedTime=0;
 	private List<String> hoveringString=new ArrayList<>();
-	protected List<ThinkerButton> buttonsHaveAnime = new ArrayList<ThinkerButton>();
+	protected List<ThinkerButtonBase> buttonsHaveAnime = new ArrayList<ThinkerButtonBase>();
 	public ThinkingGuiWelcome() {
 		openByUser=true;
 		allowUserInput = false;
@@ -84,11 +77,9 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 
 		if(openByUser)postInit();
-		buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
 
 		lastProfileSelectedTime= System.currentTimeMillis();
-		List<ThinkerButton> buttonsProfile= profileHandler.getProfile("HelloThinker").buttons;
-		buttonsProfile.forEach(button->button.updateInitTime(lastProfileSelectedTime));
+		List<ThinkerButtonBase> buttonsProfile= profileHandler.getProfile("HelloThinker").buttons;
 		buttonList.addAll(buttonsProfile);
 		profileHandler.onProfileChanged("HelloThinker");
 		dummyWorldHandler.onProfileChanged("HelloThinker");
@@ -108,7 +99,7 @@ public class ThinkingGuiWelcome extends GuiScreen {
 	{
 			for (int l = this.buttonList.size() - 1; l >= 0 ;l--)
 			{
-				ThinkerButton guibutton = (ThinkerButton)this.buttonList.get(l);
+				ThinkerButtonBase guibutton = (ThinkerButtonBase)this.buttonList.get(l);
 				if(guibutton.updateHoverState(p_73864_1_, p_73864_2_))
 				{
 					GuiScreenEvent.ActionPerformedEvent.Pre event = new GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
@@ -126,15 +117,16 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		return true;
 	}
 	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_){
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		this.buttonsHaveAnime.forEach(b -> b.updateTimer(getTimer()));
 		super.drawScreen(p_73863_1_,p_73863_2_,p_73863_3_);
 		profileHandler.tick();
+
 		if(!Mouse.isInsideWindow())return;
 		int x = Mouse.getX() * this.width / this.mc.displayWidth;
 		int y = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
 		buttonList.forEach(b -> {
-			if (!(b instanceof ThinkerButton)) return;
-			ThinkerButton button = (ThinkerButton) b;
+			if (!(b instanceof ThinkerButtonBase)) return;
+			ThinkerButtonBase button = (ThinkerButtonBase) b;
 			if(!button.visible)return;
 			if(button.updateHoverState(x,y))hoveringString= Collections.singletonList(button.displayString);
 		});
@@ -149,5 +141,8 @@ public class ThinkingGuiWelcome extends GuiScreen {
 	public boolean doesGuiPauseGame()
 	{
 		return false;
+	}
+	public long getTimer(){
+		return System.currentTimeMillis()-initTime;
 	}
 }

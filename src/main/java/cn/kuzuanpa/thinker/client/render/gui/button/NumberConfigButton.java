@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.text.NumberFormat;
 
-public class NumberConfigButton extends ThinkerButton {
+public class NumberConfigButton extends ThinkerButtonBase {
     public NumberConfigButton(int id, int xPos, int yPos, int width, int height,String displayText, configHandler.configNumber config) {
         super(id, xPos, yPos,width,height,displayText);
         this.config=config;
@@ -36,14 +36,14 @@ public class NumberConfigButton extends ThinkerButton {
         if (this.visible)
         {
             GL11.glPushMatrix();
-            GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
             FontRenderer fontrenderer = p_146112_1_.fontRenderer;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean isMouseHovering=this.updateHoverState(mouseX,mouseY);
             int k = this.getHoverState(isMouseHovering);
-            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
             float progress=config.get()/(config.max()-config.min());
-            drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,-2132680325);
+            drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,0xcccccccc);
             drawRect((int) (xPosition+2+(width-4)*progress)-1,yPosition+10, (int) (xPosition+2+(width-4)*progress)+1,yPosition+height-10,-1);
             if(k==2&& Mouse.isButtonDown(0)) config.update(mouseX<xPosition+2?config.min():mouseX>xPosition+width-2?config.max():(config.max()-config.min())*(mouseX-2-xPosition)/(width-4));
             NumberFormat nf = NumberFormat.getNumberInstance();
@@ -53,7 +53,7 @@ public class NumberConfigButton extends ThinkerButton {
             this.drawCenteredString(fontrenderer, nf.format(config.get()), this.xPosition+width/2, this.yPosition+height-10, -1);
             this.drawCenteredString(fontrenderer, nf.format(config.max()), this.xPosition+width, this.yPosition+height-10, -1);
 
-            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(timer));
             GL11.glPopMatrix();
         }
     }

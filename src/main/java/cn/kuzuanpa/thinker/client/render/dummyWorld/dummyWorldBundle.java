@@ -23,7 +23,7 @@ import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
         ArrayList<IThinkerObject> list = new ArrayList<>();
         objectsAdaptors.forEach(adaptor-> ((Map<String,Object>) values.get("subObjects")).values().forEach(obj->list.add(adaptor.create((Map<String, Object>) obj))));
         StringBuilder err = new StringBuilder("");
-        list.stream().filter(obj->obj instanceof ThinkerButton).forEach(obj-> err.append(obj.toString()).append(", "));
+        list.stream().filter(obj->obj instanceof ThinkerButtonBase).forEach(obj-> err.append(obj.toString()).append(", "));
         if(!err.toString().equals(""))thinkerJsonReader.requestLogError("Unsupported object in bundle"+err);
         list.stream().filter(obj->obj instanceof IdummyWorldThinkerObject).forEach(obj-> bundle.subObjects.add((IdummyWorldThinkerObject) obj));
         return bundle;

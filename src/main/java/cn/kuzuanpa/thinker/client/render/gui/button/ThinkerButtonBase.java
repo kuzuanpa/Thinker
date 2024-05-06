@@ -29,12 +29,12 @@ import java.util.List;
 
 import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
-public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject {
+public class ThinkerButtonBase extends GuiButton implements IAnimatableThinkerObject {
     public final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
     ResourceLocation baseTexture=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
-    public long initTime=0;
+    public long timer =0;
     public int animeXModify=0,animeYModify=0,animeWidthModify=0,animeHeightModify=0;
-    public ThinkerButton(int id, int xPos, int yPos, int width, int height, String displayText) {
+    public ThinkerButtonBase(int id, int xPos, int yPos, int width, int height, String displayText) {
         super(id, xPos, yPos,width,height,displayText);
     }
     public void drawButton(Minecraft p_146112_1_, int mouseX, int mouseY)
@@ -42,7 +42,7 @@ public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject
         if (this.visible)
         {
             GL11.glPushMatrix();
-            GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
             FontRenderer fontrenderer = p_146112_1_.fontRenderer;
             p_146112_1_.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -55,20 +55,20 @@ public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject
             if (packedFGColour != 0)l = packedFGColour;
             else if (!this.enabled)l = 10526880;
             else if (isMouseHovering)l = 16777120;
-            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + k * 20, this.width / 2, this.height);
             this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + k * 20, this.width / 2, this.height);
             this.mouseDragged(p_146112_1_, mouseX, mouseY);
             this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, l);
-            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(timer));
             GL11.glPopMatrix();
         }
     }
-    public ThinkerButton addAnime(IGuiAnime anime){
+    public ThinkerButtonBase addAnime(IGuiAnime anime){
         GuiAnimeList.add(anime);
         return this;
     }
-    public ThinkerButton addToList(List<ThinkerButton> list){
+    public ThinkerButtonBase addToList(List<ThinkerButtonBase> list){
         list.add(this);
         return this;
     }
@@ -76,10 +76,10 @@ public class ThinkerButton extends GuiButton implements IAnimatableThinkerObject
     public boolean updateHoverState(int mouseX, int mouseY)
     {
         animeXModify=animeYModify=animeHeightModify=animeWidthModify=0;
-        GuiAnimeList.forEach(anime -> anime.updateButton(initTime,this));
+        GuiAnimeList.forEach(anime -> anime.updateButton(timer,this));
         return this.enabled && this.visible && mouseX >= this.xPosition+animeXModify && mouseY >= this.yPosition+animeYModify && mouseX < this.xPosition+animeXModify + this.width+animeWidthModify && mouseY < this.yPosition+animeYModify + this.height+animeHeightModify;
     }
-    public void updateInitTime(long initTime){this.initTime=initTime;}
+    public void updateTimer(long timer){this.timer=timer;}
     public void onButtonPressed(int posX,int posY){}
     public ArrayList<IGuiAnime> getGuiAnimeList() {return GuiAnimeList;}
 

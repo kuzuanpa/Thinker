@@ -15,7 +15,7 @@
 package cn.kuzuanpa.thinker.client;
 
 import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Mouse;
 
@@ -58,11 +58,11 @@ public class profileHandler {
     public static boolean isItemHaveProfile(String itemId){return profileMap.values().stream().anyMatch(v-> v.bindItemId.equals(itemId));}
     public static thinkingProfile getProfileFromItem(String itemId){return profileMap.values().stream().filter(v->v.bindItemId.equalsIgnoreCase(itemId)).findFirst().orElse(null);}
     public static class thinkingProfile{
-        public thinkingProfile(String id, ThinkerButton... buttons){this(id,null,0,0,0,0,buttons);}
-        public thinkingProfile(String id, IIcon icon, ThinkerButton... buttons){this(id,icon,1,1,1,1,buttons);}
-        public thinkingProfile(String id, IIcon icon,int iconRGBA, ThinkerButton... buttons){this(id,icon,(float)(iconRGBA >> 16 & 255)  / 255.0F,(iconRGBA >> 8 & 255) / 255.0F,(iconRGBA & 255) /255.0F,(float)(iconRGBA >> 24 & 255),buttons);}
-        public thinkingProfile(String id, IIcon icon,short[] iconRGBA, ThinkerButton... buttons){this(id,icon,(float)iconRGBA[0] / 255.0F,(float)iconRGBA[1] / 255.0F,(float)iconRGBA[2] /255.0F,(float)iconRGBA[3] / 255.0F,buttons);}
-        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, ThinkerButton... buttons){
+        public thinkingProfile(String id, ThinkerButtonBase... buttons){this(id,null,0,0,0,0,buttons);}
+        public thinkingProfile(String id, IIcon icon, ThinkerButtonBase... buttons){this(id,icon,1,1,1,1,buttons);}
+        public thinkingProfile(String id, IIcon icon,int iconRGBA, ThinkerButtonBase... buttons){this(id,icon,(float)(iconRGBA >> 16 & 255)  / 255.0F,(iconRGBA >> 8 & 255) / 255.0F,(iconRGBA & 255) /255.0F,(float)(iconRGBA >> 24 & 255),buttons);}
+        public thinkingProfile(String id, IIcon icon,short[] iconRGBA, ThinkerButtonBase... buttons){this(id,icon,(float)iconRGBA[0] / 255.0F,(float)iconRGBA[1] / 255.0F,(float)iconRGBA[2] /255.0F,(float)iconRGBA[3] / 255.0F,buttons);}
+        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, ThinkerButtonBase... buttons){
             this.id=id;
             this.disableDummyWorldRend=true;
             this.icon=icon;
@@ -73,11 +73,11 @@ public class profileHandler {
             Collections.addAll(this.buttons, buttons);
         }
 
-        public thinkingProfile(String id, List<ThinkerButton> buttons){this(id,null,0,0,0,0,buttons);}
-        public thinkingProfile(String id, IIcon icon, List<ThinkerButton> buttons){this(id,icon,1,1,1,1,buttons);}
-        public thinkingProfile(String id, IIcon icon,int iconRGBA, List<ThinkerButton> buttons){this(id,icon,(float)(iconRGBA >> 16 & 255)  / 255.0F,(iconRGBA >> 8 & 255) / 255.0F,(iconRGBA & 255) /255.0F,(float)(iconRGBA >> 24 & 255),buttons);}
-        public thinkingProfile(String id, IIcon icon,short[] iconRGBA, List<ThinkerButton> buttons){this(id,icon,(float)iconRGBA[0] / 255.0F,(float)iconRGBA[1] / 255.0F,(float)iconRGBA[2] /255.0F,(float)iconRGBA[3] / 255.0F,buttons);}
-        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, List<ThinkerButton> buttons){
+        public thinkingProfile(String id, List<ThinkerButtonBase> buttons){this(id,null,0,0,0,0,buttons);}
+        public thinkingProfile(String id, IIcon icon, List<ThinkerButtonBase> buttons){this(id,icon,1,1,1,1,buttons);}
+        public thinkingProfile(String id, IIcon icon,int iconRGBA, List<ThinkerButtonBase> buttons){this(id,icon,(float)(iconRGBA >> 16 & 255)  / 255.0F,(iconRGBA >> 8 & 255) / 255.0F,(iconRGBA & 255) /255.0F,(float)(iconRGBA >> 24 & 255),buttons);}
+        public thinkingProfile(String id, IIcon icon,short[] iconRGBA, List<ThinkerButtonBase> buttons){this(id,icon,(float)iconRGBA[0] / 255.0F,(float)iconRGBA[1] / 255.0F,(float)iconRGBA[2] /255.0F,(float)iconRGBA[3] / 255.0F,buttons);}
+        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, List<ThinkerButtonBase> buttons){
             this.id=id;
             this.disableDummyWorldRend=true;
             this.icon=icon;
@@ -85,14 +85,14 @@ public class profileHandler {
             this.iconG=iconG;
             this.iconB=iconB;
             this.iconA=iconA;
-            this.buttons= (ArrayList<ThinkerButton>) buttons;
+            this.buttons= (ArrayList<ThinkerButtonBase>) buttons;
         }
 
-        public thinkingProfile(String id, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButton... buttons){this(id,null,0,0,0,0,dummyWorldThinkerObjects,buttons);}
-        public thinkingProfile(String id, IIcon icon, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButton... buttons){this(id,icon,1,1,1,1,dummyWorldThinkerObjects,buttons);}
-        public thinkingProfile(String id, IIcon icon, int iconRGBA, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButton... buttons){this(id,icon,(float)(iconRGBA >> 16 & 255)  / 255.0F,(iconRGBA >> 8 & 255) / 255.0F,(iconRGBA & 255) /255.0F,(float)(iconRGBA >> 24 & 255),dummyWorldThinkerObjects,buttons);}
-        public thinkingProfile(String id, IIcon icon, short[] iconRGBA, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButton... buttons){this(id,icon,(float)iconRGBA[0] / 255.0F,(float)iconRGBA[1] / 255.0F,(float)iconRGBA[2] /255.0F,(float)iconRGBA[3] / 255.0F,dummyWorldThinkerObjects,buttons);}
-        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButton... buttons){
+        public thinkingProfile(String id, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButtonBase... buttons){this(id,null,0,0,0,0,dummyWorldThinkerObjects,buttons);}
+        public thinkingProfile(String id, IIcon icon, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButtonBase... buttons){this(id,icon,1,1,1,1,dummyWorldThinkerObjects,buttons);}
+        public thinkingProfile(String id, IIcon icon, int iconRGBA, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButtonBase... buttons){this(id,icon,(float)(iconRGBA >> 16 & 255)  / 255.0F,(iconRGBA >> 8 & 255) / 255.0F,(iconRGBA & 255) /255.0F,(float)(iconRGBA >> 24 & 255),dummyWorldThinkerObjects,buttons);}
+        public thinkingProfile(String id, IIcon icon, short[] iconRGBA, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButtonBase... buttons){this(id,icon,(float)iconRGBA[0] / 255.0F,(float)iconRGBA[1] / 255.0F,(float)iconRGBA[2] /255.0F,(float)iconRGBA[3] / 255.0F,dummyWorldThinkerObjects,buttons);}
+        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, List<IdummyWorldThinkerObject> dummyWorldThinkerObjects, ThinkerButtonBase... buttons){
             this.id=id;
             this.disableDummyWorldRend=false;
             this.icon=icon;
@@ -104,7 +104,7 @@ public class profileHandler {
             Collections.addAll(this.buttons, buttons);
         }
 
-        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, ArrayList<IdummyWorldThinkerObject> dummyWorldThinkerObjects, List<ThinkerButton> buttons){
+        public thinkingProfile(String id, IIcon icon, float iconR, float iconG, float iconB, float iconA, ArrayList<IdummyWorldThinkerObject> dummyWorldThinkerObjects, List<ThinkerButtonBase> buttons){
             this.id=id;
             this.disableDummyWorldRend=false;
             this.icon=icon;
@@ -113,13 +113,13 @@ public class profileHandler {
             this.iconB=iconB;
             this.iconA=iconA;
             this.dummyWorldThinkerObjects=dummyWorldThinkerObjects;
-            this.buttons= (ArrayList<ThinkerButton>) buttons;
+            this.buttons= (ArrayList<ThinkerButtonBase>) buttons;
         }
         public boolean disableDummyWorldRend=false;
         public IIcon icon;
         public float iconR,iconG,iconB,iconA;
         public List<IdummyWorldThinkerObject> dummyWorldThinkerObjects = new ArrayList<>();
-        public ArrayList<ThinkerButton> buttons = new ArrayList<>();
+        public ArrayList<ThinkerButtonBase> buttons = new ArrayList<>();
         public String id;
         public String bindItemId = "";
         public thinkingProfile setBindItemId(String unlocalizedName){

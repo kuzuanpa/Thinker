@@ -19,7 +19,7 @@ import cn.kuzuanpa.thinker.api.IThinkerObject;
 import cn.kuzuanpa.thinker.client.profileHandler;
 import cn.kuzuanpa.thinker.client.render.IThinkerAnime;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -96,7 +96,7 @@ public class thinkerJsonReader {
             }
             json.endObject();
             ArrayList<IdummyWorldThinkerObject> objs=new ArrayList<>();
-            List<ThinkerButton> buttons=new ArrayList<>();
+            List<ThinkerButtonBase> buttons=new ArrayList<>();
             ThinkerObjects.forEach(obj->{
                 if(obj instanceof IdummyWorldThinkerObject) objs.add(((IdummyWorldThinkerObject)obj));
             });

@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
 
 public class animeMoveLinear implements IGuiAnime {
@@ -26,26 +26,25 @@ public class animeMoveLinear implements IGuiAnime {
     }
     public int startTime, endTime, dX, dY;
     @Override
-    public void animeDraw(long initTime) {
-        long timer = System.currentTimeMillis()-initTime;
+    public void animeDraw(long timer) {
         if(timer<startTime) return;
         if (timer < endTime) GL11.glTranslatef(((float)(timer - startTime)/(float)(endTime-startTime))* dX,((float)(timer - startTime)/(float)(endTime-startTime))* dY, 0);
         else GL11.glTranslatef(dX, dY, 0);
     }
 
     @Override
-    public void animeDrawPre(long initTime) {
+    public void animeDrawPre(long time) {
 
     }
 
     @Override
-    public void animeDrawAfter(long initTime) {
+    public void animeDrawAfter(long time) {
 
     }
 
     @Override
-    public void updateButton(long initTime, ThinkerButton button) {
-        long timer = System.currentTimeMillis()-initTime;
+    public void updateButton(long time, ThinkerButtonBase button) {
+        long timer = System.currentTimeMillis()- time;
         if(timer<startTime) return;
         if (timer < endTime) {
             float f1=((float)(timer - startTime)/(float)(endTime-startTime));

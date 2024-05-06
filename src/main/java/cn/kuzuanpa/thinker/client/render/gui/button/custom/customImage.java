@@ -14,12 +14,11 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.button.custom;
 
-import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import cpw.mods.fml.client.config.GuiUtils;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.client.Minecraft;
@@ -38,7 +37,7 @@ import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
-public class customImage extends ThinkerButton implements IAnimatableThinkerObject {
+public class customImage extends ThinkerButtonBase implements IAnimatableThinkerObject {
     public static final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
     public static final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
 
@@ -98,7 +97,7 @@ public class customImage extends ThinkerButton implements IAnimatableThinkerObje
         if (this.visible) {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, glTextureId);
             GL11.glTranslatef(xPosition + (height / 2F), yPosition + (width / 2F),0);
-            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
             GL11.glTranslatef(-(xPosition + (height / 2F)), -(yPosition + (width / 2F)),0);
             GuiUtils.drawContinuousTexturedBox(posX, posY, 0, 0, width, height, width, height, 0, zLevel);
         }

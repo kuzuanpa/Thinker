@@ -18,24 +18,21 @@ package cn.kuzuanpa.thinker.client;
 import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import gregapi.data.LH;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.input.Keyboard;
 
-public class TooltipHandler {
+public class tooltipHandler {
     int pressedTime=0;
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTooltipEvent(ItemTooltipEvent event) {
         boolean isThinkerGoingToDisplay=Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)&&Keyboard.isKeyDown(keyBindHandler.keyThink.getKeyCode());
         if(!isThinkerGoingToDisplay)pressedTime=0;
         else pressedTime++;
-
-        if(profileHandler.isItemHaveProfile(event.itemStack.getItem().getUnlocalizedName())) {
+        if(configHandler.displayItemStackUnlocalizedName.get())event.toolTip.add(event.itemStack.getUnlocalizedName());
+        if(profileHandler.isItemHaveProfile(event.itemStack.getUnlocalizedName())) {
             StringBuilder processBar = new StringBuilder();
             if(isThinkerGoingToDisplay) {
                 for (int i = 0; i < 20; i++) {

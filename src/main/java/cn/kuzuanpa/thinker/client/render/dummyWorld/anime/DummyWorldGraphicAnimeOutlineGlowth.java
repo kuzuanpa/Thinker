@@ -95,8 +95,8 @@ public class DummyWorldGraphicAnimeOutlineGlowth implements IDummyBlockAnimeDraw
     }
 
     @Override
-    public void drawAdditionalQuads(long initTime) {
-        long timer = System.currentTimeMillis()-initTime;
+    public void drawAdditionalQuads(long time) {
+        long timer = System.currentTimeMillis()- time;
         if(startTime<timer&&timer<endTime)renderBlockOutlineAt(pos,color,thickness);
 
     }

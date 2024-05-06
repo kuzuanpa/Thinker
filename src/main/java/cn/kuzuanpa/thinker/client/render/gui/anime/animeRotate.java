@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
 
 public class animeRotate implements IGuiAnime {
@@ -25,25 +25,23 @@ public class animeRotate implements IGuiAnime {
     }
     public int startTime, endTime, rotateAngle;
     @Override
-    public void animeDraw(long initTime) {
-        long timer = System.currentTimeMillis()-initTime;
-
+    public void animeDraw(long timer) {
         if(timer<startTime) return;
         if(timer<endTime)GL11.glRotatef(((float)(timer - startTime)/(float)(endTime-startTime))*rotateAngle,0,0,1);
         else GL11.glRotatef(rotateAngle,0,0,1);
     }
 
     @Override
-    public void animeDrawPre(long initTime) {
+    public void animeDrawPre(long time) {
 
     }
 
     @Override
-    public void animeDrawAfter(long initTime) {
+    public void animeDrawAfter(long time) {
 
     }
     @Override
-    public void updateButton(long initTime, ThinkerButton button) {
+    public void updateButton(long time, ThinkerButtonBase button) {
 
     }
     @Override

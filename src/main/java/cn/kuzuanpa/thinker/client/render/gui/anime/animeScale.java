@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
 
 public class animeScale implements IGuiAnime {
@@ -28,21 +28,19 @@ public class animeScale implements IGuiAnime {
     public int startTime, endTime;
     public float scaleRate,scaleX,scaleY;
     @Override
-    public void animeDraw(long initTime) {
-        long timer = System.currentTimeMillis()-initTime;
-
+    public void animeDraw(long timer) {
         if(timer<startTime) return;
         if(timer<endTime) GL11.glScalef(((float)(timer - startTime)/(float)(endTime-startTime))*scaleX*scaleRate,((float)(timer - startTime)/(float)(endTime-startTime))*scaleY*scaleRate,1);
         else GL11.glScalef(scaleX*scaleRate,scaleY*scaleRate,1);
     }
 
     @Override
-    public void animeDrawPre(long initTime) {}
+    public void animeDrawPre(long time) {}
 
     @Override
-    public void animeDrawAfter(long initTime) {}
+    public void animeDrawAfter(long time) {}
     @Override
-    public void updateButton(long initTime, ThinkerButton button) {
+    public void updateButton(long time, ThinkerButtonBase button) {
         //TODO
     }
     @Override

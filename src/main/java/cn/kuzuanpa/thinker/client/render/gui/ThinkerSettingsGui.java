@@ -38,7 +38,7 @@ public class ThinkerSettingsGui extends GuiScreen {
     public static float scrollInertia=6F,oldWheel=0F;
     public float YOffset=0;
     public long initTime=0;
-    protected List<ThinkerButton> buttonsHaveAnime = new ArrayList();
+    protected List<ThinkerButtonBase> buttonsHaveAnime = new ArrayList();
     protected List<String> hoveringString = new ArrayList<>();
     public ThinkerSettingsGui() {
         allowUserInput = false;
@@ -58,28 +58,30 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
         buttonList.add(new thinkerImage(1,displayWidth-52,20,128,384,384,32,"textures/gui/think/base.png",""));
         buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png","").addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),-(displayWidth-56),-16)).addAnime(new animeRotate(0,configHandler.getConfiguredAnimeTime(1000),-720)).addToList(buttonsHaveAnime));
-        buttonList.add(new ThinkerButton(3,5, 45,132,20,l10n("thinker.settings.HUD"))             .addAnime(new animeMoveLinear(-1,0,-600,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 800),600,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new ThinkerButton(4,5, 70,132,20,l10n("thinker.settings.anime"))           .addAnime(new animeMoveLinear(-1,0,-550,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 900),550,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new ThinkerButton(5,5, 95,132,20,l10n("thinker.settings.profile_selector")).addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),500,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new ThinkerButton(6,5,120,132,20,l10n("thinker.settings.dummy_world"))     .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1100),500,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new ThinkerButton(7,5,145,132,20,l10n("thinker.settings.help"))            .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1200),500,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/gui/think/base.png","").addAnime(new animeTransparency(-1,0,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
-        buttonList.add( new NumberConfigButton(9 ,150,20 ,displayWidth-160,32,"ColorR",configHandler.HUDBackgroundColorR));
-        buttonList.add( new NumberConfigButton(10,150,60 ,displayWidth-160,32,"ColorG",configHandler.HUDBackgroundColorG));
-        buttonList.add( new NumberConfigButton(11,150,100,displayWidth-160,32,"ColorB",configHandler.HUDBackgroundColorB));
-        buttonList.add( new NumberConfigButton(12,150,140,displayWidth-160,32,"ColorA",configHandler.HUDBackgroundColorA));
-        buttonList.add( new NumberConfigButton(13,150,20,displayWidth-160,32,"anime Speed",configHandler.animeSpeed));
-        buttonList.add(new BooleanConfigButton(14,150,20,displayWidth-160,32,"Freely Scroll",configHandler.themeSelectorFreelyScroll));
-        buttonList.add( new NumberConfigButton(15,150,60,displayWidth-160,32,"Profile Gap",configHandler.themeSelectorProfileGap));
-        buttonList.add( new NumberConfigButton(16,150,100,displayWidth-160,32,"Scroll Inertia",configHandler.themeSelectorScrollInertia));
-        buttonList.add( new NumberConfigButton(17,150,140,displayWidth-160,32,"Scroll Speed",configHandler.themeSelectorScrollSpeed));
+        buttonList.add(new ThinkerButtonBase(3,5, 45,132,20,l10n("thinker.settings.HUD"))             .addAnime(new animeMoveLinear(-1,0,-600,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 800),600,0)).addToList(buttonsHaveAnime));
+        buttonList.add(new ThinkerButtonBase(4,5, 70,132,20,l10n("thinker.settings.anime"))           .addAnime(new animeMoveLinear(-1,0,-550,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 900),550,0)).addToList(buttonsHaveAnime));
+        buttonList.add(new ThinkerButtonBase(5,5, 95,132,20,l10n("thinker.settings.profile_selector")).addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),500,0)).addToList(buttonsHaveAnime));
+        buttonList.add(new ThinkerButtonBase(6,5,120,132,20,l10n("thinker.settings.dummy_world"))     .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1100),500,0)).addToList(buttonsHaveAnime));
+        buttonList.add(new ThinkerButtonBase(7,5,145,132,20,l10n("thinker.settings.help"))            .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1200),500,0)).addToList(buttonsHaveAnime));
+        buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/gui/think/base.png","").addAnime(new animeTransparency(0,0,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
+        buttonList.add( new NumberConfigButton(9 ,150,20 ,displayWidth-160,32,"BackgroundColorR",configHandler.HUDBackgroundColorR));
+        buttonList.add( new NumberConfigButton(10,150,60 ,displayWidth-160,32,"BackgroundColorG",configHandler.HUDBackgroundColorG));
+        buttonList.add( new NumberConfigButton(11,150,100,displayWidth-160,32,"BackgroundColorB",configHandler.HUDBackgroundColorB));
+        buttonList.add( new NumberConfigButton(12,150,140,displayWidth-160,32,"BackgroundColorA",configHandler.HUDBackgroundColorA));
+        buttonList.add(new BooleanConfigButton(13,150,180,displayWidth-160,32,"Show Every ItemStack Unlocalized Name in tooltip",configHandler.displayItemStackUnlocalizedName));
+
+        buttonList.add( new NumberConfigButton(14,150,20,displayWidth-160,32,"anime Speed",configHandler.animeSpeed));
+        buttonList.add(new BooleanConfigButton(15,150,20,displayWidth-160,32,"Freely Scroll",configHandler.themeSelectorFreelyScroll));
+        buttonList.add( new NumberConfigButton(16,150,60,displayWidth-160,32,"Profile Gap",configHandler.themeSelectorProfileGap));
+        buttonList.add( new NumberConfigButton(17,150,100,displayWidth-160,32,"Scroll Inertia",configHandler.themeSelectorScrollInertia));
+        buttonList.add( new NumberConfigButton(18,150,140,displayWidth-160,32,"Scroll Speed",configHandler.themeSelectorScrollSpeed));
 
         if(openByUser)postInitGui();
         for (int i = 9; i < buttonList.size(); i++) {
-            ((ThinkerButton) buttonList.get(i)).visible=false;
+            ((ThinkerButtonBase) buttonList.get(i)).visible=false;
         }
     }
-    public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
+    public static String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
 
     protected void keyTyped(char p_73869_1_, int p_73869_2_)
     {
@@ -92,7 +94,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         {
             for (int l = this.buttonList.size() - 1; l >= 0 ;l--)
             {
-                ThinkerButton guibutton = (ThinkerButton)this.buttonList.get(l);
+                ThinkerButtonBase guibutton = (ThinkerButtonBase)this.buttonList.get(l);
 
                 if (guibutton.updateHoverState(p_73864_1_, p_73864_2_))
                 {
@@ -116,21 +118,22 @@ public class ThinkerSettingsGui extends GuiScreen {
     private void updateButtonList(int categoryId){
         YOffset=0;
         if(buttonList.size()>9)for (int i = 9; i < buttonList.size(); i++) {
-            ((ThinkerButton) buttonList.get(i)).visible=false;
+            ((ThinkerButtonBase) buttonList.get(i)).visible=false;
         }
         int starti=9,endi=10;
         switch (categoryId){
-            case 3:starti=9;endi=12;break;
-            case 4:starti=13;endi=13;break;
-            case 5:starti=14;endi=17;break;
+            case 3:starti=9;endi=13;break;
+            case 4:starti=14;endi=14;break;
+            case 5:starti=15;endi=18;break;
             default: return;
         }
         for (int i = starti; i <= endi; i++) {
             if(i>buttonList.size())return;
-            ((ThinkerButton) buttonList.get(i)).visible=true;
+            ((ThinkerButtonBase) buttonList.get(i)).visible=true;
         }
     }
     public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_){
+        buttonsHaveAnime.forEach(button-> button.updateTimer(getTimer()));
         super.drawScreen(p_73863_1_,p_73863_2_,p_73863_3_);
         oldWheel+=oldWheel>0?-scrollInertia : scrollInertia;
         if(Math.abs(oldWheel)<= scrollInertia)oldWheel=0;
@@ -149,8 +152,8 @@ public class ThinkerSettingsGui extends GuiScreen {
         int x = Mouse.getX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
         buttonList.forEach(b -> {
-            if (!(b instanceof ThinkerButton)) return;
-            ThinkerButton button = (ThinkerButton) b;
+            if (!(b instanceof ThinkerButtonBase)) return;
+            ThinkerButtonBase button = (ThinkerButtonBase) b;
             if(!button.visible)return;
             if(button.updateHoverState(x,y))hoveringString= getButtonInfo(button.id);
         });
@@ -181,14 +184,14 @@ public class ThinkerSettingsGui extends GuiScreen {
         }
         return list;
     }
+    public long getTimer(){
+        return System.currentTimeMillis()-initTime;
+    }
     public void handleMouseInput(){
         super.handleMouseInput();
         int x = Mouse.getX() * this.width / this.mc.displayWidth;
         int y =this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
         if(Mouse.isInsideWindow()&&Mouse.getEventDWheel()!=0&& x>50)oldWheel+=Mouse.getEventDWheel();
-    }
-    public void updateScreen() {
-        buttonsHaveAnime.forEach(button-> button.updateInitTime(initTime));
     }
     public void close() {
         this.mc.displayGuiScreen(new ThinkingGuiMain());

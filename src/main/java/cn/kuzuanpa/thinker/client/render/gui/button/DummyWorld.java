@@ -20,7 +20,6 @@ import codechicken.lib.math.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Mouse;
@@ -28,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class DummyWorld extends ThinkerButton {
+public class DummyWorld extends ThinkerButtonBase {
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
     protected static BlockPosition selectedBlock;
@@ -129,7 +128,7 @@ public class DummyWorld extends ThinkerButton {
         {
             try {
                 updateHoverState(mouseX,mouseY);
-                GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
+                GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
 
                 int RECIPE_LAYOUT_X = xPosition;
                 int RECIPE_LAYOUT_Y = yPosition;
@@ -189,7 +188,7 @@ public class DummyWorld extends ThinkerButton {
 
                 lastGuiMouseX = guiMouseX;
                 lastGuiMouseY = guiMouseY;
-                GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
+                GuiAnimeList.forEach(anime -> anime.animeDrawAfter(timer));
             }catch (Throwable t){
                 t.printStackTrace();
             }

@@ -16,29 +16,34 @@ import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-public class BooleanConfigButton extends ThinkerButton {
+public class BooleanConfigButton extends ThinkerButtonBase {
     public BooleanConfigButton(int id, int xPos, int yPos, int width, int height, String displayText, configHandler.configBoolean config) {
         super(id, xPos, yPos,width,height,displayText);
         this.config=config;
         this.originalY=yPos;
     }
     public configHandler.configBoolean config;
+    public boolean mouseHolding=false;
     public int originalY;
     public void drawButton(Minecraft p_146112_1_, int mouseX, int mouseY)
     {
         if (this.visible)
         {
             GL11.glPushMatrix();
-            GuiAnimeList.forEach(anime -> anime.animeDrawPre(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
             FontRenderer fontrenderer = p_146112_1_.fontRenderer;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean isMouseHovering=this.updateHoverState(mouseX,mouseY);
             int k = this.getHoverState(isMouseHovering);
-            GuiAnimeList.forEach(anime -> anime.animeDraw(initTime));
-            drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,-2132680325);
-            if(k==2&& Mouse.isButtonDown(0))config.set(!config.get());
+            GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
+            drawRect(xPosition+2,yPosition+height/2,xPosition+width-2,yPosition+(height/2)+1,config.get()?0xff99ffcc:0x99ff99cc);
+            if(k==2&& Mouse.isButtonDown(0)&&!mouseHolding){
+                config.set(!config.get());
+                mouseHolding=true;
+            }
+            if(!Mouse.isButtonDown(0))mouseHolding=false;
             this.drawString(fontrenderer, this.displayString, this.xPosition, this.yPosition, -1);
-            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(initTime));
+            GuiAnimeList.forEach(anime -> anime.animeDrawAfter(timer));
             GL11.glPopMatrix();
         }
     }

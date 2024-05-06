@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker;
 
-import cn.kuzuanpa.thinker.client.TooltipHandler;
+import cn.kuzuanpa.thinker.client.tooltipHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -33,7 +33,7 @@ public class clientProxy extends commonProxy {
         super.init(event);
         ClientRegistry.registerKeyBinding(keyBindHandler.keyThink);
         FMLCommonHandler.instance().bus().register(new keyBindHandler());
-        MinecraftForge.EVENT_BUS.register(new TooltipHandler());
+        MinecraftForge.EVENT_BUS.register(new tooltipHandler());
     }
 
 

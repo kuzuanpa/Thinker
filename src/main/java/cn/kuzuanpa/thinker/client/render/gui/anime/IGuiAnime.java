@@ -14,14 +14,14 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButton;
+import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
 
 public interface IGuiAnime {
-    void animeDraw(long initTime);
-    void animeDrawPre(long initTime);
-    void animeDrawAfter(long initTime);
+    void animeDraw(long time);
+    void animeDrawPre(long time);
+    void animeDrawAfter(long time);
     /**Some Anime changed Position or Scale of buttons. update them in there to make things perform correctly when clicked on these button**/
-    void updateButton(long initTime, ThinkerButton button);
+    void updateButton(long time, ThinkerButtonBase button);
     String jsonName();
 }
 

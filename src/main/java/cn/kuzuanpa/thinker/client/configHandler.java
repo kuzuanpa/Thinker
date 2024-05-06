@@ -32,6 +32,7 @@ public class configHandler {
     public static configNumber themeSelectorScrollInertia =new configNumber(0.01F,8F,50.0F);
     public static configNumber keyPressedTimeNeededToStartThink =new configNumber(10,100,500);
     public static configBoolean recordDummyWorldTickTooLong = new configBoolean(false,"recordDummyWorldTickTooLong","main","Will thinker show a message while a dummyWorld tick takes too long");
+    public static configBoolean displayItemStackUnlocalizedName = new configBoolean(false,"displayItemStackUnlocalizedName","main","Will every ItemStack show their Unlocalized Name in tooltip");
 
     public static int getConfiguredAnimeTime(int originalTime){return (int) (originalTime*((float)1/animeSpeed.get()));}
     public static float getConfiguredAnimeTime(float originalTime){return originalTime*((float)1/animeSpeed.get());}
@@ -45,12 +46,14 @@ public class configHandler {
         welcome.load();
         themeSelectorFreelyScroll.load();
         recordDummyWorldTickTooLong.load();
+        displayItemStackUnlocalizedName.load();
     }
 
     public static void saveAll(){
         welcome.save();
         themeSelectorFreelyScroll.save();
         recordDummyWorldTickTooLong.save();
+        displayItemStackUnlocalizedName.save();
         config.save();
         needSave = false;
     }
