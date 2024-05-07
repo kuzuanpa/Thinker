@@ -25,6 +25,8 @@ import cn.kuzuanpa.thinker.client.render.gui.button.custom.customText;
 
 import java.util.Map;
 
+import static cn.kuzuanpa.thinker.Thinker.isGeckoLibLoaded;
+
 public class defaultObjectsAdaptor implements IThinkerObjectsAdaptor {
 
     public defaultObjectsAdaptor(){}
@@ -46,7 +48,10 @@ public class defaultObjectsAdaptor implements IThinkerObjectsAdaptor {
             case "Gecko": Thinker.log("syntax improvable: First Letter should be lower case.(type=geckoModel)");
             case "geoModel":
             case "geckoModel":
-            case "gecko": return dummyWorldGeckoModel.isMapHaveValidContents(values);
+            case "gecko":
+                if(isGeckoLibLoaded)return dummyWorldGeckoModel.isMapHaveValidContents(values);
+                else Thinker.log("try to add geckoModel without GeckoLib loaded!");
+                return false;
             case "Bundle": Thinker.log("syntax improvable: First Letter should be lower case.(type=bundle)");
             case "bundle": return dummyWorldBundle.isMapHaveValidContents(values);
             default: return false;

@@ -50,8 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
-import static cn.kuzuanpa.thinker.Thinker.getInt;
+import static cn.kuzuanpa.thinker.Thinker.*;
 
 /**This is actually a renderer, but "new Render(new Model(..))" seems stupid...**/
 public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.dummyWorldGeckoModelContainer>,IdummyWorldThinkerObject, IAnimatableThinkerObject {

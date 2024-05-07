@@ -188,16 +188,16 @@ public class thinkerJsonReader {
                 else values.put(jsonName,json.nextString());
             }
         }
-        if(!values.containsKey("type")){requestedErr="Missing Required Element: type";errored=true;}
+        if(!values.containsKey("type"))requestedErr.add("Missing Required Element: type");
         else for (IThinkerObjectsAdaptor objectsAdaptor : objectsAdaptors) {
             if(objectsAdaptor.isMapHaveValidContents(values)){
                 json.endObject();
                 return objectsAdaptor.create(values);
             }
         }
-        if(errored)logError(json,fileName,requestedErr);   //If error occurred when creating object:
+        if(!requestedErr.isEmpty())requestedErr.forEach(err->logError(json,fileName,err));   //If error occurred when creating object:
         else logError(json,fileName,"Unknown object type");//If no match type:
-        errored=false;
+        requestedErr.clear();
         json.endObject();
         return null;
     }
@@ -290,11 +290,9 @@ public class thinkerJsonReader {
         return out;
     }
 
-    public static boolean errored =false;
-    public static String requestedErr ="";
+    public final static ArrayList<String> requestedErr = new ArrayList<>();
     public static void requestLogError(String error){
-        requestedErr=error;
-        errored=true;
+        requestedErr.add(error);
     }
     public static void logError(JsonReader jsonReader, String fileName,String error){
         /*FMLLog.log(Level.ERROR,*/System.out.println("Error: "+error+"\nIn file: "+fileName+jsonReader.toString().replaceAll("JsonReader",""));
