@@ -22,12 +22,12 @@ import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.util.DummyEntityPlayer;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -38,8 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static cn.kuzuanpa.thinker.Thinker.getBoolean;
-import static cn.kuzuanpa.thinker.Thinker.getInt;
+import static cn.kuzuanpa.thinker.Thinker.*;
 import static cn.kuzuanpa.thinker.client.json.thinkerJsonReader.getItemStack;
 
 public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThinkerObject {
@@ -48,6 +47,8 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
     public BlockPosition pos;
     public Block block;
     public ItemStack itemStack;
+    public int dummyPlayerX =0, dummyPlayerY =0, dummyPlayerZ =0;
+    public float dummyPlayerCarmeaPitch =0, dummyPlayerCarmeaYaw =0;
     public int meta;
     public dummyWorldBlock(BlockPosition pos, Block block, IDummyWorldAnimes... animes){
         this(pos,block,0,animes);
@@ -55,9 +56,14 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
     public dummyWorldBlock(BlockPosition pos, Block block) {
         this(pos,block,0);
     }
-    public dummyWorldBlock(BlockPosition pos, ItemStack itemStack, IDummyWorldAnimes... animes){
+    public dummyWorldBlock(BlockPosition pos, ItemStack itemStack, int dummyPlayerX, int dummyPlayerY, int dummyPlayerZ,float dummyPlayerCarmeaPitch,float dummyPlayerCarmeaYaw, IDummyWorldAnimes... animes){
         this.pos=pos;
         this.itemStack =itemStack;
+        this.dummyPlayerX =dummyPlayerX;
+        this.dummyPlayerY =dummyPlayerY;
+        this.dummyPlayerZ =dummyPlayerZ;
+        this.dummyPlayerCarmeaPitch=dummyPlayerCarmeaPitch;
+        this.dummyPlayerCarmeaYaw=dummyPlayerCarmeaYaw;
         Collections.addAll(WorldAnimeList,animes);
     }
     public dummyWorldBlock(BlockPosition pos, Block block, int meta, IDummyWorldAnimes... animes){
@@ -67,8 +73,6 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         Collections.addAll(WorldAnimeList,animes);
     }
     public dummyWorldBlock setRenderAllFace(boolean renderAllFace){this.renderAllFaces=renderAllFace;return this;}
-
-
     @Override
     public ArrayList<IGuiAnime> getGuiAnimeList() {
         return null;
@@ -120,7 +124,7 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         dummyWorldBlock block = ((dummyWorldBlock) this);
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
         if (block.itemStack != null) {
-            block.itemStack.copy().tryPlaceItemIntoWorld((EntityPlayer) Minecraft.getMinecraft().thePlayer, world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
+            block.itemStack.copy().tryPlaceItemIntoWorld(new DummyEntityPlayer(world).setPos(dummyPlayerX,dummyPlayerY,dummyPlayerZ).setFacing(dummyPlayerCarmeaPitch,dummyPlayerCarmeaYaw), world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
             block.block = world.getBlock(pos.x, pos.y, pos.z);
             if (block.block == null || block.block == Blocks.air) {
                 Thinker.err("Invalid Block Created From Item!" + block.itemStack.getDisplayName());
@@ -145,11 +149,37 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
     }
     public static dummyWorldBlock create(Map<String, Object> values) {
         boolean renderAllFaces = false;
+        int dummyPlayerX=0,dummyPlayerY=0,dummyPlayerZ=0;
+        float dummyPlayerPitch=0,dummyPlayerYaw=0;
         if(values.containsKey("renderAllFaces"))renderAllFaces = getBoolean(values.get("renderAllFaces"));
+
+        if(values.containsKey("dummyPlayerX")) dummyPlayerX = getInt(values.get("dummyPlayerX"));
+        if(values.containsKey("dummyPlayerY")) dummyPlayerY = getInt(values.get("dummyPlayerY"));
+        if(values.containsKey("dummyPlayerZ")) dummyPlayerZ = getInt(values.get("dummyPlayerZ"));
+        if(values.containsKey("dummyPlayerPitch")) {
+            dummyPlayerPitch = getFloat(values.get("dummyPlayerPitch"));
+            if(dummyPlayerPitch>90){
+                Thinker.log("Too large dummyPlayerPitch, setting to 90");
+                dummyPlayerPitch=90;
+            }else if(dummyPlayerPitch<-90){
+                Thinker.log("Too small dummyPlayerPitch, setting to -90");
+                dummyPlayerPitch=-90;
+            }
+        }
+        if(values.containsKey("dummyPlayerYaw")) {
+            dummyPlayerYaw = getFloat(values.get("dummyPlayerYaw"));
+            if(dummyPlayerYaw>180){
+                Thinker.log("Too large dummyPlayerYaw, setting to 180");
+                dummyPlayerYaw=180;
+            }else if(dummyPlayerYaw<-180){
+                Thinker.log("Too small dummyPlayerYaw, setting to -180");
+                dummyPlayerYaw=-180;
+            }
+        }
 
         BlockPosition pos = new BlockPosition(getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("posZ")));
 
-        if(values.containsKey("fromItem"))return new dummyWorldBlock(pos,getItemStack((String)values.get("fromItem"))).setRenderAllFace(renderAllFaces);
+        if(values.containsKey("fromItem"))return new dummyWorldBlock(pos,getItemStack((String)values.get("fromItem")),dummyPlayerX,dummyPlayerY,dummyPlayerZ,dummyPlayerPitch,dummyPlayerYaw).setRenderAllFace(renderAllFaces);
         if(values.containsKey("block")&&values.containsKey("meta"))return new dummyWorldBlock(pos,Block.getBlockFromName((String) values.get("block")),getInt(values.get("meta"))).setRenderAllFace(renderAllFaces);
         return null;
     }

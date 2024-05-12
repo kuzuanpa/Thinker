@@ -8,7 +8,7 @@ Thinker is currently in development, and the list of features to be implemented 
 
 [ ]Draggable progress bar
 
-[ ]Directional block
+[x]Directional block
 
 [ ]Detect the object pointed to by the mouse
 
@@ -21,7 +21,7 @@ Thinker目前仍处于开发中，仍待实现的功能列表：
 
 [ ]可拖动的进度条
 
-[ ]可定义的方块朝向
+[x]可定义的方块朝向
 
 [ ]检测鼠标指向的物体
 
