@@ -1,10 +1,7 @@
 package blockrenderer6343.world;
 
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.client.configHandler;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import cn.kuzuanpa.thinker.client.handler.configHandler;
 
 public class DummyWorldTickThread extends Thread{
     @Override
@@ -15,7 +12,7 @@ public class DummyWorldTickThread extends Thread{
     public DummyWorldTickThread() {
         super("Dummy World Tick Thread");
     }
-    public DummyWorld trackedDummyWorld;
+    private DummyWorld trackedDummyWorld;
     public final int intervalBetweenTicks=49;
     public int lastTickTime=0;
     @Override
@@ -35,5 +32,10 @@ public class DummyWorldTickThread extends Thread{
                 } catch (InterruptedException ignored) {}
             }
         }
+    }
+    public void setTrackedDummyWorld(DummyWorld world){
+        trackedDummyWorld=world;
+        if(world!=null)world.lock=true;
+        this.interrupt();
     }
 }

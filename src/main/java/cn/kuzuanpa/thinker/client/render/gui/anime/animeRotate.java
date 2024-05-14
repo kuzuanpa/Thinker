@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
 
 public class animeRotate implements IGuiAnime {

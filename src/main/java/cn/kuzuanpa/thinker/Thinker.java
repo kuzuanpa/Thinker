@@ -15,9 +15,9 @@
 package cn.kuzuanpa.thinker;
 
 import blockrenderer6343.world.DummyWorldTickThread;
-import cn.kuzuanpa.thinker.client.configHandler;
+import cn.kuzuanpa.thinker.client.handler.configHandler;
 import cn.kuzuanpa.thinker.client.json.*;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiWelcome;
+import cn.kuzuanpa.thinker.client.ThinkingGuiWelcome;
 import cn.kuzuanpa.thinker.command.CommandGetTileNBT;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;

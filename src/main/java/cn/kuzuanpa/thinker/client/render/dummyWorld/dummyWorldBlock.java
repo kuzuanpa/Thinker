@@ -18,13 +18,14 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
-import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.OutlineGlowth;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyBlockAnimeDrawAdditionalQuads;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.util.DummyEntityPlayer;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -97,9 +98,6 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
                 ((IDummyWorldGraphicAnime)a).animeDraw(initTime);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             }
-            if(a instanceof IDummyWorldTilePropertiesAnime){
-                dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile&&obj.getPos()==pos).forEach(tile->((IDummyWorldTilePropertiesAnime) a).doAnime(((dummyWorldTile)tile).tile));
-            }
         });
         Tessellator.instance.startDrawingQuads();
         try {
@@ -113,7 +111,7 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         } finally {
             Tessellator.instance.draw();
             Tessellator.instance.setTranslation(0, 0, 0);
-            if(pos.equals(mousePointingPos)) DummyWorldGraphicAnimeOutlineGlowth.renderBlockOutlineAt(pos, 0xCCCCCC, 2F);
+            if(pos.equals(mousePointingPos)) OutlineGlowth.renderBlockOutlineAt(pos, 0xCCCCCC, 2F);
             GL11.glPopMatrix();
         }
 

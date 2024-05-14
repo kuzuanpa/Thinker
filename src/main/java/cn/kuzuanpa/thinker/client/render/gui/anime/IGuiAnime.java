@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client.render.gui.anime;
 
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
 
 public interface IGuiAnime {
     void animeDraw(long time);

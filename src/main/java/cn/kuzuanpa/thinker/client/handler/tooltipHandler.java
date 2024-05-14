@@ -13,9 +13,24 @@
  *
  */
 
-package cn.kuzuanpa.thinker.client;
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
 
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
+package cn.kuzuanpa.thinker.client.handler;
+
+import cn.kuzuanpa.thinker.client.ThinkingGuiMain;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;

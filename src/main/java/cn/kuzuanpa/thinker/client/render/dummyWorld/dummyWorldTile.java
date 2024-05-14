@@ -19,6 +19,9 @@ import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyBlockAnimeDrawAdditionalQuads;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.tick.IDummyWorldTileTickingAnime;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import cn.kuzuanpa.thinker.util.Nbt;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -105,9 +108,6 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
                         GL11.glTranslatef(pos.x, pos.y, pos.z);
                         ((IDummyWorldGraphicAnime) a).animeDraw(initTime);
                         GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
-                    }
-                    if (a instanceof IDummyWorldTilePropertiesAnime) {
-                        ((IDummyWorldTilePropertiesAnime) a).doAnime(tile);
                     }
                 });
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);

@@ -19,11 +19,12 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.api.IThinkerObject;
-import cn.kuzuanpa.thinker.client.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyBlockAnimeDrawAdditionalQuads;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -60,9 +61,6 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
                 ((IDummyWorldGraphicAnime)a).animeDraw(initTime);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
-            }
-            if(a instanceof IDummyWorldTilePropertiesAnime){
-                dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile&&obj.getPos()==pos).forEach(tile->((IDummyWorldTilePropertiesAnime) a).doAnime(((dummyWorldTile)tile).tile));
             }
         });
         subObjects.forEach(obj->obj.render(world, initTime, mousePointingPos));

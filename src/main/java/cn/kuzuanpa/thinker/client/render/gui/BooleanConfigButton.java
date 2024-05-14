@@ -1,4 +1,19 @@
 /*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+
+/*
  * This class was created by <kuzuanpa>. It is distributed as
  * part of the Thinker Mod. Get the Source Code in github:
  * https://github.com/kuzuanpa/Thinker
@@ -8,9 +23,9 @@
  *
  */
 
-package cn.kuzuanpa.thinker.client.render.gui.button;
+package cn.kuzuanpa.thinker.client.render.gui;
 
-import cn.kuzuanpa.thinker.client.configHandler;
+import cn.kuzuanpa.thinker.client.handler.configHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Mouse;

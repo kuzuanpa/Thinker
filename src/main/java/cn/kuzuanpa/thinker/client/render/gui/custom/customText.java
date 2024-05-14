@@ -12,10 +12,10 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.gui.button.custom;
+package cn.kuzuanpa.thinker.client.render.gui.custom;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 

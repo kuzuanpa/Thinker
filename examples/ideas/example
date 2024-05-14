@@ -14,9 +14,10 @@
   "posY":0,
   "posZ":0
   },
-    {
+  {
   "type":"block",
   "fromItem":"gregtech:gt.multitileentity:10004",
+  "dummyPlayerPitch":90,
   "posX":0,
   "posY":0,
   "posZ":4

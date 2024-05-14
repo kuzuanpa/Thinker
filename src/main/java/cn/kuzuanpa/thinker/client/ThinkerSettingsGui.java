@@ -12,11 +12,28 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.gui;
 
-import cn.kuzuanpa.thinker.client.configHandler;
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+package cn.kuzuanpa.thinker.client;
+
+import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.client.handler.configHandler;
+import cn.kuzuanpa.thinker.client.handler.profileHandler;
+import cn.kuzuanpa.thinker.client.render.gui.*;
 import cn.kuzuanpa.thinker.client.render.gui.anime.*;
-import cn.kuzuanpa.thinker.client.render.gui.button.*;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
@@ -28,7 +45,7 @@ import org.lwjgl.input.Mouse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
+import static cn.kuzuanpa.thinker.client.handler.keyBindHandler.keyThink;
 
 public class ThinkerSettingsGui extends GuiScreen {
 
@@ -63,7 +80,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.add(new ThinkerButtonBase(5,5, 95,132,20,l10n("thinker.settings.profile_selector")).addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),500,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(6,5,120,132,20,l10n("thinker.settings.dummy_world"))     .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1100),500,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(7,5,145,132,20,l10n("thinker.settings.help"))            .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1200),500,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/gui/think/base.png","").addAnime(new animeTransparency(0,0,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
+        buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/gui/think/base.png","").addAnime(new animeTransparency(-10,-1,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
         buttonList.add( new NumberConfigButton(9 ,150,20 ,displayWidth-160,32,"BackgroundColorR",configHandler.HUDBackgroundColorR));
         buttonList.add( new NumberConfigButton(10,150,60 ,displayWidth-160,32,"BackgroundColorG",configHandler.HUDBackgroundColorG));
         buttonList.add( new NumberConfigButton(11,150,100,displayWidth-160,32,"BackgroundColorB",configHandler.HUDBackgroundColorB));
@@ -75,6 +92,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.add( new NumberConfigButton(16,150,60,displayWidth-160,32,"Profile Gap",configHandler.themeSelectorProfileGap));
         buttonList.add( new NumberConfigButton(17,150,100,displayWidth-160,32,"Scroll Inertia",configHandler.themeSelectorScrollInertia));
         buttonList.add( new NumberConfigButton(18,150,140,displayWidth-160,32,"Scroll Speed",configHandler.themeSelectorScrollSpeed));
+        buttonList.add(new BooleanConfigButton(19,150,180,displayWidth-160,32,"Auto Fold",configHandler.themeSelectorAutoFold));
 
         if(openByUser)postInitGui();
         for (int i = 9; i < buttonList.size(); i++) {
@@ -124,7 +142,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         switch (categoryId){
             case 3:starti=9;endi=13;break;
             case 4:starti=14;endi=14;break;
-            case 5:starti=15;endi=18;break;
+            case 5:starti=15;endi=19;break;
             default: return;
         }
         for (int i = starti; i <= endi; i++) {
@@ -193,8 +211,12 @@ public class ThinkerSettingsGui extends GuiScreen {
         int y =this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
         if(Mouse.isInsideWindow()&&Mouse.getEventDWheel()!=0&& x>50)oldWheel+=Mouse.getEventDWheel();
     }
-    public void close() {
+    public boolean close() {
+        profileHandler.oldWheel=0;
+        profileHandler.YOffset=0;
+        configHandler.saveAll();
         this.mc.displayGuiScreen(new ThinkingGuiMain());
+        return true;
     }
     public boolean doesGuiPauseGame()
     {

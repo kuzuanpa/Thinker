@@ -12,10 +12,25 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client;
+
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+package cn.kuzuanpa.thinker.client.handler;
 
 import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Mouse;
 
@@ -25,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class profileHandler {
     public static thinkingProfile selectedProfile;
     public static float oldWheel=0F,YOffset=0;
-    private static HashMap<String,thinkingProfile> profileMap =new HashMap<>();
+    private static final HashMap<String,thinkingProfile> profileMap =new HashMap<>();
     public static Map<Integer,String> displayProfileIDMap = new HashMap<>();
     public static int profileLayer=1;
     public static void handleMouseWheel(){
@@ -33,8 +48,8 @@ public class profileHandler {
     }
     public static void tick(){
 
-        oldWheel+=oldWheel>0?-configHandler.themeSelectorScrollInertia.get() : configHandler.themeSelectorScrollInertia.get();
-        if(Math.abs(oldWheel)<= configHandler.themeSelectorScrollInertia.get())oldWheel=0;
+        oldWheel+=oldWheel>0?-configHandler.themeSelectorScrollInertia.get()*10F : configHandler.themeSelectorScrollInertia.get()*10F;
+        if(Math.abs(oldWheel)<= configHandler.themeSelectorScrollInertia.get()*10F)oldWheel=0;
         YOffset+=oldWheel/300*(configHandler.themeSelectorScrollSpeed.get());
         if(!configHandler.themeSelectorFreelyScroll.get()&&(YOffset)>0){YOffset=0;oldWheel=0;return;}
         int i1=-((profileMap.size()-1)*(16+configHandler.themeSelectorProfileGap.getI()));

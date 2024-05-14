@@ -12,7 +12,7 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.gui.button;
+package cn.kuzuanpa.thinker.client.render.gui;
 
 import cn.kuzuanpa.thinker.api.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;

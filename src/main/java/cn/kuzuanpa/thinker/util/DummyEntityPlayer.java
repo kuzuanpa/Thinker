@@ -29,10 +29,9 @@ import java.util.UUID;
 
 public class DummyEntityPlayer extends AbstractClientPlayer {
     public DummyEntityPlayer(World p_i45074_1_) {
-        super(p_i45074_1_, new GameProfile(new UUID(0,0),"ThinkerDummyPlayer"));
+        super(p_i45074_1_, new GameProfile(new UUID(0,0),"%(*#ThinkerDummyPlayer#*)%"));
     }
     int posX=0,posY=0,posZ=0;
-    float pitch=0,yaw=0;
     @Override
     public void addChatMessage(IChatComponent p_145747_1_) {
     }

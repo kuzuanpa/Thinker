@@ -1,4 +1,19 @@
 /*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+
+/*
  * This class was created by <kuzuanpa>. It is distributed as
  * part of the Thinker Mod. Get the Source Code in github:
  * https://github.com/kuzuanpa/Thinker
@@ -8,13 +23,13 @@
  *
  */
 
-package cn.kuzuanpa.thinker.client.render.gui.button;
+package cn.kuzuanpa.thinker.client.render.gui;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
-import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
 import net.minecraft.block.Block;
@@ -27,7 +42,9 @@ import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class DummyWorld extends ThinkerButtonBase {
+import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.dummyWorldObjects;
+
+public class DummyWorldButton extends ThinkerButtonBase {
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
     protected static BlockPosition selectedBlock;
@@ -36,9 +53,9 @@ public class DummyWorld extends ThinkerButtonBase {
     protected static float zoom;
     protected static final float DEFAULT_RANGE_MULTIPLIER = 3.5f;
     protected int lastGuiMouseX,lastGuiMouseY;
-    public boolean clickOnOtherButton=false;
+    public boolean clickOnOtherButton=false,worldSynced=false;
 
-    public DummyWorld(int id, int xPos, int yPos, int width, int height){
+    public DummyWorldButton(int id, int xPos, int yPos, int width, int height){
         super(id, xPos, yPos,width,height,"");
         try {
             initializeSceneRenderer(true);
@@ -50,22 +67,19 @@ public class DummyWorld extends ThinkerButtonBase {
     public void onProfileChanged(long initTime){
         if(renderer==null)return;
         renderer.initTime=initTime;
-        renderer.sync();
+        worldSynced=false;
         resetCenter();
     }
     protected void initializeSceneRenderer(boolean resetCamera) {
         Vector3f eyePos = new Vector3f();
         Vector3f lookAt = new Vector3f();
         Vector3f worldUp = new Vector3f();
-        if (!resetCamera) {
-            try {
-                eyePos = renderer.getEyePos();
-                lookAt = renderer.getLookAt();
-                worldUp = renderer.getWorldUp();
-            } catch (NullPointerException ignored) {
-            }
+        if (!resetCamera&&renderer!=null) {
+            eyePos = renderer.getEyePos();
+            lookAt = renderer.getLookAt();
+            worldUp = renderer.getWorldUp();
         }
-
+        dummyWorldObjects.clear();
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
         renderer.initTime=System.currentTimeMillis();
         renderer.setClearColor(0xC6C6C6);
@@ -103,7 +117,10 @@ public class DummyWorld extends ThinkerButtonBase {
         }
     }
     public void onRendererRender(WorldSceneRenderer renderer) {
-
+    }
+    public void resizeToScreen(int width,int height){
+        this.width=width;
+        this.height=height;
     }
     private void resetCenter() {
         TrackedDummyWorld world = (TrackedDummyWorld) renderer.world;
@@ -127,6 +144,12 @@ public class DummyWorld extends ThinkerButtonBase {
         if (this.visible&&(profileHandler.selectedProfile==null||!profileHandler.selectedProfile.disableDummyWorldRend))
         {
             try {
+                if(!worldSynced){
+                    worldSynced=renderer.sync();
+                    resetCenter();
+                }
+                if(!worldSynced)return;
+
                 updateHoverState(mouseX,mouseY);
                 GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
 

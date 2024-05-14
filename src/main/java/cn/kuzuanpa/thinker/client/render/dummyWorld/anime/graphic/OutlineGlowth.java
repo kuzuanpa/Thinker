@@ -12,7 +12,7 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
+package cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import net.minecraft.client.renderer.Tessellator;
@@ -21,8 +21,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class DummyWorldGraphicAnimeOutlineGlowth implements IDummyBlockAnimeDrawAdditionalQuads{
-    public DummyWorldGraphicAnimeOutlineGlowth(int startTime, int endTime, BlockPosition pos, int color, float thickness){
+public class OutlineGlowth implements IDummyBlockAnimeDrawAdditionalQuads{
+    public OutlineGlowth(int startTime, int endTime, BlockPosition pos, int color, float thickness){
         this.startTime=startTime;
         this.endTime=endTime;
         this.pos=pos;

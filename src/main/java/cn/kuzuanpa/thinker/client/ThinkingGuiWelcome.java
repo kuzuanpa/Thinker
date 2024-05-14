@@ -12,13 +12,31 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.gui;
 
-import cn.kuzuanpa.thinker.client.profileHandler;
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+package cn.kuzuanpa.thinker.client;
+
+import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.render.gui.DummyWorldButton;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkingBackground;
 import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
-import cn.kuzuanpa.thinker.client.render.gui.button.*;
+import cn.kuzuanpa.thinker.client.render.gui.thinkerImage;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -29,14 +47,13 @@ import net.minecraft.init.Items;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static cn.kuzuanpa.thinker.client.dummyWorldHandler.*;
-import static cn.kuzuanpa.thinker.client.keyBindHandler.keyThink;
+import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.*;
+import static cn.kuzuanpa.thinker.client.handler.keyBindHandler.keyThink;
 
 /**
  * @author kuzuanpa
@@ -67,7 +84,7 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		dummyWorldObjects.clear();
 		//buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
-		buttonList.add(new DummyWorld(1,0,0,displayWidth,displayHeight));
+		buttonList.add(new DummyWorldButton(1,0,0,displayWidth,displayHeight));
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 
 
@@ -83,7 +100,7 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		buttonList.addAll(buttonsProfile);
 		profileHandler.onProfileChanged("HelloThinker");
 		dummyWorldHandler.onProfileChanged("HelloThinker");
-		((DummyWorld)buttonList.get(1)).onProfileChanged(lastProfileSelectedTime);
+		((DummyWorldButton)buttonList.get(1)).onProfileChanged(lastProfileSelectedTime);
 	}
 
 	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}
@@ -113,7 +130,7 @@ public class ThinkingGuiWelcome extends GuiScreen {
 			}
 	}
 	protected boolean onButtonPressed(GuiButton button) {
-		((DummyWorld)buttonList.get(1)).clickOnOtherButton=button.id!=1;
+		((DummyWorldButton)buttonList.get(1)).clickOnOtherButton=button.id!=1;
 		return true;
 	}
 	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_){

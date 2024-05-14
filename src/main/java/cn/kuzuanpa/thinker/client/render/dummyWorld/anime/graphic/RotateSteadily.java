@@ -12,23 +12,22 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
-import cn.kuzuanpa.thinker.Thinker;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+package cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic;
 
-public class SetTileNBT implements IDummyWorldTilePropertiesAnime {
-    public NBTTagCompound tag;
-    public SetTileNBT(NBTTagCompound tag){
-        this.tag=tag;
+import org.lwjgl.opengl.GL11;
+
+public class RotateSteadily implements IDummyWorldGraphicAnime {
+    @Override
+    public void animeDraw(long time) {
+        GL11.glTranslatef(0.5F,0.5F,0);
+        GL11.glRotated(time/10F,0,0,1);
+        GL11.glTranslatef(-0.5F,-0.5F,0);
     }
-    public void doAnime(TileEntity tileEntity){
-        tileEntity.readFromNBT( tag);
-    }
+
 
     @Override
     public String jsonName() {
-        return "Prop.SetTileNBT";
+        return "Block.RotateSteadily";
     }
 }

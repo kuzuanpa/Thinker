@@ -1,6 +1,6 @@
 package blockrenderer6343.client;
 
-import static cn.kuzuanpa.thinker.client.dummyWorldHandler.dummyWorldObjects;
+import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.dummyWorldObjects;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.ByteBuffer;
@@ -8,7 +8,6 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -16,8 +15,8 @@ import java.util.stream.Collectors;
 import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.*;
-import cn.kuzuanpa.thinker.client.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
 import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -136,13 +135,14 @@ public abstract class WorldSceneRenderer {
         this.worldUp = worldUp;
     }
 
-    public void sync(){
-        while(world.lock) {try{wait(0,1000);}catch (Exception ignored){}}
+    public boolean sync(){
+        if(world.lock) return false;
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).clearBlocks();
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
         dummyWorldHandler.dummyWorldObjects.forEach((obj) -> tmp.addAll(obj.syncWithWorld(world)));
         dummyWorldHandler.dummyWorldObjects.addAll( tmp);
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).onProfileChanged();
+        return true;
     }
     public void setCameraLookAt(Vector3f lookAt, double radius, double rotationPitch, double rotationYaw) {
         this.lookAt = lookAt;
@@ -318,7 +318,6 @@ public abstract class WorldSceneRenderer {
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_ALPHA_TEST);
             glEnable(GL_DEPTH_TEST);
-
             dummyWorldObjects.forEach((obj) -> {
                 try {
                     obj.render(world, initTime, null);

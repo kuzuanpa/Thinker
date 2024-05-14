@@ -12,12 +12,12 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
+package cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic;
 
 import org.lwjgl.opengl.GL11;
 
-public class DummyWorldGraphicAnimeMoveLinear implements IDummyWorldGraphicAnime {
-    public DummyWorldGraphicAnimeMoveLinear(int startTime, int endTime, float dX, float dY, float dZ){
+public class MoveLinear implements IDummyWorldGraphicAnime {
+    public MoveLinear(int startTime, int endTime, float dX, float dY, float dZ){
         this.startTime=startTime;
         this.endTime=endTime;
         this.dX =dX;

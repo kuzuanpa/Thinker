@@ -12,11 +12,13 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
-import net.minecraft.nbt.NBTTagCompound;
+package cn.kuzuanpa.thinker.client.render.dummyWorld.anime.tick;
+
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 import net.minecraft.tileentity.TileEntity;
 
-public interface IDummyWorldTilePropertiesAnime extends IDummyWorldAnimes{
-    void doAnime(TileEntity tileEntity);
+public interface IDummyWorldTileTickingAnime extends IDummyWorldAnimes {
+    boolean beforeTick(long time,TileEntity tileEntity);
+    default void afterTick(long time,TileEntity tileEntity){}
 }

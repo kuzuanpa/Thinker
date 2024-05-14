@@ -5,6 +5,7 @@ import java.util.*;
 import blockrenderer6343.api.utils.BlockPosition;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -302,6 +303,7 @@ public class TrackedDummyWorld extends DummyWorld {
     public void clearBlocks(){
         this.isClearingBlocks=true;
         this.placedBlocks.forEach(pos->this.setBlockToAir(pos.x,pos.y,pos.z));
+        loadedTileEntityList.forEach(tile->((TileEntity)tile).invalidate());
         this.isClearingBlocks=false;
         this.placedBlocks.clear();
     }

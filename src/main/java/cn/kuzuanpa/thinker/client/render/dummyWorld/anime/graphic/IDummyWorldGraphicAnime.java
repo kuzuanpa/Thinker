@@ -12,21 +12,11 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.render.dummyWorld.anime;
 
-import org.lwjgl.opengl.GL11;
+package cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic;
 
-public class DummyWorldGraphicAnimeRotateSteadily implements IDummyWorldGraphicAnime {
-    @Override
-    public void animeDraw(long time) {
-        GL11.glTranslatef(0.5F,0.5F,0);
-        GL11.glRotated(time/10F,0,0,1);
-        GL11.glTranslatef(-0.5F,-0.5F,0);
-    }
+import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.IDummyWorldAnimes;
 
-
-    @Override
-    public String jsonName() {
-        return "Block.RotateSteadily";
-    }
+public interface IDummyWorldGraphicAnime extends IDummyWorldAnimes {
+    void animeDraw(long time);
 }

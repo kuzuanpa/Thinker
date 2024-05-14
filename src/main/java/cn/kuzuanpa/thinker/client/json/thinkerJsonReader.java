@@ -16,10 +16,10 @@ package cn.kuzuanpa.thinker.client.json;
 
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.api.IThinkerObject;
-import cn.kuzuanpa.thinker.client.profileHandler;
+import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cn.kuzuanpa.thinker.client.render.IThinkerAnime;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
-import cn.kuzuanpa.thinker.client.render.gui.button.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;

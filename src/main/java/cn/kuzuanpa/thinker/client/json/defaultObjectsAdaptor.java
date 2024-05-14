@@ -20,8 +20,8 @@ import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBundle;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTile;
 import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
-import cn.kuzuanpa.thinker.client.render.gui.button.custom.customImage;
-import cn.kuzuanpa.thinker.client.render.gui.button.custom.customText;
+import cn.kuzuanpa.thinker.client.render.gui.custom.customImage;
+import cn.kuzuanpa.thinker.client.render.gui.custom.customText;
 
 import java.util.Map;
 

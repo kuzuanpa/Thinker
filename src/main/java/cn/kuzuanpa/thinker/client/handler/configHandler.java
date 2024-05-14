@@ -12,7 +12,22 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client;
+
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+package cn.kuzuanpa.thinker.client.handler;
 
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -25,11 +40,12 @@ public class configHandler {
     public static configNumber HUDBackgroundColorA =new configNumber(0,200,255);
     public static configNumber animeSpeed=new configNumber(0.01F,1.0F,10.0F);
     public static configBoolean themeSelectorFreelyScroll=new configBoolean(false,"freelyScroll","themeSelector","Can themes be scrolled outside of window");
+    public static configBoolean themeSelectorAutoFold=new configBoolean(true,"autoFold","themeSelector","will selector fold after select profile");
     public static configBoolean welcome =new configBoolean(true,"welcome","main","Will thinker show the welcome screen");
     public static configNumber themeSelectorProfileGap =new configNumber(0,4,80);
-    public static configNumber themeSelectorScrollSpeed =new configNumber(0.01F,1.0F,10.0F);
+    public static configNumber themeSelectorScrollSpeed =new configNumber(0.01F,1.5F,10.0F);
 
-    public static configNumber themeSelectorScrollInertia =new configNumber(0.01F,8F,50.0F);
+    public static configNumber themeSelectorScrollInertia =new configNumber(0.01F,1.0F,20.0F);
     public static configNumber keyPressedTimeNeededToStartThink =new configNumber(10,100,500);
     public static configBoolean recordDummyWorldTickTooLong = new configBoolean(false,"recordDummyWorldTickTooLong","main","Will thinker show a message while a dummyWorld tick takes too long");
     public static configBoolean displayItemStackUnlocalizedName = new configBoolean(false,"displayItemStackUnlocalizedName","main","Will every ItemStack show their Unlocalized Name in tooltip");
@@ -47,6 +63,7 @@ public class configHandler {
         themeSelectorFreelyScroll.load();
         recordDummyWorldTickTooLong.load();
         displayItemStackUnlocalizedName.load();
+        themeSelectorAutoFold.load();
     }
 
     public static void saveAll(){
@@ -54,6 +71,7 @@ public class configHandler {
         themeSelectorFreelyScroll.save();
         recordDummyWorldTickTooLong.save();
         displayItemStackUnlocalizedName.save();
+        themeSelectorAutoFold.save();
         config.save();
         needSave = false;
     }
@@ -95,18 +113,28 @@ public class configHandler {
         private final float minValue;
         private final float maxValue;
         private float value;
+        public boolean isIntegerConfig = false;
         public String desc;
         public configNumber(int minValue, int value, int maxValue){
             this.minValue=minValue;
             this.maxValue=maxValue;
             this.value = value;
             desc="";
+            isIntegerConfig =true;
         }
         public configNumber(int minValue, int value, int maxValue, String desc){
             this.minValue=minValue;
             this.maxValue=maxValue;
             this.value = value;
             this.desc=desc;
+            isIntegerConfig =true;
+        }
+        public configNumber(int minValue, int value, int maxValue, String desc, boolean isIntegerConfig){
+            this.minValue=minValue;
+            this.maxValue=maxValue;
+            this.value = value;
+            this.desc=desc;
+            this.isIntegerConfig =isIntegerConfig;
         }
         public configNumber(float minValue, float value, float maxValue){
             this.minValue=minValue;
@@ -120,18 +148,16 @@ public class configHandler {
             this.value = value;
             this.desc=desc;
         }
-        public float get(){
-            return value;
-        }
+        public float get(){return isIntegerConfig?getI():value;}
         public int getI(){
             return (int) value;
         }
         public float min(){
-            return minValue;
+            return isIntegerConfig?minI():minValue;
         }
         public int minI(){return (int) Math.ceil(minValue);}
         public float max(){
-            return maxValue;
+            return isIntegerConfig?maxI():maxValue;
         }
         public int maxI(){return (int)Math.floor(maxValue);}
         public void update(float newValue){

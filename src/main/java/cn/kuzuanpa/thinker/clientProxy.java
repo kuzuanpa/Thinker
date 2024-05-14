@@ -14,7 +14,7 @@
  */
 package cn.kuzuanpa.thinker;
 
-import cn.kuzuanpa.thinker.client.tooltipHandler;
+import cn.kuzuanpa.thinker.client.handler.tooltipHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -22,8 +22,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingGuiMain;
-import cn.kuzuanpa.thinker.client.keyBindHandler;
+import cn.kuzuanpa.thinker.client.ThinkingGuiMain;
+import cn.kuzuanpa.thinker.client.handler.keyBindHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 public class clientProxy extends commonProxy {
