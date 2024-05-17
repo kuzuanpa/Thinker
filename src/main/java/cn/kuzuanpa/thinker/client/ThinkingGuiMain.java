@@ -101,21 +101,6 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
-		//ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
-		////blocks.put(new BlockPosition(4,2,4),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeOutlineGlowth(1000,20000,new BlockPosition(4,2,4),-1,4)));
-		////blocks.put(new BlockPosition(5,2,5),new dummyWorldBlock(Blocks.chest,new DummyBlockAnimeRotateSteadily()));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(0,2,0), Blocks.dark_oak_stairs,new DummyWorldGraphicAnimeRotateSteadily()).setRenderAllFace(true));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(0,3,0), Blocks.daylight_detector,new DummyWorldGraphicAnimeRotateSteadily()));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(1,2,0), Blocks.double_wooden_slab));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(3,2,0), Blocks.fence));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(1,1,0), Blocks.acacia_stairs).setRenderAllFace(true));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(0,2,5), Blocks.diamond_block));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(0,2,4), Blocks.diamond_block));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(2,2,0), Blocks.stained_glass));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(2,2,1), MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(10005), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(2,3,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
-		//blocks.add(new dummyWorldBlock( new BlockPosition(2,4,1), MultiTileEntityRegistry.getRegistry("ktfru.multitileentity").getItem(31001), new DummyWorldGraphicAnimeMoveLinear(0,10000,1,1,1)));
-		//blocks.add(new dummyWorldGeckoModel( new BlockPosition(2,5,1), "botarium.geo.json","ideas/botarium.png","botarium.animation.json"));
 		profileHandler.clearAllProfile();
 
 		try {
@@ -163,13 +148,13 @@ public class ThinkingGuiMain extends GuiScreen {
 		if(button.id==2) this.mc.displayGuiScreen(new ThinkerSettingsGui());
 		if(button.id==3) {
 			int mouseY=this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-			if(Mouse.isInsideWindow())for (int i : profileHandler.displayProfileIDMap.keySet())if(mouseY>=YOffset+i*(16+ configHandler.themeSelectorProfileGap.get()) && mouseY<=YOffset+16+i*(16+ configHandler.themeSelectorProfileGap.get())){
-				if(!Objects.equals(selectedProfileID, displayProfileIDMap.get(i))){
-					onProfileChanged(displayProfileIDMap.get(i));
+			if(Mouse.isInsideWindow()){
+				String newID=((ThinkingProfileList) button).onMouseClick(mouseY);
+				if(!Objects.equals(selectedProfileID, newID)&&profileHandler.getProfile(newID)!=null){
+					onProfileChanged(newID);
 					if(configHandler.themeSelectorAutoFold.get())foldThemeSelector(false);
 					((DummyWorldButton)buttonList.get(1)).clickOnOtherButton=false;
 				}
-				break;
 			}
 		}
 		if(button.id==4&&!themeSelectorFolded) foldThemeSelector(false);
@@ -182,6 +167,8 @@ public class ThinkingGuiMain extends GuiScreen {
 		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80,0));
 		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(200))),16,0));
 		themeSelectorFolded=true;
+		unfoldedDirs.clear();
+
 	}
 	public void unfoldThemeSelector(){
 		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));

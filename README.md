@@ -12,6 +12,7 @@ Thinker is currently in development, and the list of features to be implemented 
 
 [ ]Detect the object pointed to by the mouse
 
+[x]Folder-like thinking profiles management
 
 Thinker提供了一个强大的帮助gui,允许通过json创建任意的方块/方块实体/来自GeckoLib的方块模型 和 文字/图片等，可以让整合包作者制作直观而简洁易懂的帮助页面
 
@@ -25,5 +26,6 @@ Thinker目前仍处于开发中，仍待实现的功能列表：
 
 [ ]检测鼠标指向的物体
 
+[x]文件夹式的沉思情景管理
 
 

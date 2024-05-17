@@ -31,10 +31,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class thinkerJsonReader {
@@ -56,11 +53,13 @@ public class thinkerJsonReader {
         });
         //profileHandler.clearAllProfile();
         profileHandler.addProfiles(profileList);
+        profileHandler.buildDirTree();
 
     }
     public static profileHandler.thinkingProfile readProfiles(JsonReader json,String profileName)throws IOException,IllegalArgumentException {
         String id="";
         String bindItemID="";
+        String[] dir = null;
             IIcon icon=null;
             float iconR=1.0F;
             float iconG=1.0F;
@@ -77,6 +76,9 @@ public class thinkerJsonReader {
                     icon=getIcon(json.nextString(),json,profileName);
                 }else if (jsonName.equalsIgnoreCase("bindItemID")) {
                     bindItemID = json.nextString();
+                }else if (jsonName.equalsIgnoreCase("dir")) {
+                    String str =  json.nextString();
+                    if(!str.equals(""))dir =str.split("/");
                 } else if (jsonName.equalsIgnoreCase("iconR")) {
                     iconR = (float) json.nextDouble();
                 } else if (jsonName.equalsIgnoreCase("iconG")) {
@@ -103,6 +105,7 @@ public class thinkerJsonReader {
             if(id.equals("")||ThinkerObjects.isEmpty()){logError(json,profileName,"Invaild Profile");return null;}
             profileHandler.thinkingProfile returnProfile = objs.isEmpty() ? new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons) : new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,objs,buttons);
             returnProfile.setBindItemId(bindItemID);
+            if(dir != null&&dir.length>0)returnProfile.setDir(dir);
             return returnProfile;
     }
     public static IIcon getIcon(String iconString, JsonReader json, String fileName){
