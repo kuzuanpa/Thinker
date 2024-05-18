@@ -85,13 +85,13 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		//buttonList.add(new ThinkerButton(-1,displayWidth-20,displayHeight-20,20,20,l10n("R")));
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(new DummyWorldButton(1,0,0,displayWidth,displayHeight));
-		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 
 
 		ArrayList<IdummyWorldThinkerObject> blocks=new ArrayList<>();
 		profileHandler.clearAllProfile();
-		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
-		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/gui/think/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("test1",Items.string.getIconFromDamage(0),new thinkerImage(12,displayWidth-122,20,0,0,32,32,"textures/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
+		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 
 		if(openByUser)postInit();
 

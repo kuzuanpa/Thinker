@@ -31,7 +31,7 @@ import static cn.kuzuanpa.thinker.Thinker.MOD_ID;
 
 public class ThinkerButtonBase extends GuiButton implements IAnimatableThinkerObject {
     public final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
-    ResourceLocation baseTexture=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
+    ResourceLocation baseTexture=new ResourceLocation(MOD_ID,"textures/base.png");
     public long timer =0;
     public int animeXModify=0,animeYModify=0,animeWidthModify=0,animeHeightModify=0;
     public ThinkerButtonBase(int id, int xPos, int yPos, int width, int height, String displayText) {

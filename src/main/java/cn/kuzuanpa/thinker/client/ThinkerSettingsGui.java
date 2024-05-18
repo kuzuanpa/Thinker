@@ -73,14 +73,14 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.clear();
 
         buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
-        buttonList.add(new thinkerImage(1,displayWidth-52,20,128,384,384,32,"textures/gui/think/base.png",""));
-        buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png","").addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),-(displayWidth-56),-16)).addAnime(new animeRotate(0,configHandler.getConfiguredAnimeTime(1000),-720)).addToList(buttonsHaveAnime));
+        buttonList.add(new thinkerImage(1,displayWidth-52,20,128,384,384,32,"textures/base.png",""));
+        buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/base.png","").addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),-(displayWidth-56),-16)).addAnime(new animeRotate(0,configHandler.getConfiguredAnimeTime(1000),-720)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(3,5, 45,132,20,l10n("thinker.settings.HUD"))             .addAnime(new animeMoveLinear(-1,0,-600,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 800),600,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(4,5, 70,132,20,l10n("thinker.settings.anime"))           .addAnime(new animeMoveLinear(-1,0,-550,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime( 900),550,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(5,5, 95,132,20,l10n("thinker.settings.profile_selector")).addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1000),500,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(6,5,120,132,20,l10n("thinker.settings.dummy_world"))     .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1100),500,0)).addToList(buttonsHaveAnime));
         buttonList.add(new ThinkerButtonBase(7,5,145,132,20,l10n("thinker.settings.help"))            .addAnime(new animeMoveLinear(-1,0,-500,0)).addAnime(new animeMoveLinear(0,configHandler.getConfiguredAnimeTime(1200),500,0)).addToList(buttonsHaveAnime));
-        buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/gui/think/base.png","").addAnime(new animeTransparency(-10,-1,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
+        buttonList.add(new thinkerImage(8,40,4,64,16,96,32,"textures/base.png","").addAnime(new animeTransparency(-10,-1,255,-255)).addAnime(new animeTransparency(configHandler.getConfiguredAnimeTime(1100),configHandler.getConfiguredAnimeTime(1800),0,255)).addToList(buttonsHaveAnime));
         buttonList.add( new NumberConfigButton(9 ,150,20 ,displayWidth-160,32,"BackgroundColorR",configHandler.HUDBackgroundColorR));
         buttonList.add( new NumberConfigButton(10,150,60 ,displayWidth-160,32,"BackgroundColorG",configHandler.HUDBackgroundColorG));
         buttonList.add( new NumberConfigButton(11,150,100,displayWidth-160,32,"BackgroundColorB",configHandler.HUDBackgroundColorB));

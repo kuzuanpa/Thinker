@@ -97,10 +97,10 @@ public class ThinkingGuiMain extends GuiScreen {
 		else worldButton.resizeToScreen(displayWidth,displayHeight);
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
 		buttonList.add(worldButton);
-		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/gui/think/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
-		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/gui/think/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
-		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/gui/think/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 		profileHandler.clearAllProfile();
 
 		try {

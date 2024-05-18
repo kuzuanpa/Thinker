@@ -78,7 +78,7 @@ public class ThinkingProfileList extends ThinkerButtonBase {
     private void drawDirAt(Minecraft mc, int x, int y, String id,int depth){
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
-        ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
+        ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/base.png");
         mc.getTextureManager().bindTexture(buttontextures);
         GuiAnimeList.forEach(anime->anime.animeDraw(timer));
         //draw folders tag
@@ -90,7 +90,7 @@ public class ThinkingProfileList extends ThinkerButtonBase {
     private void drawProfileAt(Minecraft mc, int x, int y, profileHandler.thinkingProfile profile,int depth){
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.65F);
-        ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/gui/think/base.png");
+        ResourceLocation buttontextures=new ResourceLocation(MOD_ID,"textures/base.png");
         mc.getTextureManager().bindTexture(buttontextures);
         GuiAnimeList.forEach(anime->anime.animeDraw(timer));
         this.drawTexturedModalRect(x, y, 64, 0, 64, 16);
