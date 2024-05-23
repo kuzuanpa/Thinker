@@ -104,7 +104,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(worldButton);
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
-		buttonList.add(new thinkerImage(4,65+ 8*currentProfileLayer,0,0,32,16,16,"textures/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(4,69+ 8*currentProfileLayer,0,0,32,16,16,"textures/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
 
 		if(openByUser) onOpenByUserAfter();
