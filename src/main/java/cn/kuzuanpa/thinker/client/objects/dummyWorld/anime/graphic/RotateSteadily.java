@@ -12,14 +12,16 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
 
-import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
+package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
 
-import java.util.Map;
+import org.lwjgl.opengl.GL11;
 
-public interface IThinkerObjectsAdaptor {
-    boolean isMapHaveValidContents(Map<String, Object> values);
-    IThinkerObject create(Map<String,Object> values);
-
+public class RotateSteadily implements IDummyWorldGraphicAnime {
+    @Override
+    public void animeDraw(long time) {
+        GL11.glTranslatef(0.5F,0.5F,0);
+        GL11.glRotated(time/10F,0,0,1);
+        GL11.glTranslatef(-0.5F,-0.5F,0);
+    }
 }

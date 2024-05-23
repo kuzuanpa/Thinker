@@ -15,13 +15,13 @@
 package cn.kuzuanpa.thinker.client.json;
 
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.api.IThinkerObject;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBlock;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldBundle;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldTile;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.dummyWorldGeckoModel;
-import cn.kuzuanpa.thinker.client.render.gui.custom.customImage;
-import cn.kuzuanpa.thinker.client.render.gui.custom.customText;
+import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldBlock;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldBundle;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldTile;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldGeckoModel;
+import cn.kuzuanpa.thinker.client.objects.gui.custom.customImage;
+import cn.kuzuanpa.thinker.client.objects.gui.custom.customText;
 
 import java.util.Map;
 

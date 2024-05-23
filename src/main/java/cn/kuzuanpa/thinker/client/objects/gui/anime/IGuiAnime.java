@@ -12,14 +12,16 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
+package cn.kuzuanpa.thinker.client.objects.gui.anime;
 
-import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 
-import java.util.Map;
-
-public interface IThinkerObjectsAdaptor {
-    boolean isMapHaveValidContents(Map<String, Object> values);
-    IThinkerObject create(Map<String,Object> values);
-
+public interface IGuiAnime {
+    void animeDraw(long time);
+    void animeDrawPre(long time);
+    void animeDrawAfter(long time);
+    /**Some Anime changed Position or Scale of buttons. update them in there to make things perform correctly when clicked on these button**/
+    void updateButton(long time, ThinkerButtonBase button);
+    String jsonName();
 }
+

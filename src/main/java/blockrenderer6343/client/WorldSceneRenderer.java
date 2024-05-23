@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 import blockrenderer6343.world.DummyWorld;
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.*;
 import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
-import cn.kuzuanpa.thinker.client.render.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
+import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.texture.TextureMap;

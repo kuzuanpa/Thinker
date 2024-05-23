@@ -15,11 +15,11 @@
 package cn.kuzuanpa.thinker.client.json;
 
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.api.IThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
-import cn.kuzuanpa.thinker.client.render.IThinkerAnime;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.*;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.*;
+import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -108,60 +108,6 @@ public class thinkerJsonReader {
             if(dir != null&&dir.length>0)returnProfile.setDir(dir);
             return returnProfile;
     }
-    public static IIcon getIcon(String iconString, JsonReader json, String fileName){
-        try {
-            String itemName="minecraft:stone";
-            int itemDamage=0;
-            String[] str=iconString.trim().split(":");
-            if(str.length==1)itemName="minecraft:"+str[0];
-            if(str.length==2){
-                try{
-                    itemDamage=Integer.parseInt(str[1]);
-                    itemName="minecraft:"+str[0];
-                }catch (NumberFormatException e){
-                    itemName=str[0]+":"+str[1];
-                }
-            }
-            if(str.length==3){
-                itemDamage=Integer.parseInt(str[2]);
-                itemName=str[0]+":"+str[1];
-            }
-            Item item=(Item)Item.itemRegistry.getObject(itemName);
-            if(item==null){
-                logError(json,fileName,"Invaild item name: "+itemName);
-                return null;
-            }
-            return item.getIconFromDamage(itemDamage);
-        }catch (Exception e){e.printStackTrace();}
-        return null;
-    }
-    public static ItemStack getItemStack(String itemStackString){
-        try {
-            String itemName="minecraft:stone";
-            int itemDamage=0;
-            String[] str=itemStackString.trim().split(":");
-            if(str.length==1)itemName="minecraft:"+str[0];
-            if(str.length==2){
-                try{
-                    itemDamage=Integer.parseInt(str[1]);
-                    itemName="minecraft:"+str[0];
-                }catch (NumberFormatException e){
-                    itemName=str[0]+":"+str[1];
-                }
-            }
-            if(str.length==3){
-                itemDamage=Integer.parseInt(str[2]);
-                itemName=str[0]+":"+str[1];
-            }
-            Item item=(Item)Item.itemRegistry.getObject(itemName);
-            if(item==null){
-                Thinker.err("Invaild item name: " + itemName);
-                return null;
-            }
-            return new ItemStack(item,1,itemDamage);
-        }catch (Exception e){e.printStackTrace();}
-        return null;
-    }
     public static ArrayList<Object> readAllThinkerObjects(JsonReader json,String fileName)throws JsonParseException,IOException,IllegalArgumentException {
         ArrayList<Object> objects=new ArrayList<>();
         json.beginArray();
@@ -233,66 +179,87 @@ public class thinkerJsonReader {
         return objects;
     }
     public static IThinkerAnime readAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException{
-        String name = null;
-        String type = null;
-        String path = null;
-        String text = null;
-        String tileEntityNBTString = null;
-        int posX=-2147483647;
-        int posY=-2147483647;
-        int posZ=-2147483647;
-        int width=0;
-        int height=0;
-        int color=0;
-        int meta=0;
-        ArrayList<Object> unsortedAnimes=new ArrayList<>();
+        HashMap<String,Object> values=new HashMap<>();
         json.beginObject();
         while (json.hasNext())
         {
             String jsonName = json.nextName();
-            if (jsonName.equalsIgnoreCase("type")) {
-                type = json.nextString();
-            } else if (jsonName.equalsIgnoreCase("posX")) {
-                posX = json.nextInt();
-            } else if (jsonName.equalsIgnoreCase("posY")) {
-                posY = json.nextInt();
-            } else if (jsonName.equalsIgnoreCase("posZ")) {
-                posZ = json.nextInt();
-            }else if (jsonName.equalsIgnoreCase("width")) {
-                width = json.nextInt();
-            }else if (jsonName.equalsIgnoreCase("height")) {
-                height = json.nextInt();
-            }else if (jsonName.equalsIgnoreCase("color")) {
-                color = json.nextInt();
-            }else if (jsonName.equalsIgnoreCase("text")) {
-                text  = json.nextString();
-            }else if (jsonName.equalsIgnoreCase("tileEntityNBT")) {
-                tileEntityNBTString = json.nextString();
-            }else if (jsonName.equalsIgnoreCase("meta")) {
-                meta = json.nextInt();
-            }else if (jsonName.equalsIgnoreCase("Animes")) {
-            }else if (jsonName.equalsIgnoreCase("path")) {
-                path = json.nextString();
-            }else if (jsonName.equalsIgnoreCase("path")) {
-                path = json.nextString();
-            }else if (jsonName.equalsIgnoreCase("path")) {
-                path = json.nextString();
-            } else if(jsonName.equalsIgnoreCase("name")||jsonName.equalsIgnoreCase("comment")){
+            if(jsonName.equalsIgnoreCase("comment")){
                 json.skipValue();
             } else {
-                logError(json,fileName,"unknown Element:"+jsonName);
-                json.skipValue();
+                JsonToken token = json.peek();
+                if(token.equals(JsonToken.BOOLEAN))values.put(jsonName,Boolean.toString(json.nextBoolean()));
+                else if(token.equals(JsonToken.BEGIN_OBJECT))values.put(jsonName,readCompounds(json,fileName));
+                else values.put(jsonName,json.nextString());
             }
         }
-        if(type==null){json.endObject();logMissing(json,fileName,"Type");return null;}
-        IThinkerAnime out=null;
-        switch (type){
-            default: logError(json,fileName,"Unknown Anime Type:"+type);
+        if(!values.containsKey("type"))requestedErr.add("Missing Required Element: type");
+        else for (IThinkerAnimeAdaptor animeAdaptor : animesAdaptors) {
+            if(animeAdaptor.isMapHaveValidContents(values)){
+                json.endObject();
+                return animeAdaptor.create(values);
+            }
         }
+        if(!requestedErr.isEmpty())requestedErr.forEach(err->logError(json,fileName,err));   //If error occurred when creating object:
+        else logError(json,fileName,"Unknown anime type");//If no match type:
+        requestedErr.clear();
         json.endObject();
-        return out;
+        return null;
     }
-
+    public static IIcon getIcon(String iconString, JsonReader json, String fileName){
+        try {
+            String itemName="minecraft:stone";
+            int itemDamage=0;
+            String[] str=iconString.trim().split(":");
+            if(str.length==1)itemName="minecraft:"+str[0];
+            if(str.length==2){
+                try{
+                    itemDamage=Integer.parseInt(str[1]);
+                    itemName="minecraft:"+str[0];
+                }catch (NumberFormatException e){
+                    itemName=str[0]+":"+str[1];
+                }
+            }
+            if(str.length==3){
+                itemDamage=Integer.parseInt(str[2]);
+                itemName=str[0]+":"+str[1];
+            }
+            Item item=(Item)Item.itemRegistry.getObject(itemName);
+            if(item==null){
+                logError(json,fileName,"Invaild item name: "+itemName);
+                return null;
+            }
+            return item.getIconFromDamage(itemDamage);
+        }catch (Exception e){e.printStackTrace();}
+        return null;
+    }
+    public static ItemStack getItemStack(String itemStackString){
+        try {
+            String itemName="minecraft:stone";
+            int itemDamage=0;
+            String[] str=itemStackString.trim().split(":");
+            if(str.length==1)itemName="minecraft:"+str[0];
+            if(str.length==2){
+                try{
+                    itemDamage=Integer.parseInt(str[1]);
+                    itemName="minecraft:"+str[0];
+                }catch (NumberFormatException e){
+                    itemName=str[0]+":"+str[1];
+                }
+            }
+            if(str.length==3){
+                itemDamage=Integer.parseInt(str[2]);
+                itemName=str[0]+":"+str[1];
+            }
+            Item item=(Item)Item.itemRegistry.getObject(itemName);
+            if(item==null){
+                Thinker.err("Invaild item name: " + itemName);
+                return null;
+            }
+            return new ItemStack(item,1,itemDamage);
+        }catch (Exception e){e.printStackTrace();}
+        return null;
+    }
     public final static ArrayList<String> requestedErr = new ArrayList<>();
     public static void requestLogError(String error){
         requestedErr.add(error);

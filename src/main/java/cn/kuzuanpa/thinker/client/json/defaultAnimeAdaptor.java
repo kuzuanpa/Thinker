@@ -14,5 +14,18 @@
  */
 package cn.kuzuanpa.thinker.client.json;
 
+import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
+
+import java.util.Map;
+
 public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
+    @Override
+    public boolean isMapHaveValidContents(Map<String, Object> values) {
+        return false;
+    }
+
+    @Override
+    public IThinkerAnime create(Map<String, Object> values) {
+        return null;
+    }
 }

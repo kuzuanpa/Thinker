@@ -12,14 +12,7 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
+package cn.kuzuanpa.thinker.client.objects;
 
-import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
-
-import java.util.Map;
-
-public interface IThinkerObjectsAdaptor {
-    boolean isMapHaveValidContents(Map<String, Object> values);
-    IThinkerObject create(Map<String,Object> values);
-
+public interface IThinkerAnime {
 }

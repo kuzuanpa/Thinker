@@ -14,5 +14,12 @@
  */
 package cn.kuzuanpa.thinker.client.json;
 
+import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
+import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
+
+import java.util.Map;
+
 public interface IThinkerAnimeAdaptor {
+    boolean isMapHaveValidContents(Map<String, Object> values);
+    IThinkerAnime create(Map<String,Object> values);
 }

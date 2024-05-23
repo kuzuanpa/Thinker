@@ -29,11 +29,10 @@
  */
 package cn.kuzuanpa.thinker.client;
 
-import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.handler.configHandler;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
-import cn.kuzuanpa.thinker.client.render.gui.*;
-import cn.kuzuanpa.thinker.client.render.gui.anime.*;
+import cn.kuzuanpa.thinker.client.objects.gui.*;
+import cn.kuzuanpa.thinker.client.objects.gui.anime.*;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
@@ -93,6 +92,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         buttonList.add( new NumberConfigButton(17,150,100,displayWidth-160,32,"Scroll Inertia",configHandler.themeSelectorScrollInertia));
         buttonList.add( new NumberConfigButton(18,150,140,displayWidth-160,32,"Scroll Speed",configHandler.themeSelectorScrollSpeed));
         buttonList.add(new BooleanConfigButton(19,150,180,displayWidth-160,32,"Auto Fold",configHandler.themeSelectorAutoFold));
+        buttonList.add( new NumberConfigButton(20,150,220,displayWidth-160,32,"Key Hold Time to start Think",configHandler.keyPressedTimeNeededToStartThink));
 
         if(openByUser)postInitGui();
         for (int i = 9; i < buttonList.size(); i++) {
@@ -142,7 +142,7 @@ public class ThinkerSettingsGui extends GuiScreen {
         switch (categoryId){
             case 3:starti=9;endi=13;break;
             case 4:starti=14;endi=14;break;
-            case 5:starti=15;endi=19;break;
+            case 5:starti=15;endi=20;break;
             default: return;
         }
         for (int i = starti; i <= endi; i++) {

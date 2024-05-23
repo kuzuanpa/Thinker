@@ -12,14 +12,11 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
 
-import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
+package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
 
-import java.util.Map;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
 
-public interface IThinkerObjectsAdaptor {
-    boolean isMapHaveValidContents(Map<String, Object> values);
-    IThinkerObject create(Map<String,Object> values);
-
+public interface IDummyWorldGraphicAnime extends IDummyWorldAnimes {
+    void animeDraw(long time);
 }

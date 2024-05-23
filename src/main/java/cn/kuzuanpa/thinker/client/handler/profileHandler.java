@@ -29,19 +29,19 @@
  */
 package cn.kuzuanpa.thinker.client.handler;
 
-import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import net.minecraft.util.IIcon;
 import org.lwjgl.input.Mouse;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class profileHandler {
     public static thinkingProfile selectedProfile;
     public static float oldWheel=0F,YOffset=0;
     private static final HashMap<String,thinkingProfile> profileMap =new HashMap<>();
-    public static int profileLayer=1;
+    public static int profileLayer=1,profileListHeight=0,currentProfileLayer=0;
+
     public static LinkedHashMap<String,Object> rootDir=new LinkedHashMap<>();
     public static ArrayList<String> unfoldedDirs =new ArrayList<>();
     public static void handleMouseWheel(){
@@ -53,8 +53,7 @@ public class profileHandler {
         if(Math.abs(oldWheel)<= configHandler.themeSelectorScrollInertia.get()*10F)oldWheel=0;
         YOffset+=oldWheel/300*(configHandler.themeSelectorScrollSpeed.get());
         if(!configHandler.themeSelectorFreelyScroll.get()&&(YOffset)>0){YOffset=0;oldWheel=0;return;}
-        int i1=-((profileMap.size()-1)*(16+configHandler.themeSelectorProfileGap.getI()));
-        if(!configHandler.themeSelectorFreelyScroll.get()&&(YOffset)<i1){YOffset=i1;oldWheel=0;}
+        if(!configHandler.themeSelectorFreelyScroll.get()&&(YOffset)<-profileListHeight){YOffset=-profileListHeight;oldWheel=0;}
     }
     public static void onProfileChanged(String profileID){
         selectedProfile= profileMap.get(profileID);
@@ -72,7 +71,10 @@ public class profileHandler {
         rootDir.clear();
         profileMap.forEach((id,profile)->{
             if (profile.dir==null)rootDir.put(id,profile);
-            else rootDir.putAll(sortMap(walkDirTree(profile.dir, profile.id,rootDir)));
+            else {
+                rootDir.putAll(sortMap(walkDirTree(profile.dir, profile.id, rootDir)));
+                profileLayer = Math.max(profileLayer, profile.dir.length);
+            }
         });
         rootDir=sortMap(rootDir);
     }

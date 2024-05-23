@@ -34,9 +34,9 @@ import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.handler.configHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.render.gui.*;
-import cn.kuzuanpa.thinker.client.render.gui.anime.animeMoveLinear;
-import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
+import cn.kuzuanpa.thinker.client.objects.gui.*;
+import cn.kuzuanpa.thinker.client.objects.gui.anime.animeMoveLinear;
+import cn.kuzuanpa.thinker.client.objects.gui.anime.animeRotateSteadily;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -52,7 +52,6 @@ import org.lwjgl.input.Mouse;
 
 import java.util.*;
 
-import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.*;
 import static cn.kuzuanpa.thinker.client.handler.profileHandler.*;
 
 
@@ -89,6 +88,12 @@ public class ThinkingGuiMain extends GuiScreen {
 	}
 	public void initGui() {
 		super.initGui();
+		profileHandler.clearAllProfile();
+
+		try {
+			thinkerJsonReader.readAllProfiles("ideas");
+		}catch (Exception ignored){}
+
 		displayWidth= FMLClientHandler.instance().getClient().currentScreen.width;
 		displayHeight= FMLClientHandler.instance().getClient().currentScreen.height;
 		buttonList.clear();
@@ -99,13 +104,9 @@ public class ThinkingGuiMain extends GuiScreen {
 		buttonList.add(worldButton);
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
-		buttonList.add(new thinkerImage(4,65,0,0,32,16,16,"textures/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
+		buttonList.add(new thinkerImage(4,65+ 8*currentProfileLayer,0,0,32,16,16,"textures/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(5,-16,0,16,32,16,16,"textures/base.png",l10n("thinker.list.unfold")).addToList(buttonsHaveAnime));
-		profileHandler.clearAllProfile();
 
-		try {
-			thinkerJsonReader.readAllProfiles("ideas");
-		}catch (Exception ignored){}
 		if(openByUser) onOpenByUserAfter();
 		else if(themeSelectorFolded)foldThemeSelector(true);
 	}
@@ -149,7 +150,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		if(button.id==3) {
 			int mouseY=this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 			if(Mouse.isInsideWindow()){
-				String newID=((ThinkingProfileList) button).onMouseClick(mouseY);
+				String newID=((ThinkingProfileList) button).onMouseClick(mouseY, (thinkerImage) buttonList.get(4));
 				if(!Objects.equals(selectedProfileID, newID)&&profileHandler.getProfile(newID)!=null){
 					onProfileChanged(newID);
 					if(configHandler.themeSelectorAutoFold.get())foldThemeSelector(false);
@@ -163,16 +164,14 @@ public class ThinkingGuiMain extends GuiScreen {
 		return true;
 	}
 	public void foldThemeSelector(boolean immediately){
-		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80,0));
-		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80,0));
+		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80-8*currentProfileLayer,0));
+		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80-8*currentProfileLayer,0));
 		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(200))),16,0));
 		themeSelectorFolded=true;
-		unfoldedDirs.clear();
-
 	}
 	public void unfoldThemeSelector(){
-		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));
-		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80,0));
+		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80+8*currentProfileLayer,0));
+		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80+8*currentProfileLayer,0));
 		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(200)),-16,0));
 		themeSelectorFolded=false;
 	}
@@ -205,7 +204,6 @@ public class ThinkingGuiMain extends GuiScreen {
 	}
 	public boolean close() {
 		profileHandler.oldWheel=0;
-		profileHandler.YOffset=0;
 		Thinker.dummyWorldTickThread.setTrackedDummyWorld(null);
 		this.mc.displayGuiScreen(null);
 		this.mc.setIngameFocus();

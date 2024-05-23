@@ -12,14 +12,17 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
+package cn.kuzuanpa.thinker.client.objects.dummyWorld;
 
+import blockrenderer6343.api.utils.BlockPosition;
+import blockrenderer6343.world.DummyWorld;
+import cn.kuzuanpa.thinker.client.objects.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
 
-import java.util.Map;
+import java.util.List;
 
-public interface IThinkerObjectsAdaptor {
-    boolean isMapHaveValidContents(Map<String, Object> values);
-    IThinkerObject create(Map<String,Object> values);
-
+public interface IdummyWorldThinkerObject extends IThinkerObject, IAnimatableThinkerObject {
+    void render(DummyWorld world, long initTime, BlockPosition mousePointingPos);
+    List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world);
+    BlockPosition getPos();
 }

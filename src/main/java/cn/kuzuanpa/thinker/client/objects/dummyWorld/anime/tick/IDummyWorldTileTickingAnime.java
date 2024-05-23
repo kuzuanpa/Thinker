@@ -12,14 +12,13 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.json;
 
-import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
+package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
 
-import java.util.Map;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
+import net.minecraft.tileentity.TileEntity;
 
-public interface IThinkerObjectsAdaptor {
-    boolean isMapHaveValidContents(Map<String, Object> values);
-    IThinkerObject create(Map<String,Object> values);
-
+public interface IDummyWorldTileTickingAnime extends IDummyWorldAnimes {
+    boolean beforeTick(long time,TileEntity tileEntity);
+    default void afterTick(long time,TileEntity tileEntity){}
 }

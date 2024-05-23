@@ -30,13 +30,13 @@
 package cn.kuzuanpa.thinker.client;
 
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
-import cn.kuzuanpa.thinker.client.render.dummyWorld.IdummyWorldThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
 import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.render.gui.DummyWorldButton;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkerButtonBase;
-import cn.kuzuanpa.thinker.client.render.gui.ThinkingBackground;
-import cn.kuzuanpa.thinker.client.render.gui.anime.animeRotateSteadily;
-import cn.kuzuanpa.thinker.client.render.gui.thinkerImage;
+import cn.kuzuanpa.thinker.client.objects.gui.DummyWorldButton;
+import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.objects.gui.ThinkingBackground;
+import cn.kuzuanpa.thinker.client.objects.gui.anime.animeRotateSteadily;
+import cn.kuzuanpa.thinker.client.objects.gui.thinkerImage;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
