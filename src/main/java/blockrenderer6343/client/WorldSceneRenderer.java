@@ -310,6 +310,7 @@ public abstract class WorldSceneRenderer {
         if (beforeRender != null) {
             beforeRender.accept(this);
         }
+
         try {
             Minecraft mc = Minecraft.getMinecraft();
             glEnable(GL_CULL_FACE);

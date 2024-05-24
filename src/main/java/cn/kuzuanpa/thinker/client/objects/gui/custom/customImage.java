@@ -39,7 +39,6 @@ import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class customImage extends ThinkerButtonBase implements IAnimatableThinkerObject {
     public static final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
-    public static final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
 
     public customImage(int id, String texturePath, int posX, int posY, int width, int height){
         super(id,posX,posY,width,height,"");

@@ -47,7 +47,7 @@ import static cn.kuzuanpa.thinker.client.handler.profileHandler.profileListHeigh
 public class ThinkingProfileList extends ThinkerButtonBase {
 
     public ThinkingProfileList(int id, int x, int y,int height){
-        super(id, x, y,68+currentProfileLayer*8,height,"");
+        super(id, x, y,66+currentProfileLayer*8,height,"");
 
     }
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
@@ -62,8 +62,7 @@ public class ThinkingProfileList extends ThinkerButtonBase {
         walkMaps(0,profileHandler.rootDir,mc,i,"");
 
         this.zLevel-=10;
-        int color = Color.ofRGBA(configHandler.HUDBackgroundColorR.get(),configHandler.HUDBackgroundColorG.get(),configHandler.HUDBackgroundColorB.get(),configHandler.HUDBackgroundColorA.get()).darker(100).hashCode();
-        this.drawGradientRect(xPosition, yPosition, width, height, color, color);
+        this.drawGradientRect(xPosition, yPosition, width, height, 0x22000000, 0x22000000);
         this.zLevel+=10;
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -131,7 +130,6 @@ public class ThinkingProfileList extends ThinkerButtonBase {
         int oldProfileLayer = currentProfileLayer;
         currentProfileLayer=0;
         profileHandler.unfoldedDirs.forEach(dir->currentProfileLayer=Math.max(currentProfileLayer,dir.split("/").length - 1));
-        System.out.println(currentProfileLayer);
         this.width+=(currentProfileLayer-oldProfileLayer)*8;
         buttonFolder.xPosition += (currentProfileLayer-oldProfileLayer)*8;
     }
