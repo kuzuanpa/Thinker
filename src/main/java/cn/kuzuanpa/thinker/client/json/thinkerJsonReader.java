@@ -15,6 +15,7 @@
 package cn.kuzuanpa.thinker.client.json;
 
 import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.client.objects.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
@@ -141,7 +142,9 @@ public class thinkerJsonReader {
         else for (IThinkerObjectsAdaptor objectsAdaptor : objectsAdaptors) {
             if(objectsAdaptor.isMapHaveValidContents(values)){
                 json.endObject();
-                return objectsAdaptor.create(values);
+                IThinkerObject obj = objectsAdaptor.create(values);
+                if(obj instanceof IAnimatableThinkerObject) return ((IAnimatableThinkerObject) obj).addAnimes(animes);
+                return obj;
             }
         }
         if(!requestedErr.isEmpty())requestedErr.forEach(err->logError(json,fileName,err));   //If error occurred when creating object:

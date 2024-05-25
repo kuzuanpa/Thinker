@@ -30,6 +30,7 @@ public class DummyWorld extends World {
 
     public static final DummyWorld INSTANCE = new DummyWorld();
     public boolean lock=false;
+    public long timer =0;
     public DummyWorld() {
         super(new DummySaveHandler(), "DummyWorld", DEFAULT_SETTINGS, new WorldProviderSurface(), new Profiler());
         // Guarantee the dimension ID was not reset by the provider
@@ -53,10 +54,10 @@ public class DummyWorld extends World {
             if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord)) {
                 try {
                     AtomicBoolean skipThisTick = new AtomicBoolean(false);
-                    dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile && ((dummyWorldTile) obj).tile.equals(tileentity)).findAny().ifPresent(idummyWorldThinkerObject -> skipThisTick.set(idummyWorldThinkerObject.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTileTickingAnime).anyMatch(anime -> ((IDummyWorldTileTickingAnime) anime).beforeTick(0, tileentity))));
+                    dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile && ((dummyWorldTile) obj).tile.equals(tileentity)).findAny().ifPresent(idummyWorldThinkerObject -> skipThisTick.set(idummyWorldThinkerObject.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTileTickingAnime).anyMatch(anime -> ((IDummyWorldTileTickingAnime) anime).beforeTick(timer, tileentity))));
                     if (skipThisTick.get()) return;
                     tileentity.updateEntity();
-                    dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile && ((dummyWorldTile) obj).tile.equals(tileentity)).findAny().ifPresent(idummyWorldThinkerObject -> idummyWorldThinkerObject.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTileTickingAnime).forEach(anime -> ((IDummyWorldTileTickingAnime) anime).afterTick(0, tileentity)));
+                    dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile && ((dummyWorldTile) obj).tile.equals(tileentity)).findAny().ifPresent(idummyWorldThinkerObject -> idummyWorldThinkerObject.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTileTickingAnime).forEach(anime -> ((IDummyWorldTileTickingAnime) anime).afterTick(timer, tileentity)));
                 } catch (Throwable throwable) {
                     if (ForgeModContainer.removeErroringTileEntities) {
                         tileentity.invalidate();

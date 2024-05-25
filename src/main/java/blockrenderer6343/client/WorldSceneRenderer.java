@@ -60,7 +60,6 @@ public abstract class WorldSceneRenderer {
     private Vector3f eyePos = new Vector3f(0, 0, 0);
     private Vector3f lookAt = new Vector3f(0, 0, 0);
     private Vector3f worldUp = new Vector3f(0, 1, 0);
-    public long initTime=0;
 
     public WorldSceneRenderer(DummyWorld world) {
         this.world = world;
@@ -107,7 +106,7 @@ public abstract class WorldSceneRenderer {
         setupCamera(positionedRect);
 
         // render TrackedDummyWorld
-        animeList.forEach(anime -> anime.animeDraw(initTime));
+        animeList.forEach(anime -> anime.animeDraw(world.timer));
         drawWorld();
         // check lookingAt
         this.lastTraceResult = null;
@@ -263,7 +262,7 @@ public abstract class WorldSceneRenderer {
 
                     glLoadName(i++);
                     glPushAttrib(GL_ALL_ATTRIB_BITS);
-                    obj.render(world, initTime, null);
+                    obj.render(world, world.timer, null);
                     glPopAttrib();
 
                 } catch (Exception e) {
@@ -306,6 +305,9 @@ public abstract class WorldSceneRenderer {
 
     }
 
+    public void setWorldTimer(long timer){
+        world.timer=timer;
+    }
     protected void drawWorld() {
         if (beforeRender != null) {
             beforeRender.accept(this);
@@ -321,7 +323,7 @@ public abstract class WorldSceneRenderer {
             glEnable(GL_DEPTH_TEST);
             dummyWorldObjects.forEach((obj) -> {
                 try {
-                    obj.render(world, initTime, null);
+                    obj.render(world, world.timer, null);
                 } catch (Exception e) {
                     Thinker.err(e);
                 }
@@ -381,7 +383,7 @@ public abstract class WorldSceneRenderer {
             if(!blockDummy.getWorldAnimeList().isEmpty())blockDummy.getWorldAnimeList().forEach(gAnime->{
                 if(!(gAnime instanceof IDummyWorldGraphicAnime))return;
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
-                ((IDummyWorldGraphicAnime)gAnime).animeDraw(initTime);
+                ((IDummyWorldGraphicAnime)gAnime).animeDraw(world.timer);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             });
             Vector3f hitPos = ProjectionUtils.unProject(mouseX, mouseY);

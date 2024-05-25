@@ -15,11 +15,15 @@
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
 
 import blockrenderer6343.api.utils.BlockPosition;
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class OutlineGlowth implements IDummyBlockAnimeDrawAdditionalQuads{
     public OutlineGlowth(int startTime, int endTime, BlockPosition pos, int color, float thickness){
@@ -95,5 +99,22 @@ public class OutlineGlowth implements IDummyBlockAnimeDrawAdditionalQuads{
         long timer = System.currentTimeMillis()- time;
         if(startTime<timer&&timer<endTime)renderBlockOutlineAt(pos,color,thickness);
 
+    }
+
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime")&&
+                values.containsKey("posX")&&
+                values.containsKey("posY")&&
+                values.containsKey("posZ");
+        if(!result)
+            thinkerJsonReader.requestLogError("Not Enough contents for world.graphic.outlineGlowth: startTime, endTime, posX, posY, posZ");
+        return result;
+    }
+
+    public static OutlineGlowth create(Map<String, Object> values) {
+        int thickness = values.containsKey("thickness")?getInt(values.get("thickness")):1;
+        int color = values.containsKey("color")?getInt(values.get("color")):0xffffffff;
+        return new OutlineGlowth(getInt(values.get("startTime")),getInt(values.get("endTime")),new BlockPosition(getInt(values.get("dX")),getInt(values.get("dY")),getInt(values.get("dZ"))),color,thickness);
     }
 }

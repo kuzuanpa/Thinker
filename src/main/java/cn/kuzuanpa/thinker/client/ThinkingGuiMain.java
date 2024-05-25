@@ -64,7 +64,7 @@ public class ThinkingGuiMain extends GuiScreen {
 	private int displayWidth,displayHeight;
 	public String selectedProfileID ="";
 	public boolean openByUser,themeSelectorFolded=false;
-	public long initTime=0,lastProfileSelectedTime=0;
+	public long initTime=0;
 	public final int ID_FOR_CUSTOM_BUTTONS=10;
 	private List<String> hoveringString=new ArrayList<>();
 	protected List<ThinkerButtonBase> buttonsHaveAnime = new ArrayList<ThinkerButtonBase>();
@@ -101,7 +101,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		if (openByUser) worldButton=new DummyWorldButton(1,0,0,displayWidth,displayHeight);
 		else worldButton.resizeToScreen(displayWidth,displayHeight);
 		buttonList.add(new ThinkingBackground(0, displayWidth,displayHeight));
-		buttonList.add(worldButton);
+		buttonList.add(worldButton.addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(2,displayWidth-52,20,0,0,32,32,"textures/base.png", l10n("thinker.settings")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime));
 		buttonList.add(new ThinkingProfileList(3,0,0,displayHeight).addToList(buttonsHaveAnime));
 		buttonList.add(new thinkerImage(4,69+ 8*currentProfileLayer,0,0,32,16,16,"textures/base.png", l10n("thinker.list.fold")).addToList(buttonsHaveAnime));
@@ -135,13 +135,14 @@ public class ThinkingGuiMain extends GuiScreen {
 			}
 	}
 	protected void onProfileChanged(String newProfileID){
-		lastProfileSelectedTime= System.currentTimeMillis();
+		initTime=System.currentTimeMillis();
+
 		buttonList.removeAll(buttonsProfile);
 		buttonsProfile= profileHandler.getProfile(newProfileID).buttons;
 		buttonList.addAll(buttonsProfile);
 		profileHandler.onProfileChanged(newProfileID);
 		dummyWorldHandler.onProfileChanged(newProfileID);
-		((DummyWorldButton)buttonList.get(1)).onProfileChanged(lastProfileSelectedTime);
+		((DummyWorldButton)buttonList.get(1)).onProfileChanged();
 		selectedProfileID =newProfileID;
 	}
 	protected boolean onButtonPressed(GuiButton button) {

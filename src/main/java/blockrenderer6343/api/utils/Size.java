@@ -37,6 +37,6 @@ public class Size {
 
     @Override
     public String toString() {
-        return com.google.common.base.Objects.toStringHelper(this).add("width", width).add("height", height).toString();
+        return "Size"+"width"+ width+"height"+height;
     }
 }

@@ -87,15 +87,15 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         return pos;
     }
     @Override
-    public void render(DummyWorld world, long initTime, BlockPosition mousePointingPos) {
+    public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
         GL11.glPushMatrix();
         RenderHelper.disableStandardItemLighting();
         List<IDummyWorldAnimes> anime = getWorldAnimeList();
         if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
-            if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime);
+            if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(timer);
             if(a instanceof IDummyWorldGraphicAnime){
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
-                ((IDummyWorldGraphicAnime)a).animeDraw(initTime);
+                ((IDummyWorldGraphicAnime)a).animeDraw(timer);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             }
         });
@@ -109,8 +109,8 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
             bufferBuilder.renderAllFaces = renderAllFaces;
             bufferBuilder.renderBlockByRenderType(block, pos.x, pos.y, pos.z);
         } finally {
+            Tessellator.instance.setColorRGBA_F(0.1F,0.1F,0.1F,0.5F);
             Tessellator.instance.draw();
-            Tessellator.instance.setTranslation(0, 0, 0);
             if(pos.equals(mousePointingPos)) OutlineGlowth.renderBlockOutlineAt(pos, 0xCCCCCC, 2F);
             GL11.glPopMatrix();
         }

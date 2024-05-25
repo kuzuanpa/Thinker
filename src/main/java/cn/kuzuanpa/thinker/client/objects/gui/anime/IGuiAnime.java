@@ -14,9 +14,10 @@
  */
 package cn.kuzuanpa.thinker.client.objects.gui.anime;
 
+import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 
-public interface IGuiAnime {
+public interface IGuiAnime extends IThinkerAnime {
     void animeDraw(long time);
     void animeDrawPre(long time);
     void animeDrawAfter(long time);

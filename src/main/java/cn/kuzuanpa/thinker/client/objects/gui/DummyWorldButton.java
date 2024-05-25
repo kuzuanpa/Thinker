@@ -29,6 +29,7 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
+import cn.kuzuanpa.thinker.client.ThinkingGuiMain;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
@@ -44,7 +45,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.dummyWorldObjects;
 
-public class DummyWorldButton extends ThinkerButtonBase {
+public class DummyWorldButton extends ThinkerButtonBase{
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
     protected static BlockPosition selectedBlock;
@@ -55,6 +56,7 @@ public class DummyWorldButton extends ThinkerButtonBase {
     protected int lastGuiMouseX,lastGuiMouseY;
     public boolean clickOnOtherButton=false,worldSynced=false;
 
+
     public DummyWorldButton(int id, int xPos, int yPos, int width, int height){
         super(id, xPos, yPos,width,height,"");
         try {
@@ -64,9 +66,8 @@ public class DummyWorldButton extends ThinkerButtonBase {
         }
         lastGuiMouseX=0;lastGuiMouseY=0;
     }
-    public void onProfileChanged(long initTime){
+    public void onProfileChanged(){
         if(renderer==null)return;
-        renderer.initTime=initTime;
         worldSynced=false;
         resetCenter();
     }
@@ -81,7 +82,6 @@ public class DummyWorldButton extends ThinkerButtonBase {
         }
         dummyWorldObjects.clear();
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
-        renderer.initTime=System.currentTimeMillis();
         renderer.setClearColor(0xC6C6C6);
 
         Vector3f size = ((TrackedDummyWorld) renderer.world).getSize();
@@ -140,6 +140,10 @@ public class DummyWorldButton extends ThinkerButtonBase {
         bufferBuilder.renderBlockUsingTexture(block, pos.x, pos.y, pos.z, icon);
     }
 
+    public void updateTimer(long timer){
+        super.updateTimer(timer);
+        renderer.setWorldTimer(timer);
+    }
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible&&(profileHandler.selectedProfile==null||!profileHandler.selectedProfile.disableDummyWorldRend))
         {

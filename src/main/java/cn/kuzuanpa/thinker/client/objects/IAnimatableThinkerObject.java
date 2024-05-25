@@ -50,6 +50,7 @@ import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface IAnimatableThinkerObject extends IThinkerObject {
     ArrayList<IGuiAnime> getGuiAnimeList();
@@ -57,9 +58,14 @@ public interface IAnimatableThinkerObject extends IThinkerObject {
     ArrayList<IDummyWorldAnimes> getWorldAnimeList();
     default IAnimatableThinkerObject addAnimes(List<IGuiAnime> guiAnimes, List<IDummyWorldAnimes> dummyWorldAnimes){
         if(this.getGuiAnimeList()==null&&!guiAnimes.isEmpty()) Thinker.err("Object "+this.toString()+ "don't support GUIAnime!");
-            else this.getGuiAnimeList().addAll(guiAnimes);
+        else this.getGuiAnimeList().addAll(guiAnimes);
         if(this.getWorldAnimeList()==null&&!dummyWorldAnimes.isEmpty())Thinker.err("Object "+this.toString()+ "don't support World Anime!");
-            else this.getWorldAnimeList().addAll(dummyWorldAnimes);
+        else this.getWorldAnimeList().addAll(dummyWorldAnimes);
+        return this;
+    }
+    default IAnimatableThinkerObject addAnimes(List<IThinkerAnime> animes){
+        if(this.getGuiAnimeList()!=null) this.getGuiAnimeList().addAll(animes.stream().filter(anime->anime instanceof IGuiAnime).map(anime->(IGuiAnime)anime).collect(Collectors.toList()));
+        if(this.getWorldAnimeList()!=null)this.getWorldAnimeList().addAll(animes.stream().filter(anime->anime instanceof IDummyWorldAnimes).map(anime->(IDummyWorldAnimes)anime).collect(Collectors.toList()));
         return this;
     }
 }

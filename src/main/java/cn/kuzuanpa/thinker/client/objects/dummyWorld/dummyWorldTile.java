@@ -89,7 +89,7 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
     }
 
     @Override
-    public void render(DummyWorld world, long initTime, BlockPosition mousePointingPos) {
+    public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
         RenderHelper.enableStandardItemLighting();
 
         for (int pass = 0; pass < 2; pass++) {
@@ -97,24 +97,27 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
             if (pos == null || tile == null) return;
             GL11.glPushMatrix();
             setDefaultPassRenderState(pass);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glEnable(GL11.GL_BLEND);
             if (tile.shouldRenderInPass(pass)) {
-                GL11.glTranslatef(pos.x, pos.y, pos.z);
-                List<IDummyWorldAnimes> anime = getWorldAnimeList();
-                if (anime != null && !anime.isEmpty()) anime.forEach(a -> {
-                    if (a instanceof IDummyBlockAnimeDrawAdditionalQuads)
-                        ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(initTime);
-                    if (a instanceof IDummyWorldGraphicAnime) {
-                        GL11.glTranslatef(pos.x, pos.y, pos.z);
-                        ((IDummyWorldGraphicAnime) a).animeDraw(initTime);
-                        GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
-                    }
-                });
-                GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                 int i = world.getLightBrightnessForSkyBlocks(pos.x, pos.y, pos.z, 0);
                 float j = i % 65536;
                 float k = i / 65536;
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+                GL11.glTranslatef(pos.x, pos.y, pos.z);
+                List<IDummyWorldAnimes> anime = getWorldAnimeList();
+                if (anime != null && !anime.isEmpty()) anime.forEach(a -> {
+                    if (a instanceof IDummyBlockAnimeDrawAdditionalQuads)
+                        ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(timer);
+                    if (a instanceof IDummyWorldGraphicAnime) {
+                        GL11.glTranslatef(pos.x, pos.y, pos.z);
+                        ((IDummyWorldGraphicAnime) a).animeDraw(timer);
+                        GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
+                    }
+                });
+                GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
+
                 TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, pos.x, pos.y, pos.z, 0);
             }
             GL11.glPopMatrix();

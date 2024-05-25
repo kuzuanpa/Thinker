@@ -15,8 +15,17 @@
 
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
 
+import blockrenderer6343.api.utils.BlockPosition;
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.OutlineGlowth;
+import cn.kuzuanpa.thinker.util.Nbt;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getBoolean;
+import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class SetTileNBT implements IDummyWorldTileTickingAnime {
     public NBTTagCompound tag;
@@ -36,5 +45,19 @@ public class SetTileNBT implements IDummyWorldTileTickingAnime {
             alreadySet=true;
         }
         return false;
+    }
+
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime")&&
+                values.containsKey("tag");
+        if(!result) thinkerJsonReader.requestLogError("Not Enough contents for world.tick.setTileNBT: startTime, endTime, tag");
+        NBTTagCompound nbt =null;
+        if(result)try {nbt = (NBTTagCompound) Nbt.stringToNBT((String) values.get("tag"));}catch (Exception e){thinkerJsonReader.requestLogError("Invaild NBT String");return false;}
+        return result&&nbt!=null;
+    }
+
+    public static SetTileNBT create(Map<String, Object> values) {
+        return new SetTileNBT(getInt(values.get("startTime")),getInt(values.get("endTime")), (NBTTagCompound) Nbt.stringToNBT((String) values.get("tag")),getBoolean(values.getOrDefault("onlySetOnce","false")));
     }
 }

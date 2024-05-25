@@ -94,13 +94,11 @@ public class ThinkingGuiWelcome extends GuiScreen {
 		profileHandler.addProfile(new profileHandler.thinkingProfile("HelloThinker",Items.string.getIconFromDamage(0),blocks,new thinkerImage(13,displayWidth-122,20,0,0,32,32,"textures/base.png", l10n("test")).addAnime(new animeRotateSteadily(0.05F)).addToList(buttonsHaveAnime)));
 
 		if(openByUser)postInit();
-
-		lastProfileSelectedTime= System.currentTimeMillis();
 		List<ThinkerButtonBase> buttonsProfile= profileHandler.getProfile("HelloThinker").buttons;
 		buttonList.addAll(buttonsProfile);
 		profileHandler.onProfileChanged("HelloThinker");
 		dummyWorldHandler.onProfileChanged("HelloThinker");
-		((DummyWorldButton)buttonList.get(1)).onProfileChanged(lastProfileSelectedTime);
+		((DummyWorldButton)buttonList.get(1)).onProfileChanged();
 	}
 
 	public String l10n(String key){String text1= LanguageRegistry.instance().getStringLocalization(key);if(text1.equals(""))return key;return text1;}

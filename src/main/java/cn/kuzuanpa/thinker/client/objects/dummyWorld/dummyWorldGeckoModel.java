@@ -79,7 +79,7 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
             dummyGeckoModel =new dummyWorldGeckoModelContainer(modelLocation, textureLocation, animeLocation);
         }
 
-        public void render(DummyWorld world, long initTime, BlockPosition mousePointingPos) {
+        public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
             GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(dummyGeckoModel));
             getGeoModelProvider().setLivingAnimations(dummyGeckoModel, this.getUniqueID(dummyGeckoModel));
             int light = 15;
@@ -90,7 +90,7 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
             int lx = light % 65536;
             int ly = light / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lx, (float)ly);
-            float partialTicks=(System.currentTimeMillis()-initTime)/100000F;
+            float partialTicks=(System.currentTimeMillis()- timer)/100000F;
             GlStateManager.pushMatrix();
             GlStateManager.translate(pos.x,pos.y,pos.z);
             GlStateManager.translate(0.0F, 0.01F, 0.0F);

@@ -15,7 +15,14 @@
 
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
 
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
+import cn.kuzuanpa.thinker.util.Nbt;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.*;
 
 public class SkipTick implements IDummyWorldTileTickingAnime{
     public SkipTick(long startTime,long endTime){
@@ -35,9 +42,19 @@ public class SkipTick implements IDummyWorldTileTickingAnime{
     @Override
     public boolean beforeTick(long time,TileEntity tileEntity) {
         if(startTime<time&&time<endTime&&(skipCount==-1||skippedTicks<skipCount)){
-            skipCount++;
+            skippedTicks++;
             return true;
         }
         return false;
+    }
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime");
+        if(!result) thinkerJsonReader.requestLogError("Not Enough contents for world.tick.skip: startTime, endTime");
+        return result;
+    }
+
+    public static SkipTick create(Map<String, Object> values) {
+        return new SkipTick(getInt(values.get("startTime")),getInt(values.get("endTime")), getLong(values.getOrDefault("skipCount","-1")));
     }
 }

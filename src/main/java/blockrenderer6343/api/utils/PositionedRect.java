@@ -56,7 +56,6 @@ public class PositionedRect {
 
     @Override
     public String toString() {
-        return com.google.common.base.Objects.toStringHelper(this).add("position", position).add("size", size)
-                .toString();
+        return "PositionedRect"+"position"+position.toString()+"size"+size.toString();
     }
 }

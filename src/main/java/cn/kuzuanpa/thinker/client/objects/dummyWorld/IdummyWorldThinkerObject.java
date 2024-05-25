@@ -22,7 +22,7 @@ import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
 import java.util.List;
 
 public interface IdummyWorldThinkerObject extends IThinkerObject, IAnimatableThinkerObject {
-    void render(DummyWorld world, long initTime, BlockPosition mousePointingPos);
+    void render(DummyWorld world, long timer, BlockPosition mousePointingPos);
     List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world);
     BlockPosition getPos();
 }

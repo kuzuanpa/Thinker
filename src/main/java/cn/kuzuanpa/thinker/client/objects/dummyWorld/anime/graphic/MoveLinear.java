@@ -14,7 +14,14 @@
  */
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
 
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
+import cn.kuzuanpa.thinker.client.objects.gui.custom.customImage;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getInt;
+import static cn.kuzuanpa.thinker.Thinker.getLong;
 
 public class MoveLinear implements IDummyWorldGraphicAnime {
     public MoveLinear(int startTime, int endTime, float dX, float dY, float dZ){
@@ -32,6 +39,21 @@ public class MoveLinear implements IDummyWorldGraphicAnime {
         float progress=(float)(timer - startTime)/(float)(endTime-startTime);
         if (timer < endTime) GL11.glTranslatef(progress * dX,progress * dY, progress*dZ);
         else GL11.glTranslatef(dX, dY, dZ);
+    }
+
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime")&&
+                values.containsKey("dX")&&
+                values.containsKey("dY")&&
+                values.containsKey("dZ");
+        if(!result)
+            thinkerJsonReader.requestLogError("Not Enough contents for world.graphic.MoveLinear: startTime, endTime, dX, dY, dZ");
+        return result;
+    }
+
+    public static MoveLinear create(Map<String, Object> values) {
+        return new MoveLinear(getInt(values.get("startTime")),getInt(values.get("endTime")),getInt(values.get("dX")),getInt(values.get("dY")),getInt(values.get("dZ")));
     }
 
 }
