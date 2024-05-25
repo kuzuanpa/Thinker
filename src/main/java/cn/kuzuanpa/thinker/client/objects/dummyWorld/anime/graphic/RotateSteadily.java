@@ -19,9 +19,10 @@ import org.lwjgl.opengl.GL11;
 
 public class RotateSteadily implements IDummyWorldGraphicAnime {
     @Override
-    public void animeDraw(long time) {
+    public boolean animeDraw(long time) {
         GL11.glTranslatef(0.5F,0.5F,0);
         GL11.glRotated(time/10F,0,0,1);
         GL11.glTranslatef(-0.5F,-0.5F,0);
+        return false;
     }
 }

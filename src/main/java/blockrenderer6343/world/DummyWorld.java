@@ -6,7 +6,8 @@ import blockrenderer6343.api.utils.world.DummyChunkProvider;
 import blockrenderer6343.api.utils.world.DummySaveHandler;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick.IDummyWorldTileTickingAnime;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick.IDummyWorldTickingAnime;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldTile;
 import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
@@ -17,7 +18,6 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.ForgeModContainer;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DummyWorld extends World {
 
@@ -48,37 +48,29 @@ public class DummyWorld extends World {
         if(!lock)System.out.println("World missing lock when ticking!");
         ArrayList<TileEntity> invalidTileEntities = new ArrayList<>();
 
-        for (Object o : this.loadedTileEntityList) {
-            TileEntity tileentity = (TileEntity) o;
+        for (IdummyWorldThinkerObject o : dummyWorldHandler.dummyWorldObjects) {
 
-            if (!tileentity.isInvalid() && tileentity.hasWorldObj() && this.blockExists(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord)) {
-                try {
-                    AtomicBoolean skipThisTick = new AtomicBoolean(false);
-                    dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile && ((dummyWorldTile) obj).tile.equals(tileentity)).findAny().ifPresent(idummyWorldThinkerObject -> skipThisTick.set(idummyWorldThinkerObject.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTileTickingAnime).anyMatch(anime -> ((IDummyWorldTileTickingAnime) anime).beforeTick(timer, tileentity))));
-                    if (skipThisTick.get()) return;
-                    tileentity.updateEntity();
-                    dummyWorldHandler.dummyWorldObjects.stream().filter(obj -> obj instanceof dummyWorldTile && ((dummyWorldTile) obj).tile.equals(tileentity)).findAny().ifPresent(idummyWorldThinkerObject -> idummyWorldThinkerObject.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTileTickingAnime).forEach(anime -> ((IDummyWorldTileTickingAnime) anime).afterTick(timer, tileentity)));
-                } catch (Throwable throwable) {
-                    if (ForgeModContainer.removeErroringTileEntities) {
-                        tileentity.invalidate();
-                        setBlockToAir(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord);
+            if(o.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTickingAnime).anyMatch(anime -> ((IDummyWorldTickingAnime) anime).beforeTick(timer, o, this)))return;
+
+            if(o instanceof dummyWorldTile) {
+                TileEntity tileEntity = ((dummyWorldTile) o).tile;
+                if (!tileEntity.isInvalid() && tileEntity.hasWorldObj() && this.blockExists(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord)) {
+                    try {
+                        tileEntity.updateEntity();
+                        o.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTickingAnime).forEach(anime -> ((IDummyWorldTickingAnime) anime).afterTick(timer, o, this));
+                    } catch (Throwable throwable) {
+                        tileEntity.invalidate();
+                        setBlockToAir(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
                     }
                 }
-            }
-
-            if (tileentity.isInvalid()) {
-                invalidTileEntities.add(tileentity);
+                if (tileEntity.isInvalid()) invalidTileEntities.add(tileEntity);
             }
         }
         invalidTileEntities.forEach(tileentity -> {
             if (this.chunkExists(tileentity.xCoord >> 4, tileentity.zCoord >> 4))
             {
                 Chunk chunk = this.getChunkFromChunkCoords(tileentity.xCoord >> 4, tileentity.zCoord >> 4);
-
-                if (chunk != null)
-                {
-                    chunk.removeInvalidTileEntity(tileentity.xCoord & 15, tileentity.yCoord, tileentity.zCoord & 15);
-                }
+                if (chunk != null) chunk.removeInvalidTileEntity(tileentity.xCoord & 15, tileentity.yCoord, tileentity.zCoord & 15);
             }
         });
         this.loadedTileEntityList.removeAll(invalidTileEntities);

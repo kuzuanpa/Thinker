@@ -91,14 +91,19 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         GL11.glPushMatrix();
         RenderHelper.disableStandardItemLighting();
         List<IDummyWorldAnimes> anime = getWorldAnimeList();
-        if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
+        if(anime!=null&&!anime.isEmpty())if(anime.stream().anyMatch(a->{
+            boolean result=false;
             if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(timer);
             if(a instanceof IDummyWorldGraphicAnime){
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
-                ((IDummyWorldGraphicAnime)a).animeDraw(timer);
+                result = ((IDummyWorldGraphicAnime)a).animeDraw(timer);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             }
-        });
+            return result;
+        })){
+            GL11.glPopMatrix();
+            return;
+        }
         Tessellator.instance.startDrawingQuads();
         try {
             Tessellator.instance.setBrightness(15 << 20 | 15 << 4);
@@ -106,8 +111,13 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
             RenderBlocks bufferBuilder = new RenderBlocks();
             bufferBuilder.blockAccess = world;
             bufferBuilder.setRenderBounds(0, 0, 0, 1, 1, 1);
-            bufferBuilder.renderAllFaces = renderAllFaces;
+            bufferBuilder.renderFromInside=true;
+            bufferBuilder.setRenderAllFaces(true);
             bufferBuilder.renderBlockByRenderType(block, pos.x, pos.y, pos.z);
+
+            bufferBuilder.renderFromInside=false;
+            bufferBuilder.renderBlockByRenderType(block, pos.x, pos.y, pos.z);
+
         } finally {
             Tessellator.instance.setColorRGBA_F(0.1F,0.1F,0.1F,0.5F);
             Tessellator.instance.draw();

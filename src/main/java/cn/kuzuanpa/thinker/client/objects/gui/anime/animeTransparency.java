@@ -14,6 +14,12 @@
  */
 package cn.kuzuanpa.thinker.client.objects.gui.anime;
 
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
+
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getInt;
+
 public class animeTransparency extends animeRGBA implements IGuiAnime {
     public animeTransparency(int startTime, int endTime, int startA, int dA){
         super(startTime,endTime,255,255,255,startA,0,0,0,dA);
@@ -21,5 +27,20 @@ public class animeTransparency extends animeRGBA implements IGuiAnime {
     @Override
     public String jsonName() {
         return "Gui.Transparency";
+    }
+
+
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime")&&
+                values.containsKey("originA")&&
+                values.containsKey("dA");
+        if(!result)
+            thinkerJsonReader.requestLogError("Not Enough contents for gui.Transparency: startTime, endTime, originA, dA");
+        return result;
+    }
+
+    public static animeTransparency create(Map<String, Object> values) {
+        return new animeTransparency(getInt(values.get("startTime")),getInt(values.get("endTime")),getInt(values.get("originA")),getInt(values.get("dA")));
     }
 }

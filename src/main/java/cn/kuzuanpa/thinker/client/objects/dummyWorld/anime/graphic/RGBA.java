@@ -37,15 +37,16 @@ public class RGBA implements IDummyWorldGraphicAnime {
     }
     public int startTime, endTime,startR, startG, startB, startA,dR,dG,dB,dA;
     @Override
-    public void animeDraw(long timer) {
+    public boolean animeDraw(long timer) {
         if((startR+dR)>255||(startG+dG)>255||(startB+dB)>255||(startA+dA)>255) Thinker.err(new IllegalArgumentException("RGBA value is too big: dR:"+dR+",dG:"+dG+",dB:"+dB+",dA:"+dA));
-        if(timer<startTime) return;
+        if(timer<startTime) return false;
         if(timer<endTime){
             float f1=((float)(timer - startTime)/(float)(endTime-startTime));
             GL11.glColor4ub((byte) (startR+(f1*dR)), (byte) (startG+(f1*dG)), (byte) (startB+(f1*dB)), (byte) (startA+(f1*dA)));
         }if(timer>endTime){
             GL11.glColor4ub((byte) (startR+dR), (byte) (startG+dG), (byte) (startB+dB), (byte) (startA+dA));
         }
+        return false;
     }
 
     public static boolean isMapHaveValidContents(Map<String,Object> values) {

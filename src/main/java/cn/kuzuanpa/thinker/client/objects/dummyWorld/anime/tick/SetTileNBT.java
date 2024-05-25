@@ -15,19 +15,20 @@
 
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
 
-import blockrenderer6343.api.utils.BlockPosition;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.OutlineGlowth;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldTile;
 import cn.kuzuanpa.thinker.util.Nbt;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.getBoolean;
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
-public class SetTileNBT implements IDummyWorldTileTickingAnime {
+public class SetTileNBT implements IDummyWorldTickingAnime {
     public NBTTagCompound tag;
     long startTime, endTime;
     boolean onlySetOnce,alreadySet=false;
@@ -39,7 +40,9 @@ public class SetTileNBT implements IDummyWorldTileTickingAnime {
     }
 
     @Override
-    public boolean beforeTick(long time,TileEntity tileEntity) {
+    public boolean beforeTick(long time, IdummyWorldThinkerObject obj, World world) {
+        if(!(obj instanceof dummyWorldTile))return false;
+        TileEntity tileEntity = ((dummyWorldTile) obj).tile;
         if(startTime<time&&time<endTime&&(!onlySetOnce||!alreadySet)){
             tileEntity.readFromNBT( tag);
             alreadySet=true;

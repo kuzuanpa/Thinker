@@ -107,15 +107,19 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
 
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
                 List<IDummyWorldAnimes> anime = getWorldAnimeList();
-                if (anime != null && !anime.isEmpty()) anime.forEach(a -> {
-                    if (a instanceof IDummyBlockAnimeDrawAdditionalQuads)
-                        ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(timer);
-                    if (a instanceof IDummyWorldGraphicAnime) {
+                if(anime.stream().anyMatch(a->{
+                    boolean result=false;
+                    if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(timer);
+                    if(a instanceof IDummyWorldGraphicAnime){
                         GL11.glTranslatef(pos.x, pos.y, pos.z);
-                        ((IDummyWorldGraphicAnime) a).animeDraw(timer);
+                        result = ((IDummyWorldGraphicAnime)a).animeDraw(timer);
                         GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
                     }
-                });
+                    return result;
+                })){
+                    GL11.glPopMatrix();
+                    return;
+                }
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
 
                 TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, pos.x, pos.y, pos.z, 0);

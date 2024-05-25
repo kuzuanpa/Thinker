@@ -15,8 +15,14 @@
 package cn.kuzuanpa.thinker.client.objects.gui.anime;
 
 import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.RGBA;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class animeRGBA implements IGuiAnime {
     public animeRGBA(int startTime, int endTime,int startR,int startG,int startB,int startA,int dR,int dG,int dB,int dA){
@@ -54,15 +60,31 @@ public class animeRGBA implements IGuiAnime {
     }
     @Override
     public void updateButton(long time, ThinkerButtonBase button) {
-        long timer = System.currentTimeMillis()- time;
-        if(timer<startTime) return;
-        if(timer<endTime)button.visible= (startA + ((float) (timer - startTime) / (float) (endTime - startTime) * dA) >= 1);
-         else button.visible= startA + dA > 1;
-
     }
 
     @Override
     public String jsonName() {
         return "Gui.RGBA";
+    }
+
+
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime")&&
+                values.containsKey("originR")&&
+                values.containsKey("originG")&&
+                values.containsKey("originB")&&
+                values.containsKey("originA")&&
+                values.containsKey("dR")&&
+                values.containsKey("dG")&&
+                values.containsKey("dB")&&
+                values.containsKey("dA");
+        if(!result)
+            thinkerJsonReader.requestLogError("Not Enough contents for gui.RGBA: startTime, endTime, originR, originG, originB, originA, dR, dG, dB, dA");
+        return result;
+    }
+
+    public static animeRGBA create(Map<String, Object> values) {
+        return new animeRGBA(getInt(values.get("startTime")),getInt(values.get("endTime")),getInt(values.get("originR")),getInt(values.get("originG")),getInt(values.get("originB")),getInt(values.get("originA")),getInt(values.get("dR")),getInt(values.get("dG")),getInt(values.get("dB")),getInt(values.get("dA")));
     }
 }
