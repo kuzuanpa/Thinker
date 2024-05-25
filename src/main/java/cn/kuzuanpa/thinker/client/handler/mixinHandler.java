@@ -13,16 +13,18 @@
  *
  */
 
-package cn.kuzuanpa.thinker.mixinHandler;
+package cn.kuzuanpa.thinker.client.handler;
 
-public class mixinRenderBlockHandler {
+public class mixinHandler {
     public static int color=0xbbffffff;
-    public static boolean isColorOverwrite=true;
+    public static boolean isColorOverwrite=false;
     public static void setColor(int color){
-        mixinRenderBlockHandler.color=color;
+        mixinHandler.color=color;
     }
     public static void setColor(int color,boolean overwrite){
-        mixinRenderBlockHandler.color=color;
+        mixinHandler.color=color;
         isColorOverwrite=overwrite;
     }
+
+    public static boolean cancelForgeFontColorOverride=false;
 }

@@ -14,6 +14,7 @@
  */
 package cn.kuzuanpa.thinker.client.objects.gui.custom;
 
+import cn.kuzuanpa.thinker.client.handler.mixinHandler;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import net.minecraft.client.Minecraft;
@@ -56,7 +57,9 @@ public class customText extends ThinkerButtonBase {
             GL11.glTranslatef(xPosition + (height / 2F), yPosition + (width / 2F),0);
             GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
             GL11.glTranslatef(-(xPosition + (height / 2F)), -(yPosition + (width / 2F)),0);
-            this.drawString(Minecraft.getMinecraft().fontRenderer, text, xPosition, yPosition, color);
+            mixinHandler.cancelForgeFontColorOverride=true;
+            Minecraft.getMinecraft().fontRenderer.drawString(text, xPosition, yPosition, 0xffffffff);
+            mixinHandler.cancelForgeFontColorOverride=false;
             GuiAnimeList.forEach(anime -> anime.animeDrawAfter(timer));
             GL11.glPopMatrix();
         }

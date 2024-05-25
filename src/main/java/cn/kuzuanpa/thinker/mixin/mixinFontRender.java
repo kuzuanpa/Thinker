@@ -16,18 +16,16 @@
 package cn.kuzuanpa.thinker.mixin;
 
 import cn.kuzuanpa.thinker.client.handler.mixinHandler;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.client.gui.FontRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(RenderBlocks.class)
-public class mixinRenderBlock {
-    @Redirect(method = "renderStandardBlock",at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;colorMultiplier(Lnet/minecraft/world/IBlockAccess;III)I"))
-    public int modifyColor(Block block, IBlockAccess ba, int x, int y, int z){
-        int originColor = block.colorMultiplier(ba, x, y, z);
-        return mixinHandler.isColorOverwrite? mixinHandler.color:originColor;
+@Mixin(FontRenderer.class)
+public class mixinFontRender {
+    @Inject(method = "setColor",at = @At(value = "HEAD"), cancellable = true, remap = false)
+    public void modifyColor(float r, float g, float b, float a, CallbackInfo ci){
+        if(mixinHandler.cancelForgeFontColorOverride)ci.cancel();
     }
 }
