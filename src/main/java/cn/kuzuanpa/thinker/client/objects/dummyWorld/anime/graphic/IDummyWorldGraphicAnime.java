@@ -18,5 +18,5 @@ package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
 
 public interface IDummyWorldGraphicAnime extends IDummyWorldAnimes {
-    void animeDraw(long time);
+    boolean animeDraw(long time);
 }

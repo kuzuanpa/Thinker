@@ -28,33 +28,33 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
     public boolean isMapHaveValidContents(Map<String, Object> values) {
 
         if (!values.containsKey("type")) return false;
-        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type")).replaceFirst("gui", "")) {
-            //TODO:
-            //case "MoveLinear":
-            //    Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.moveLinear)");
-            //case "moveLinear":
-            //    return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.MoveLinear.isMapHaveValidContents(values);
-            //case "Color":
-            //    Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.color)");
-            //case "RGBA":
-            //case "color":
-            //    return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.MoveLinear.isMapHaveValidContents(values);
-            //case "Rotate":
-            //    Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotate)");
-            //case "rotate":
-            //    return dummyWorldBlock.isMapHaveValidContents(values);
-            //case "RotateSteadily":
-            //    Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotateSteadily)");
-            //case "rotateSteadily":
-            //    return dummyWorldTile.isMapHaveValidContents(values);
-            //case "Scale":
-            //    Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.scale)");
-            //case "scale":
-            //    return dummyWorldTile.isMapHaveValidContents(values);
-            //case "Transparency":
-            //    Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.transparency)");
-            //case "transparency":
-            //    return dummyWorldTile.isMapHaveValidContents(values);
+        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type")).replaceFirst("gui.", "")) {
+            
+            case "MoveLinear":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.moveLinear)");
+            case "moveLinear":
+                return false;//cn.kuzuanpa.thinker.client.objects.gui.anime.animeMoveLinear.isMapHaveValidContents(values);
+            case "Color":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.color)");
+            case "RGBA":
+            case "color":
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeRGBA.isMapHaveValidContents(values);
+            case "Rotate":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotate)");
+            case "rotate":
+                return false;//dummyWorldBlock.isMapHaveValidContents(values);
+            case "RotateSteadily":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotateSteadily)");
+            case "rotateSteadily":
+                return false;//dummyWorldTile.isMapHaveValidContents(values);
+            case "Scale":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.scale)");
+            case "scale":
+                return false;//dummyWorldTile.isMapHaveValidContents(values);
+            case "Transparency":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.transparency)");
+            case "transparency":
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeTransparency.isMapHaveValidContents(values);
             default:
                 return false;
         }
@@ -66,6 +66,9 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
             case "world.graphic.RGBA":
             case "world.graphic.changeColor":
                 return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.RGBA.isMapHaveValidContents(values);
+            case "world.graphic.Hid":
+            case "world.graphic.hid":
+                return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.Hid.isMapHaveValidContents(values);
             case "world.graphic.OutlineGlowth":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.outlineGlowth)");
             case "world.graphic.outlineGlowth":
@@ -93,7 +96,7 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
 
 
         if (!values.containsKey("type")) return null;
-        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type")).replaceFirst("gui", "")) {
+        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type")).replaceFirst("gui.", "")) {
             case "MoveLinear":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.moveLinear)");
             case "moveLinear":
@@ -102,7 +105,7 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.color)");
             case "RGBA":
             case "color":
-                return null;
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeRGBA.create(values);
             case "Rotate":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotate)");
             case "rotate":
@@ -118,7 +121,7 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
             case "Transparency":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.transparency)");
             case "transparency":
-                return null;
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeTransparency.create(values);
             default:
                 return null;
         }
@@ -130,6 +133,9 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
             case "world.graphic.RGBA":
             case "world.graphic.changeColor":
                 return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.RGBA.create(values);
+            case "world.graphic.Hid":
+            case "world.graphic.hid":
+                return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.Hid.create(values);
             case "world.graphic.OutlineGlowth":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.outlineGlowth)");
             case "world.graphic.outlineGlowth":

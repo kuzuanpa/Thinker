@@ -137,9 +137,11 @@ public class ThinkingGuiMain extends GuiScreen {
 	protected void onProfileChanged(String newProfileID){
 		initTime=System.currentTimeMillis();
 
+		buttonsHaveAnime.removeAll(buttonsProfile);
 		buttonList.removeAll(buttonsProfile);
 		buttonsProfile= profileHandler.getProfile(newProfileID).buttons;
 		buttonList.addAll(buttonsProfile);
+		buttonsHaveAnime.addAll(buttonsProfile);
 		profileHandler.onProfileChanged(newProfileID);
 		dummyWorldHandler.onProfileChanged(newProfileID);
 		((DummyWorldButton)buttonList.get(1)).onProfileChanged();

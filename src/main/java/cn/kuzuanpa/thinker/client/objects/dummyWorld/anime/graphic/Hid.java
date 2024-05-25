@@ -15,44 +15,33 @@
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
-public class MoveLinear implements IDummyWorldGraphicAnime {
-    public MoveLinear(int startTime, int endTime, float dX, float dY, float dZ){
+public class Hid implements IDummyWorldGraphicAnime {
+    public Hid(int startTime, int endTime){
         this.startTime=startTime;
         this.endTime=endTime;
-        this.dX =dX;
-        this.dY =dY;
-        this.dZ= dZ;
     }
     public int startTime, endTime;
-    public float dX, dY, dZ;
     @Override
     public boolean animeDraw(long timer) {
         if(timer<startTime) return false;
-        float progress=(float)(timer - startTime)/(float)(endTime-startTime);
-        if (timer < endTime) GL11.glTranslatef(progress * dX,progress * dY, progress*dZ);
-        else GL11.glTranslatef(dX, dY, dZ);
-        return false;
+        return timer < endTime;
     }
 
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
         boolean result = values.containsKey("startTime")&&
-                values.containsKey("endTime")&&
-                values.containsKey("dX")&&
-                values.containsKey("dY")&&
-                values.containsKey("dZ");
+                values.containsKey("endTime");
         if(!result)
-            thinkerJsonReader.requestLogError("Not Enough contents for world.graphic.MoveLinear: startTime, endTime, dX, dY, dZ");
+            thinkerJsonReader.requestLogError("Not Enough contents for world.graphic.hid: startTime, endTime");
         return result;
     }
 
-    public static MoveLinear create(Map<String, Object> values) {
-        return new MoveLinear(getInt(values.get("startTime")),getInt(values.get("endTime")),getInt(values.get("dX")),getInt(values.get("dY")),getInt(values.get("dZ")));
+    public static Hid create(Map<String, Object> values) {
+        return new Hid(getInt(values.get("startTime")),getInt(values.get("endTime")));
     }
 
 }

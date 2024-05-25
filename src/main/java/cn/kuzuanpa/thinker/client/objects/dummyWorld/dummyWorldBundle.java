@@ -55,15 +55,16 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
         GL11.glPushMatrix();
 
         List<IDummyWorldAnimes> anime = getWorldAnimeList();
-        if(anime!=null&&!anime.isEmpty())anime.forEach(a->{
+        if(anime.stream().noneMatch(a->{
+            boolean result=false;
             if(a instanceof IDummyBlockAnimeDrawAdditionalQuads) ((IDummyBlockAnimeDrawAdditionalQuads) a).drawAdditionalQuads(timer);
             if(a instanceof IDummyWorldGraphicAnime){
                 GL11.glTranslatef(pos.x, pos.y, pos.z);
-                ((IDummyWorldGraphicAnime)a).animeDraw(timer);
+                result = ((IDummyWorldGraphicAnime)a).animeDraw(timer);
                 GL11.glTranslatef(-pos.x, -pos.y, -pos.z);
             }
-        });
-        subObjects.forEach(obj->obj.render(world, timer, mousePointingPos));
+            return result;
+        }))subObjects.forEach(obj->obj.render(world, timer, mousePointingPos));
 
         GL11.glPopMatrix();
     }

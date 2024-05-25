@@ -21,6 +21,7 @@ import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.*;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
+import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -102,6 +103,7 @@ public class thinkerJsonReader {
             List<ThinkerButtonBase> buttons=new ArrayList<>();
             ThinkerObjects.forEach(obj->{
                 if(obj instanceof IdummyWorldThinkerObject) objs.add(((IdummyWorldThinkerObject)obj));
+                if(obj instanceof ThinkerButtonBase) buttons.add(((ThinkerButtonBase)obj));
             });
             if(id.equals("")||ThinkerObjects.isEmpty()){logError(json,profileName,"Invaild Profile");return null;}
             profileHandler.thinkingProfile returnProfile = objs.isEmpty() ? new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons) : new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,objs,buttons);

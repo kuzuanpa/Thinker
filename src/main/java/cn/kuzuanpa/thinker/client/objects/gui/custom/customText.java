@@ -30,13 +30,11 @@ public class customText extends ThinkerButtonBase {
         super(id,posX,posY,text.length(),12,"");
         this.text=text;
         this.color=-1;
-        this.timer =System.currentTimeMillis();
     }
     public customText(int id, String text, int posX, int posY, int color){
         super(id,posX,posY,text.length()*5,12,"");
         this.text=text;
         this.color=color;
-        this.timer =System.currentTimeMillis();
     }
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
         boolean result = values.containsKey("text")&&

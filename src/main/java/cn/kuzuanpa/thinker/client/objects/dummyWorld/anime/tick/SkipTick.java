@@ -16,15 +16,14 @@
 package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import cn.kuzuanpa.thinker.util.Nbt;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
+import net.minecraft.world.World;
 
 import java.util.Map;
 
 import static cn.kuzuanpa.thinker.Thinker.*;
 
-public class SkipTick implements IDummyWorldTileTickingAnime{
+public class SkipTick implements IDummyWorldTickingAnime {
     public SkipTick(long startTime,long endTime){
         this.startTime = startTime;
         this.endTime=endTime;
@@ -40,7 +39,7 @@ public class SkipTick implements IDummyWorldTileTickingAnime{
     }
     long startTime, endTime,  skipCount,skippedTicks=0;
     @Override
-    public boolean beforeTick(long time,TileEntity tileEntity) {
+    public boolean beforeTick(long time, IdummyWorldThinkerObject tileEntity, World world) {
         if(startTime<time&&time<endTime&&(skipCount==-1||skippedTicks<skipCount)){
             skippedTicks++;
             return true;
