@@ -23,6 +23,10 @@ import java.util.List;
 
 public interface IdummyWorldThinkerObject extends IThinkerObject, IAnimatableThinkerObject {
     void render(DummyWorld world, long timer, BlockPosition mousePointingPos);
+
+    /**
+     * @return objects needed to add to render list, return new ArrayList<>() if null
+     */
     List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world);
     BlockPosition getPos();
 }
