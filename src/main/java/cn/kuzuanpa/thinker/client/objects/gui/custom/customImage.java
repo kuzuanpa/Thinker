@@ -89,8 +89,7 @@ public class customImage extends ThinkerButtonBase implements IAnimatableThinker
                 TextureUtil.deleteTexture(this.glTextureId);
                 this.glTextureId = -1;
             }
-            BufferedImage bufferedimage = ImageIO.read(inputstream);
-            glTextureId=TextureUtil.uploadTextureImage(glTextureId, bufferedimage);
+            glTextureId=TextureUtil.uploadTextureImage(GL11.glGenTextures(), ImageIO.read(inputstream));
         }catch (IOException ioexception)
         {
             FMLLog.log(Level.WARN,"Failed to load texture: " + texturePath);
@@ -106,8 +105,9 @@ public class customImage extends ThinkerButtonBase implements IAnimatableThinker
             GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
             GL11.glTranslatef(-(xPosition + (width / 2F)), -(yPosition + (height / 2F)),0);
 
-            float var7 = 0.0048F*(height*1F/width);
-            float var8 = 0.0048F;
+            //why (256F/height)? idk, i just rendered some picture and guessed this argument.
+            float var7 = 0.00390625F*(256F/height)*(height*1F/width);
+            float var8 = 0.00390625F*(256F/height);
             Tessellator tessellator = Tessellator.instance;
             tessellator.startDrawingQuads();
             tessellator.addVertexWithUV(posX, posY + height, zLevel, 0, height * var8);
