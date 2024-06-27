@@ -77,6 +77,15 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.rotateSteadily)");
             case "world.graphic.rotateSteadily":
                 return false;//TODO
+            case "world.graphic.Rotate":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.rotate)");
+            case "world.graphic.rotate":
+                return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.Rotate.isMapHaveValidContents(values);
+            case "world.graphic.Swing":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.swing)");
+            case "world.graphic.swing":
+                return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.Swing.isMapHaveValidContents(values);
+
             case "world.tick.SetTileNBT":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=world.tick.setTileNBT)");
             case "world.tick.setTileNBT":
@@ -144,6 +153,15 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.rotateSteadily)");
             case "world.graphic.rotateSteadily":
                 return null;
+            case "world.graphic.Rotate":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.rotate)");
+            case "world.graphic.rotate":
+                return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.Rotate.create(values);
+            case "world.graphic.Swing":
+                Thinker.log("syntax improvable: First Letter should be lower case.(type=world.graphic.swing)");
+            case "world.graphic.swing":
+                return cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.Swing.create(values);
+                
             case "world.tick.SetTileNBT":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=world.tick.setTileNBT)");
             case "world.tick.setTileNBT":
