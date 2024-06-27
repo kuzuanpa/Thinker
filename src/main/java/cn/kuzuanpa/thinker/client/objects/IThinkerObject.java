@@ -45,4 +45,5 @@
 package cn.kuzuanpa.thinker.client.objects;
 
 public interface IThinkerObject  {
+    default void destroy(){};
 }

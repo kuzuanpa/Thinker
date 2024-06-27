@@ -138,7 +138,7 @@ public abstract class WorldSceneRenderer {
         if(world.lock) return false;
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).clearBlocks();
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
-        dummyWorldHandler.dummyWorldObjects.forEach((obj) -> tmp.addAll(obj.syncWithWorld(world)));
+        dummyWorldHandler.dummyWorldObjects.forEach((obj) -> tmp.addAll(obj.addToWorld(world)));
         dummyWorldHandler.dummyWorldObjects.addAll( tmp);
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).onProfileChanged();
         return true;

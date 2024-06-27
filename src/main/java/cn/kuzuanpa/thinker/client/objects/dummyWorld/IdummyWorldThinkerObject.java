@@ -25,8 +25,9 @@ public interface IdummyWorldThinkerObject extends IThinkerObject, IAnimatableThi
     void render(DummyWorld world, long timer, BlockPosition mousePointingPos);
 
     /**
+     * add object to world
      * @return objects needed to add to render list, return new ArrayList<>() if null
      */
-    List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world);
+    List<IdummyWorldThinkerObject> addToWorld(DummyWorld world);
     BlockPosition getPos();
 }

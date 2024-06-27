@@ -130,7 +130,7 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
     }
 
     @Override
-    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+    public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
         world.setTileEntity(pos.x, pos.y, pos.z, tile);
         if (tile.blockType != null) world.setBlock(pos.x, pos.y, pos.z, tile.blockType);
         return new ArrayList<>();

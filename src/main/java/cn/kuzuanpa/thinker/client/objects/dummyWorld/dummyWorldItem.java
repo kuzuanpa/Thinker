@@ -124,7 +124,7 @@ public class dummyWorldItem implements IdummyWorldThinkerObject, IAnimatableThin
     }
 
     @Override
-    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+    public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
         return new ArrayList<>();
     }
 

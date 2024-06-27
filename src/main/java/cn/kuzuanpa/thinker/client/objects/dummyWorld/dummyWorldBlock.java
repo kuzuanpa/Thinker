@@ -128,7 +128,7 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
     }
 
     @Override
-    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+    public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
         dummyWorldBlock block = ((dummyWorldBlock) this);
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
         if (block.itemStack != null) {

@@ -22,23 +22,27 @@ import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import cpw.mods.fml.client.config.GuiUtils;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import org.apache.logging.log4j.Level;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class customImage extends ThinkerButtonBase implements IAnimatableThinkerObject {
-    public static final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
+    public final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
 
     public customImage(int id, String texturePath, int posX, int posY, int width, int height){
         super(id,posX,posY,width,height,"");
@@ -73,7 +77,9 @@ public class customImage extends ThinkerButtonBase implements IAnimatableThinker
     public static customImage create(Map<String, Object> values) {
         return new customImage(10,(String) values.get("path"),getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("width")),getInt(values.get("height")));
     }
-
+    public void destroy(){
+        TextureUtil.deleteTexture(this.glTextureId);
+    }
     String texturePath;
     int posX,posY,width,height,glTextureId=-1;
     public void loadTexture(){
@@ -94,11 +100,23 @@ public class customImage extends ThinkerButtonBase implements IAnimatableThinker
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY){
         if (this.visible) {
+            GL11.glPushMatrix();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, glTextureId);
-            GL11.glTranslatef(xPosition + (height / 2F), yPosition + (width / 2F),0);
+            GL11.glTranslatef(xPosition + (width / 2F), yPosition + (height / 2F),0);
             GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
-            GL11.glTranslatef(-(xPosition + (height / 2F)), -(yPosition + (width / 2F)),0);
-            GuiUtils.drawContinuousTexturedBox(posX, posY, 0, 0, width, height, width, height, 0, zLevel);
+            GL11.glTranslatef(-(xPosition + (width / 2F)), -(yPosition + (height / 2F)),0);
+
+            float var7 = 0.0048F*(height*1F/width);
+            float var8 = 0.0048F;
+            Tessellator tessellator = Tessellator.instance;
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV(posX, posY + height, zLevel, 0, height * var8);
+            tessellator.addVertexWithUV(posX + width, posY + height, zLevel,  width * var7, height * var8);
+            tessellator.addVertexWithUV(posX + width, posY, zLevel, width * var7, 0);
+            tessellator.addVertexWithUV(posX, posY, zLevel, 0, 0);
+            tessellator.draw();
+
+            GL11.glPopMatrix();
         }
     }
 

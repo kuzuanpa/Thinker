@@ -70,9 +70,9 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
     }
 
     @Override
-    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+    public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
-        subObjects.forEach(obj->tmp.addAll(obj.syncWithWorld(world)));
+        subObjects.forEach(obj->tmp.addAll(obj.addToWorld(world)));
         return tmp;
     }
 

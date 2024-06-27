@@ -103,10 +103,12 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
         }
 
     @Override
-    public List<IdummyWorldThinkerObject> syncWithWorld(DummyWorld world) {
+    public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
             return new ArrayList<>();
     }
-
+    public void destroy(){
+        this.dummyGeckoModel.thinkerModel.destroy();
+    }
     @Override
     public BlockPosition getPos() {
         return pos;
@@ -168,13 +170,16 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
                 this.animeLocation = animeLocation;
                 loadTexture();
             }
-
+            public void destroy(){
+                TextureUtil.deleteTexture(this.glTextureId);
+            }
             public void loadTexture() {
                 try (InputStream inputstream = Files.newInputStream(Paths.get(texturePath))) {
                     if (this.glTextureId != -1) {
                         TextureUtil.deleteTexture(this.glTextureId);
                         this.glTextureId = -1;
                     }
+                    glTextureId=TextureUtil.glGenTextures();
                     BufferedImage bufferedimage = ImageIO.read(inputstream);
                     glTextureId = TextureUtil.uploadTextureImage(glTextureId, bufferedimage);
                 } catch (IOException ioexception) {
