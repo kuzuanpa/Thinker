@@ -30,6 +30,7 @@ import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
 import cn.kuzuanpa.thinker.client.ThinkingGuiMain;
+import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.lib.math.MathHelper;
@@ -42,8 +43,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.util.vector.Vector3f;
-
-import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.dummyWorldObjects;
 
 public class DummyWorldButton extends ThinkerButtonBase{
     protected static ImmediateWorldSceneRenderer renderer;
@@ -80,7 +79,7 @@ public class DummyWorldButton extends ThinkerButtonBase{
             lookAt = renderer.getLookAt();
             worldUp = renderer.getWorldUp();
         }
-        dummyWorldObjects.clear();
+        dummyWorldHandler.getDummyWorldObjects("DummyWorldButton.initializeSceneRenderer:84").clear();
         renderer = new ImmediateWorldSceneRenderer(new TrackedDummyWorld());
         renderer.setClearColor(0xC6C6C6);
 
@@ -153,7 +152,7 @@ public class DummyWorldButton extends ThinkerButtonBase{
                     resetCenter();
                 }
                 if(!worldSynced)return;
-
+                renderer.onTick();
                 updateHoverState(mouseX,mouseY);
                 GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
 

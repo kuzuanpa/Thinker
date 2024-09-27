@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +60,12 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
     public final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
 
     public final BlockPosition pos ;
+    public boolean rendering=false;
+    public long joinTime,leaveTime;
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
-        boolean result = values.containsKey("posX")&&
+        boolean result = values.containsKey("joinTime")&&
+                values.containsKey("leaveTime")&&
+                values.containsKey("posX")&&
                 values.containsKey("posY")&&
                 values.containsKey("posZ")&&
                 values.containsKey("modelPath")&&
@@ -71,15 +76,27 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
     }
 
     public static dummyWorldGeckoModel create(Map<String, Object> values) {
-        return new dummyWorldGeckoModel(new BlockPosition(getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("posZ"))),(String) values.get("modelPath"),(String) values.get("texturePath"),(String) values.get("animePath"));
+        return new dummyWorldGeckoModel(getLong(values.get("joinTime")),getLong(values.get("leaveTime")),new BlockPosition(getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("posZ"))),(String) values.get("modelPath"),(String) values.get("texturePath"),(String) values.get("animePath"));
     }
         private final dummyWorldGeckoModelContainer dummyGeckoModel;
-        public dummyWorldGeckoModel(BlockPosition pos,String modelLocation, String textureLocation, String animeLocation) {
+        public dummyWorldGeckoModel(long joinTime,long leaveTime, BlockPosition pos,String modelLocation, String textureLocation, String animeLocation) {
+            this.joinTime=joinTime;
+            this.leaveTime=leaveTime;
             this.pos = pos;
             dummyGeckoModel =new dummyWorldGeckoModelContainer(modelLocation, textureLocation, animeLocation);
         }
 
-        public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
+    @Override
+    public boolean shouldInWorld(long timer) {
+        return joinTime<=timer && timer<leaveTime;
+    }
+
+    @Override
+    public boolean alreadyInWorld() {
+        return rendering;
+    }
+
+    public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
             GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(dummyGeckoModel));
             getGeoModelProvider().setLivingAnimations(dummyGeckoModel, this.getUniqueID(dummyGeckoModel));
             int light = 15;
@@ -104,8 +121,16 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
 
     @Override
     public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
-            return new ArrayList<>();
+        rendering=true;
+        return new ArrayList<>();
     }
+
+    @Override
+    public List<IdummyWorldThinkerObject> removeFromWorld(DummyWorld world) {
+        rendering=false;
+        return Collections.emptyList();
+    }
+
     public void destroy(){
         this.dummyGeckoModel.thinkerModel.destroy();
     }

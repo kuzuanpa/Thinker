@@ -54,7 +54,12 @@ public class dummyWorldItem implements IdummyWorldThinkerObject, IAnimatableThin
     public float posX,posY,posZ;
     public ItemStack itemStack;
     public float pitch =0, yaw =0,roll=0;
-    public dummyWorldItem(float posX,float posY,float posZ, ItemStack itemStack, float roll, float pitch, float yaw, IDummyWorldAnimes... animes){
+    public boolean rendering=false;
+    public long joinTime,leaveTime;
+
+    public dummyWorldItem(long joinTime,long leaveTime, float posX,float posY,float posZ, ItemStack itemStack, float roll, float pitch, float yaw, IDummyWorldAnimes... animes){
+        this.joinTime=joinTime;
+        this.leaveTime=leaveTime;
         this.posX=posX;
         this.posY=posY;
         this.posZ=posZ;
@@ -76,6 +81,17 @@ public class dummyWorldItem implements IdummyWorldThinkerObject, IAnimatableThin
     public BlockPosition getPos(){
         return new BlockPosition((int) posX, (int) posY, (int) posZ);
     }
+
+    @Override
+    public boolean shouldInWorld(long timer) {
+        return joinTime<=timer && timer<leaveTime;
+    }
+
+    @Override
+    public boolean alreadyInWorld() {
+        return rendering;
+    }
+
     @Override
     public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
         GL11.glPushMatrix();
@@ -125,12 +141,20 @@ public class dummyWorldItem implements IdummyWorldThinkerObject, IAnimatableThin
 
     @Override
     public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
+        rendering=true;
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<IdummyWorldThinkerObject> removeFromWorld(DummyWorld world) {
+        rendering=false;
+        return Collections.emptyList();
     }
 
     //JsonReader
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
-        boolean result= values.containsKey("posX")&& values.containsKey("posY")&& values.containsKey("posZ")&&
+        boolean result= values.containsKey("joinTime")&& values.containsKey("leaveTime")&&
+                values.containsKey("posX")&& values.containsKey("posY")&& values.containsKey("posZ")&&
                 values.containsKey("item");
         if(!result) thinkerJsonReader.requestLogError("Not Enough contents for dummyWorldBlock: posX, posY, posZ, item");
         return result;
@@ -142,7 +166,7 @@ public class dummyWorldItem implements IdummyWorldThinkerObject, IAnimatableThin
         if(values.containsKey("yaw")) yaw = getFloat(values.get("yaw"));
         if(values.containsKey("roll")) roll = getFloat(values.get("roll"));
 
-        if(values.containsKey("item"))return new dummyWorldItem(getFloat(values.get("posX")),getFloat(values.get("posY")),getFloat(values.get("posZ")) , getItemStack((String)values.get("item")),roll,pitch,yaw);
+        if(values.containsKey("item"))return new dummyWorldItem(getLong(values.get("joinTime")),getLong(values.get("leaveTime")), getFloat(values.get("posX")),getFloat(values.get("posY")),getFloat(values.get("posZ")) , getItemStack((String)values.get("item")),roll,pitch,yaw);
         return null;
     }
 }

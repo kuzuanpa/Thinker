@@ -44,20 +44,17 @@ import static cn.kuzuanpa.thinker.client.json.thinkerJsonReader.getItemStack;
 
 public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThinkerObject {
     public final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
-    public boolean renderAllFaces=false;
+    public boolean renderAllFaces=false,hasTileEntity=false, rendering =false;
     public BlockPosition pos;
     public Block block;
     public ItemStack itemStack;
     public int dummyPlayerX =0, dummyPlayerY =0, dummyPlayerZ =0;
     public float dummyPlayerCarmeaPitch =0, dummyPlayerCarmeaYaw =0;
     public int meta;
-    public dummyWorldBlock(BlockPosition pos, Block block, IDummyWorldAnimes... animes){
-        this(pos,block,0,animes);
-    }
-    public dummyWorldBlock(BlockPosition pos, Block block) {
-        this(pos,block,0);
-    }
-    public dummyWorldBlock(BlockPosition pos, ItemStack itemStack, int dummyPlayerX, int dummyPlayerY, int dummyPlayerZ,float dummyPlayerCarmeaPitch,float dummyPlayerCarmeaYaw, IDummyWorldAnimes... animes){
+    public long joinTime,leaveTime;
+    public dummyWorldBlock(long joinTime,long leaveTime, BlockPosition pos, ItemStack itemStack, int dummyPlayerX, int dummyPlayerY, int dummyPlayerZ,float dummyPlayerCarmeaPitch,float dummyPlayerCarmeaYaw, IDummyWorldAnimes... animes){
+        this.joinTime=joinTime;
+        this.leaveTime=leaveTime;
         this.pos=pos;
         this.itemStack =itemStack;
         this.dummyPlayerX =dummyPlayerX;
@@ -67,7 +64,9 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         this.dummyPlayerCarmeaYaw=dummyPlayerCarmeaYaw;
         Collections.addAll(WorldAnimeList,animes);
     }
-    public dummyWorldBlock(BlockPosition pos, Block block, int meta, IDummyWorldAnimes... animes){
+    public dummyWorldBlock(long joinTime,long leaveTime, BlockPosition pos, Block block, int meta, IDummyWorldAnimes... animes){
+        this.joinTime=joinTime;
+        this.leaveTime=leaveTime;
         this.pos=pos;
         this.block=block;
         this.meta=meta;
@@ -86,6 +85,17 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
     public BlockPosition getPos(){
         return pos;
     }
+
+    @Override
+    public boolean shouldInWorld(long timer) {
+        return joinTime<=timer && timer<leaveTime;
+    }
+
+    @Override
+    public boolean alreadyInWorld() {
+        return rendering;
+    }
+
     @Override
     public void render(DummyWorld world, long timer, BlockPosition mousePointingPos) {
         GL11.glPushMatrix();
@@ -111,12 +121,10 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
             RenderBlocks bufferBuilder = new RenderBlocks();
             bufferBuilder.blockAccess = world;
             bufferBuilder.setRenderBounds(0, 0, 0, 1, 1, 1);
-            bufferBuilder.renderFromInside=true;
+
             bufferBuilder.setRenderAllFaces(true);
             bufferBuilder.renderBlockByRenderType(block, pos.x, pos.y, pos.z);
 
-            bufferBuilder.renderFromInside=false;
-            bufferBuilder.renderBlockByRenderType(block, pos.x, pos.y, pos.z);
 
         } finally {
             Tessellator.instance.setColorRGBA_F(0.1F,0.1F,0.1F,0.5F);
@@ -129,7 +137,8 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
 
     @Override
     public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
-        dummyWorldBlock block = ((dummyWorldBlock) this);
+        rendering=true;
+        dummyWorldBlock block = this;
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
         if (block.itemStack != null) {
             block.itemStack.copy().tryPlaceItemIntoWorld(new DummyEntityPlayer(world).setPos(dummyPlayerX,dummyPlayerY,dummyPlayerZ).setFacing(dummyPlayerCarmeaPitch,dummyPlayerCarmeaYaw), world, pos.x, pos.y, pos.z, 0, 0, 0, 0);
@@ -139,18 +148,29 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
                 block.block = Blocks.air;
             }
             if (world.getTileEntity(pos.x, pos.y, pos.z) != null)
-                tmp.add(new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
+                tmp.add(new dummyWorldTile(joinTime, leaveTime, pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
         } else world.setBlock(pos.x, pos.y, pos.z, block.block);
         if (!block.block.hasTileEntity(block.meta)) return tmp;
-        TileEntity tileEntity = block.block.createTileEntity(world, block.meta);
-        if (tileEntity != null)
-            tmp.add( new dummyWorldTile(pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
+        TileEntity tile = block.block.createTileEntity(world, block.meta);
+        if (tile != null) {
+            hasTileEntity=true;
+            tmp.add( new dummyWorldTile(joinTime, leaveTime, pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
+        }
+        return tmp;
+    }
+
+    @Override
+    public List<IdummyWorldThinkerObject> removeFromWorld(DummyWorld world) {
+        rendering=false;
+        List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
+        world.setBlockToAir(pos.x, pos.y, pos.z);
+        if(hasTileEntity) tmp.add( new dummyWorldTile(joinTime, leaveTime, pos,world.getTileEntity(pos.x, pos.y, pos.z),this.getWorldAnimeList()));
         return tmp;
     }
 
     //JsonReader
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
-        boolean result= values.containsKey("posX")&& values.containsKey("posY")&& values.containsKey("posZ")&&
+        boolean result= values.containsKey("joinTime")&&values.containsKey("leaveTime")&&values.containsKey("posX")&& values.containsKey("posY")&& values.containsKey("posZ")&&
                 ((values.containsKey("block") && values.containsKey("meta")) || values.containsKey("fromItem"));//block+meta or fromItem
         if(!result) thinkerJsonReader.requestLogError("Not Enough contents for dummyWorldBlock: posX, posY, posZ, (block, meta) or (fromItem) ");
         return result;
@@ -187,8 +207,8 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
 
         BlockPosition pos = new BlockPosition(getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("posZ")));
 
-        if(values.containsKey("fromItem"))return new dummyWorldBlock(pos,getItemStack((String)values.get("fromItem")),dummyPlayerX,dummyPlayerY,dummyPlayerZ,dummyPlayerPitch,dummyPlayerYaw).setRenderAllFace(renderAllFaces);
-        if(values.containsKey("block")&&values.containsKey("meta"))return new dummyWorldBlock(pos,Block.getBlockFromName((String) values.get("block")),getInt(values.get("meta"))).setRenderAllFace(renderAllFaces);
+        if(values.containsKey("fromItem"))return new dummyWorldBlock(getLong(values.get("joinTime")),getLong(values.get("leaveTime")),pos,getItemStack((String)values.get("fromItem")),dummyPlayerX,dummyPlayerY,dummyPlayerZ,dummyPlayerPitch,dummyPlayerYaw).setRenderAllFace(renderAllFaces);
+        if(values.containsKey("block")&&values.containsKey("meta"))return new dummyWorldBlock(getLong(values.get("joinTime")),getLong(values.get("leaveTime")), pos,Block.getBlockFromName((String) values.get("block")),getInt(values.get("meta"))).setRenderAllFace(renderAllFaces);
         return null;
     }
 }

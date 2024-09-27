@@ -35,7 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class dummyWorldHandler {
-    public static List<IdummyWorldThinkerObject> dummyWorldObjects =new ArrayList<>();
+    private static final List<IdummyWorldThinkerObject> dummyWorldObjects =new ArrayList<>();
+    public static String ObjectListUser="";
+    public static List<IdummyWorldThinkerObject> getDummyWorldObjects(String getterName) {
+        ObjectListUser=getterName;
+        return dummyWorldObjects;
+    }
     public static void onProfileChanged(String profileID){
         dummyWorldObjects.clear();
         if(profileHandler.getProfile(profileID).dummyWorldThinkerObjects.isEmpty())return;

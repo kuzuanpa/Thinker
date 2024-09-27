@@ -2,6 +2,7 @@ package blockrenderer6343.world;
 
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.handler.configHandler;
+import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
 
 public class DummyWorldTickThread extends Thread{
     @Override
@@ -18,13 +19,13 @@ public class DummyWorldTickThread extends Thread{
     @Override
     public void run() {
         while (true) {
-            if(trackedDummyWorld!=null&&(int)Math.abs((System.currentTimeMillis()%100000)-lastTickTime) > intervalBetweenTicks){
+            if(trackedDummyWorld!=null&&!trackedDummyWorld.lock&&(int)Math.abs((System.currentTimeMillis()%100000)-lastTickTime) > intervalBetweenTicks){
                 lastTickTime = (int)(System.currentTimeMillis()%100000);
-                trackedDummyWorld.lock=true;
+
                 try {
                     trackedDummyWorld.updateEntities();
-                }catch (Exception e){Thinker.err("Exception occurred when ticking Dummy world");e.printStackTrace();}
-                trackedDummyWorld.lock=false;
+                }catch (Exception e){Thinker.err("Exception occurred when ticking Dummy world, Previous user:"+ dummyWorldHandler.ObjectListUser);e.printStackTrace();}
+
                 if(configHandler.recordDummyWorldTickTooLong.get()&&System.currentTimeMillis()%100000-lastTickTime>2*intervalBetweenTicks)System.out.println("A Tick of DummyWorld takes too long: "+(System.currentTimeMillis()%100000-lastTickTime)+"ms");
             }else {
                 try {
@@ -35,7 +36,6 @@ public class DummyWorldTickThread extends Thread{
     }
     public void setTrackedDummyWorld(DummyWorld world){
         trackedDummyWorld=world;
-        if(world!=null)world.lock=true;
         this.interrupt();
     }
 }

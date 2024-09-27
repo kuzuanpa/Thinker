@@ -72,8 +72,8 @@ public class ThinkingProfileList extends ThinkerButtonBase {
     }
     public void walkMaps(int depth, Map<String,Object> map,Minecraft mc, AtomicInteger i,String path){
         map.forEach((key,value)->{
-            if(!path.equals("")&&!profileHandler.unfoldedDirs.contains(path))return;
-            if(value instanceof profileHandler.thinkingProfile) {
+            if(!path.isEmpty() &&!profileHandler.unfoldedDirs.contains(path))return;
+            if(value instanceof profileHandler.thinkingProfile && !((profileHandler.thinkingProfile) value).id.equals("HelloThinker")) {
                 profileListHeight=Math.max(profileListHeight,i.get());
                 drawProfileAt(mc,depth*8, (int) (profileHandler.YOffset+i.get()),(profileHandler.thinkingProfile)value,depth);
                 i.getAndAdd(16+configHandler.themeSelectorProfileGap.getI());
@@ -138,7 +138,7 @@ public class ThinkingProfileList extends ThinkerButtonBase {
             if(!path.equals("")&&!profileHandler.unfoldedDirs.contains(path))return "";
             String key = entry.getKey();
             Object value = entry.getValue();
-            if (value instanceof profileHandler.thinkingProfile) {
+            if (value instanceof profileHandler.thinkingProfile  && !((profileHandler.thinkingProfile) value).id.equals("HelloThinker")) {
                 if (isXYinButton((int) (profileHandler.YOffset + i.get()), mouseY)) return "Profile:"+key;
                 i.getAndAdd(16 + configHandler.themeSelectorProfileGap.getI());
             }

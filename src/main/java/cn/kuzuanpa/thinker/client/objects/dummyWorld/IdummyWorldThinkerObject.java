@@ -22,12 +22,19 @@ import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
 import java.util.List;
 
 public interface IdummyWorldThinkerObject extends IThinkerObject, IAnimatableThinkerObject {
+    boolean shouldInWorld(long timer);
+    boolean alreadyInWorld();
     void render(DummyWorld world, long timer, BlockPosition mousePointingPos);
 
     /**
      * add object to world
-     * @return objects needed to add to render list, return new ArrayList<>() if null
+     * @return objects needed to add to render list, itself shouldn't be contained, return new ArrayList<>() if null
      */
     List<IdummyWorldThinkerObject> addToWorld(DummyWorld world);
+    /**
+     * remove object from world
+     * @return objects needed to remove from render list, itself shouldn't be contained, return new ArrayList<>() if null
+     */
+    List<IdummyWorldThinkerObject> removeFromWorld(DummyWorld world);
     BlockPosition getPos();
 }

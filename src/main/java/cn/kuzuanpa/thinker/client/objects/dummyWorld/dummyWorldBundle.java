@@ -39,7 +39,7 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
     public final ArrayList<IdummyWorldThinkerObject> subObjects=new ArrayList<>();
     public final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
     public BlockPosition pos;
-
+    public boolean inWorld =false;
     @Override
     public ArrayList<IGuiAnime> getGuiAnimeList() {
         return null;
@@ -48,6 +48,16 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
     @Override
     public ArrayList<IDummyWorldAnimes> getWorldAnimeList() {
         return WorldAnimeList;
+    }
+
+    @Override
+    public boolean shouldInWorld(long timer) {
+        return subObjects.stream().anyMatch(idummyWorldThinkerObject -> idummyWorldThinkerObject.shouldInWorld(timer));
+    }
+
+    @Override
+    public boolean alreadyInWorld() {
+        return inWorld;
     }
 
     @Override
@@ -71,8 +81,17 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
 
     @Override
     public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
+        inWorld=true;
         List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
         subObjects.forEach(obj->tmp.addAll(obj.addToWorld(world)));
+        return tmp;
+    }
+
+    @Override
+    public List<IdummyWorldThinkerObject> removeFromWorld(DummyWorld world) {
+        inWorld=false;
+        List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
+        subObjects.forEach(obj->tmp.addAll(obj.removeFromWorld(world)));
         return tmp;
     }
 
@@ -86,8 +105,7 @@ public class dummyWorldBundle implements IdummyWorldThinkerObject, IAnimatableTh
     }
     //JsonReader
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
-        boolean result= values.containsKey("posX")&& values.containsKey("posY")&& values.containsKey("posZ")&&
-                values.containsKey("subObjects")&&values.get("subObjects") instanceof Map && objectsAdaptors.stream().anyMatch(adaptor-> ((Map<String, Object>) values.get("subObjects")).values().stream().allMatch(obj -> adaptor.isMapHaveValidContents((Map<String, Object>) obj)));
+        boolean result= values.containsKey("subObjects")&&values.get("subObjects") instanceof Map && objectsAdaptors.stream().anyMatch(adaptor-> ((Map<String, Object>) values.get("subObjects")).values().stream().allMatch(obj -> adaptor.isMapHaveValidContents((Map<String, Object>) obj)));
         if(!result) thinkerJsonReader.requestLogError("Not Enough contents for bundle: ");
         return result;
     }

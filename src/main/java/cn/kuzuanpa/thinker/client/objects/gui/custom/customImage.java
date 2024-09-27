@@ -42,7 +42,6 @@ import java.util.Random;
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class customImage extends ThinkerButtonBase implements IAnimatableThinkerObject {
-    public final ArrayList<IGuiAnime> GuiAnimeList = new ArrayList<>();
 
     public customImage(int id, String texturePath, int posX, int posY, int width, int height){
         super(id,posX,posY,width,height,"");
@@ -101,9 +100,6 @@ public class customImage extends ThinkerButtonBase implements IAnimatableThinker
         if (this.visible) {
             GL11.glPushMatrix();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, glTextureId);
-            GL11.glTranslatef(xPosition + (width / 2F), yPosition + (height / 2F),0);
-            GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
-            GL11.glTranslatef(-(xPosition + (width / 2F)), -(yPosition + (height / 2F)),0);
 
             //why (256F/height)? idk, i just rendered some picture and guessed this argument.
             float var7 = 0.00390625F*(256F/height)*(height*1F/width);
@@ -114,8 +110,10 @@ public class customImage extends ThinkerButtonBase implements IAnimatableThinker
             tessellator.addVertexWithUV(posX + width, posY + height, zLevel,  width * var7, height * var8);
             tessellator.addVertexWithUV(posX + width, posY, zLevel, width * var7, 0);
             tessellator.addVertexWithUV(posX, posY, zLevel, 0, 0);
+            GL11.glTranslatef(xPosition, yPosition ,0);
+            GuiAnimeList.forEach(anime -> anime.animeDraw(timer));
+            GL11.glTranslatef(-(xPosition ), -(yPosition ),0);
             tessellator.draw();
-
             GL11.glPopMatrix();
         }
     }

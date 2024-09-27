@@ -28,32 +28,32 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
     public boolean isMapHaveValidContents(Map<String, Object> values) {
 
         if (!values.containsKey("type")) return false;
-        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type")).replaceFirst("gui.", "")) {
+        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type"))) {
             
-            case "MoveLinear":
+            case "gui.MoveLinear":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.moveLinear)");
-            case "moveLinear":
-                return false;//cn.kuzuanpa.thinker.client.objects.gui.anime.animeMoveLinear.isMapHaveValidContents(values);
-            case "Color":
+            case "gui.moveLinear":
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeMoveLinear.isMapHaveValidContents(values);
+            case "gui.Color":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.color)");
-            case "RGBA":
-            case "color":
+            case "gui.RGBA":
+            case "gui.color":
                 return cn.kuzuanpa.thinker.client.objects.gui.anime.animeRGBA.isMapHaveValidContents(values);
-            case "Rotate":
+            case "gui.Rotate":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotate)");
-            case "rotate":
+            case "gui.rotate":
                 return false;//dummyWorldBlock.isMapHaveValidContents(values);
-            case "RotateSteadily":
+            case "gui.RotateSteadily":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotateSteadily)");
-            case "rotateSteadily":
+            case "gui.rotateSteadily":
                 return false;//dummyWorldTile.isMapHaveValidContents(values);
-            case "Scale":
+            case "gui.Scale":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.scale)");
-            case "scale":
-                return false;//dummyWorldTile.isMapHaveValidContents(values);
-            case "Transparency":
+            case "gui.scale":
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeScale.isMapHaveValidContents(values);
+            case "gui.Transparency":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.transparency)");
-            case "transparency":
+            case "gui.transparency":
                 return cn.kuzuanpa.thinker.client.objects.gui.anime.animeTransparency.isMapHaveValidContents(values);
             default:
                 return false;
@@ -105,31 +105,31 @@ public class defaultAnimeAdaptor implements IThinkerAnimeAdaptor{
 
 
         if (!values.containsKey("type")) return null;
-        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type")).replaceFirst("gui.", "")) {
-            case "MoveLinear":
+        if (((String) values.get("type")).startsWith("gui")) switch (((String) values.get("type"))) {
+            case "gui.MoveLinear":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.moveLinear)");
-            case "moveLinear":
+            case "gui.moveLinear":
                 return null;
-            case "Color":
+            case "gui.Color":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.color)");
-            case "RGBA":
-            case "color":
+            case "gui.RGBA":
+            case "gui.color":
                 return cn.kuzuanpa.thinker.client.objects.gui.anime.animeRGBA.create(values);
-            case "Rotate":
+            case "gui.Rotate":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotate)");
-            case "rotate":
+            case "gui.rotate":
                 return null;
-            case "RotateSteadily":
+            case "gui.RotateSteadily":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.rotateSteadily)");
-            case "rotateSteadily":
+            case "gui.rotateSteadily":
                 return null;
-            case "Scale":
+            case "gui.Scale":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.scale)");
-            case "scale":
-                return null;
-            case "Transparency":
+            case "gui.scale":
+                return cn.kuzuanpa.thinker.client.objects.gui.anime.animeScale.create(values);
+            case "gui.Transparency":
                 Thinker.log("syntax improvable: First Letter should be lower case.(type=gui.transparency)");
-            case "transparency":
+            case "gui.transparency":
                 return cn.kuzuanpa.thinker.client.objects.gui.anime.animeTransparency.create(values);
             default:
                 return null;

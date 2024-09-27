@@ -80,11 +80,19 @@ public class ThinkingGuiMain extends GuiScreen {
 		allowUserInput = false;
 		selectedProfileID = profileHandler.getProfileFromItem(item.getUnlocalizedName()).id;
 	}
+	public ThinkingGuiMain(String id) {
+		openByUser=true;
+		allowUserInput = false;
+		selectedProfileID =id;
+	}
 	public DummyWorldButton worldButton= new DummyWorldButton(1,0,0,displayWidth,displayHeight);
 	public void onOpenByUserAfter(){
 		initTime=System.currentTimeMillis();
 		openByUser=false;
-		if(!selectedProfileID.equals(""))onProfileChanged(selectedProfileID);
+		if(!selectedProfileID.isEmpty()){
+			onProfileChanged(selectedProfileID);
+			foldThemeSelector(true);
+		}
 	}
 	public void initGui() {
 		super.initGui();
@@ -119,20 +127,20 @@ public class ThinkingGuiMain extends GuiScreen {
 	@Override
 	protected void mouseClicked(int p_73864_1_, int p_73864_2_, int mouseButton)
 	{
-			for (int l = this.buttonList.size() - 1; l >= 0 ;l--)
-			{
-				ThinkerButtonBase guibutton = (ThinkerButtonBase)this.buttonList.get(l);
-				if(guibutton.updateHoverState(p_73864_1_, p_73864_2_))
-				{
-					GuiScreenEvent.ActionPerformedEvent.Pre event = new GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
-					if (MinecraftForge.EVENT_BUS.post(event))
-						break;
-					if(event.button.id!=0)event.button.func_146113_a(this.mc.getSoundHandler());
-					if (this.onButtonPressed(event.button)) break;
-					if (this.equals(this.mc.currentScreen))
-						MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.ActionPerformedEvent.Post(this, event.button, this.buttonList));
-				}
-			}
+        for (int l = this.buttonList.size() - 1; l >= 0 ;l--)
+        {
+        	ThinkerButtonBase guibutton = (ThinkerButtonBase)this.buttonList.get(l);
+        	if(guibutton.updateHoverState(p_73864_1_, p_73864_2_))
+        	{
+        		GuiScreenEvent.ActionPerformedEvent.Pre event = new GuiScreenEvent.ActionPerformedEvent.Pre(this, guibutton, this.buttonList);
+        		if (MinecraftForge.EVENT_BUS.post(event))
+        			break;
+        		if(event.button.id!=0)event.button.func_146113_a(this.mc.getSoundHandler());
+        		if (this.onButtonPressed(event.button)) break;
+        		if (this.equals(this.mc.currentScreen))
+        			MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.ActionPerformedEvent.Post(this, event.button, this.buttonList));
+        	}
+        }
 	}
 	protected void onProfileChanged(String newProfileID){
 		initTime=System.currentTimeMillis();
@@ -148,7 +156,7 @@ public class ThinkingGuiMain extends GuiScreen {
 		selectedProfileID =newProfileID;
 	}
 	protected boolean onButtonPressed(GuiButton button) {
-		((DummyWorldButton)buttonList.get(1)).clickOnOtherButton=button.id!=1;
+		((DummyWorldButton)buttonList.get(1)).clickOnOtherButton=button.id!=1&&button.id<10;
 		if(button.id==2) this.mc.displayGuiScreen(new ThinkerSettingsGui());
 		if(button.id==3) {
 			int mouseY=this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
@@ -167,15 +175,18 @@ public class ThinkingGuiMain extends GuiScreen {
 		return true;
 	}
 	public void foldThemeSelector(boolean immediately){
-		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80-8*currentProfileLayer,0));
-		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80-8*currentProfileLayer,0));
-		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime)-(immediately?10:0), (int) (System.currentTimeMillis()-initTime+ (immediately?0:configHandler.getConfiguredAnimeTime(200))),16,0));
+		((ThinkerButtonBase)buttonList.get(3)).getGuiAnimeList().clear();
+		((ThinkerButtonBase)buttonList.get(4)).getGuiAnimeList().clear();
+		((ThinkerButtonBase)buttonList.get(5)).getGuiAnimeList().clear();
+		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) getTimer()-(immediately?10:0), (int) (getTimer()+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80-8*currentProfileLayer,0));
+		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) getTimer()-(immediately?10:0), (int) (getTimer()+ (immediately?0:configHandler.getConfiguredAnimeTime(500))),-80-8*currentProfileLayer,0));
+		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) getTimer()-(immediately?10:0), (int) (getTimer()+ (immediately?0:configHandler.getConfiguredAnimeTime(200))),16,0));
 		themeSelectorFolded=true;
 	}
 	public void unfoldThemeSelector(){
-		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80+8*currentProfileLayer,0));
-		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(500)),80+8*currentProfileLayer,0));
-		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) (System.currentTimeMillis()-initTime), (int) (System.currentTimeMillis()-initTime+ configHandler.getConfiguredAnimeTime(200)),-16,0));
+		((ThinkerButtonBase)buttonList.get(3)).addAnime(new animeMoveLinear((int) getTimer(), (int) (getTimer()+ configHandler.getConfiguredAnimeTime(500)),80+8*currentProfileLayer,0));
+		((ThinkerButtonBase)buttonList.get(4)).addAnime(new animeMoveLinear((int) getTimer(), (int) (getTimer()+ configHandler.getConfiguredAnimeTime(500)),80+8*currentProfileLayer,0));
+		((ThinkerButtonBase)buttonList.get(5)).addAnime(new animeMoveLinear((int) getTimer(), (int) (getTimer()+ configHandler.getConfiguredAnimeTime(200)),-16,0));
 		themeSelectorFolded=false;
 	}
 	public void handleMouseInput(){
@@ -202,7 +213,7 @@ public class ThinkingGuiMain extends GuiScreen {
 			if(!button.visible)return;
 			if(button.updateHoverState(x,y))hoveringString= Collections.singletonList(button.displayString);
 		});
-		if (hoveringString == null||hoveringString.stream().allMatch(string->string.equals(""))) return;
+		if (hoveringString == null||hoveringString.stream().allMatch(String::isEmpty)) return;
 		drawHoveringText(hoveringString, x, y+5, fontRendererObj);
 	}
 	public boolean close() {

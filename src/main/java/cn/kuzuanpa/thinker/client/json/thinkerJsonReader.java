@@ -21,7 +21,6 @@ import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.*;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
-import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;

@@ -38,28 +38,32 @@ import java.util.Map;
 
 import static blockrenderer6343.client.WorldSceneRenderer.setDefaultPassRenderState;
 import static cn.kuzuanpa.thinker.Thinker.getInt;
+import static cn.kuzuanpa.thinker.Thinker.getLong;
 
 public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThinkerObject {
     public BlockPosition pos;
     public final ArrayList<IDummyWorldAnimes> WorldAnimeList = new ArrayList<>();
     public TileEntity tile;
+    public boolean rendering=false;
+    public long joinTime,leaveTime;
 
-    public dummyWorldTile(BlockPosition pos, TileEntity tile, ArrayList<IDummyWorldAnimes> animes){
+    public dummyWorldTile(long joinTime,long leaveTime, BlockPosition pos, TileEntity tile, ArrayList<IDummyWorldAnimes> animes){
+        this.joinTime=joinTime;
+        this.leaveTime=leaveTime;
         this.pos=pos;
         this.tile=tile;
         WorldAnimeList.addAll(animes);
     }
-    public dummyWorldTile(BlockPosition pos, TileEntity tile, IDummyWorldAnimes... animes) {
-        this.pos = pos;
-        this.tile = tile;
-        Collections.addAll(WorldAnimeList, animes);
-    }
-    public dummyWorldTile(BlockPosition pos, TileEntity tile) {
+    public dummyWorldTile(long joinTime,long leaveTime, BlockPosition pos, TileEntity tile) {
+        this.joinTime=joinTime;
+        this.leaveTime=leaveTime;
         this.pos = pos;
         this.tile = tile;
     }
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
-        boolean result = values.containsKey("posX")&&
+        boolean result =  values.containsKey("joinTime")&&
+                values.containsKey("leaveTime")&&
+                values.containsKey("posX")&&
                 values.containsKey("posY")&&
                 values.containsKey("posZ")&&
                 values.containsKey("tileEntityNBT");
@@ -76,7 +80,7 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
         tileEntityNBT.setInteger("z",getInt(values.get("posZ")));
         TileEntity tile = TileEntity.createAndLoadEntity(tileEntityNBT);
 
-        return new dummyWorldTile(new BlockPosition(getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("posZ"))),tile);
+        return new dummyWorldTile(getLong(values.get("joinTime")),getLong(values.get("leaveTime")),new BlockPosition(getInt(values.get("posX")),getInt(values.get("posY")),getInt(values.get("posZ"))),tile);
     }
     @Override
     public ArrayList<IGuiAnime> getGuiAnimeList() {
@@ -86,6 +90,16 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
     @Override
     public ArrayList<IDummyWorldAnimes> getWorldAnimeList() {
         return WorldAnimeList;
+    }
+
+    @Override
+    public boolean shouldInWorld(long timer) {
+        return joinTime<=timer && timer<leaveTime;
+    }
+
+    @Override
+    public boolean alreadyInWorld() {
+        return rendering;
     }
 
     @Override
@@ -131,9 +145,18 @@ public class dummyWorldTile implements IdummyWorldThinkerObject, IAnimatableThin
 
     @Override
     public List<IdummyWorldThinkerObject> addToWorld(DummyWorld world) {
+        rendering=true;
         world.setTileEntity(pos.x, pos.y, pos.z, tile);
         if (tile.blockType != null) world.setBlock(pos.x, pos.y, pos.z, tile.blockType);
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<IdummyWorldThinkerObject> removeFromWorld(DummyWorld world) {
+        rendering=false;
+        world.removeTileEntity(pos.x, pos.y, pos.z);
+        if (tile.blockType != null) world.setBlockToAir(pos.x, pos.y, pos.z);
+        return Collections.emptyList();
     }
 
     @Override

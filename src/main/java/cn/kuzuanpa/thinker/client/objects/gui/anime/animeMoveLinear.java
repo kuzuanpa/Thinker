@@ -14,8 +14,14 @@
  */
 package cn.kuzuanpa.thinker.client.objects.gui.anime;
 
+import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Map;
+
+import static cn.kuzuanpa.thinker.Thinker.getFloat;
+import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class animeMoveLinear implements IGuiAnime {
     public animeMoveLinear(int startTime, int endTime, int dX, int dY){
@@ -59,5 +65,20 @@ public class animeMoveLinear implements IGuiAnime {
     @Override
     public String jsonName() {
         return "Gui.MoveLinear";
+    }
+
+    public static boolean isMapHaveValidContents(Map<String,Object> values) {
+        boolean result = values.containsKey("startTime")&&
+                values.containsKey("endTime")&&
+                values.containsKey("dX")&&
+                values.containsKey("dY");
+        if(!result)
+            thinkerJsonReader.requestLogError("Not Enough contents for gui.Scale: startTime, endTime, dX, dY");
+        return result;
+    }
+
+    public static animeMoveLinear create(Map<String, Object> values) {
+
+        return new animeMoveLinear(getInt(values.get("startTime")),getInt(values.get("endTime")),getInt(values.get("dX")),getInt(values.get("dY")));
     }
 }

@@ -1,6 +1,5 @@
 package blockrenderer6343.client;
 
-import static cn.kuzuanpa.thinker.client.handler.dummyWorldHandler.dummyWorldObjects;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.ByteBuffer;
@@ -137,11 +136,21 @@ public abstract class WorldSceneRenderer {
     public boolean sync(){
         if(world.lock) return false;
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).clearBlocks();
-        List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
-        dummyWorldHandler.dummyWorldObjects.forEach((obj) -> tmp.addAll(obj.addToWorld(world)));
-        dummyWorldHandler.dummyWorldObjects.addAll( tmp);
         if(world instanceof TrackedDummyWorld)((TrackedDummyWorld) world).onProfileChanged();
         return true;
+    }
+
+    public void onTick(){
+        world.lock=true;
+        List<IdummyWorldThinkerObject> tmp = new ArrayList<>();
+        List<IdummyWorldThinkerObject> tmp1 = new ArrayList<>();
+        dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.onTick:147").forEach((obj) -> {
+            if(obj.shouldInWorld(world.timer)){if(!obj.alreadyInWorld())tmp.addAll(obj.addToWorld(world));
+            }else if(obj.alreadyInWorld())tmp1.addAll(obj.removeFromWorld(world));
+        });
+        dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.onTick:151").addAll( tmp);
+        dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.onTick:152").removeAll( tmp1);
+        world.lock=false;
     }
     public void setCameraLookAt(Vector3f lookAt, double radius, double rotationPitch, double rotationYaw) {
         this.lookAt = lookAt;
@@ -254,7 +263,7 @@ public abstract class WorldSceneRenderer {
             glInitNames();
             glPushName(-1);
 
-            for (IdummyWorldThinkerObject obj : dummyWorldObjects) {
+            for (IdummyWorldThinkerObject obj : dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.renderSceneForPicking:266")) {
                 try {
 
                     glEnable(GL_DEPTH_TEST);
@@ -321,13 +330,15 @@ public abstract class WorldSceneRenderer {
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_ALPHA_TEST);
             glEnable(GL_DEPTH_TEST);
-            dummyWorldObjects.forEach((obj) -> {
+            world.lock=true;
+            dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.drawWorld:333").forEach((obj) -> {
                 try {
-                    obj.render(world, world.timer, null);
+                    if(obj.shouldInWorld(world.timer))obj.render(world, world.timer, null);
                 } catch (Exception e) {
                     Thinker.err(e);
                 }
             });
+            world.lock=false;
 
             //onMouseMoved(Mouse.getX(),Mouse.getY());
 
@@ -359,7 +370,7 @@ public abstract class WorldSceneRenderer {
                 (hitPos.y - startPos.yCoord),
                 (hitPos.z - startPos.zCoord));
 
-        return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos,dummyWorldHandler.dummyWorldObjects.stream().map(IdummyWorldThinkerObject::getPos).collect(Collectors.toSet()), pos);
+        return ((TrackedDummyWorld) this.world).rayTraceBlockswithTargetMap(startPos, endPos,dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.rayTrace:371").stream().map(IdummyWorldThinkerObject::getPos).collect(Collectors.toSet()), pos);
     }
 
     /***
@@ -377,7 +388,7 @@ public abstract class WorldSceneRenderer {
         drawWorld();
 
         AtomicReference<MovingObjectPosition> result = new AtomicReference<>();
-        dummyWorldHandler.dummyWorldObjects.forEach((blockDummy)->{
+        dummyWorldHandler.getDummyWorldObjects("WorldSceneRenderer.screenPos2BlockPosFace:389").forEach((blockDummy)->{
             BlockPosition pos = blockDummy.getPos();
             GL11.glPushMatrix();
             if(!blockDummy.getWorldAnimeList().isEmpty())blockDummy.getWorldAnimeList().forEach(gAnime->{

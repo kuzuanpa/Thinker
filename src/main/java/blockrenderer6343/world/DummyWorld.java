@@ -45,10 +45,9 @@ public class DummyWorld extends World {
     }
     @Override
     public void updateEntities() {
-        if(!lock)System.out.println("World missing lock when ticking!");
         ArrayList<TileEntity> invalidTileEntities = new ArrayList<>();
 
-        for (IdummyWorldThinkerObject o : dummyWorldHandler.dummyWorldObjects) {
+        for (IdummyWorldThinkerObject o : dummyWorldHandler.getDummyWorldObjects("DummyWorld.updateEntities:51")) {
 
             if(o.getWorldAnimeList().stream().filter(anime -> anime instanceof IDummyWorldTickingAnime).anyMatch(anime -> ((IDummyWorldTickingAnime) anime).beforeTick(timer, o, this)))return;
 
@@ -76,12 +75,6 @@ public class DummyWorld extends World {
         this.loadedTileEntityList.removeAll(invalidTileEntities);
 
     }
-    public void updateEntitiesForNEI() {
-        lock=true;
-        super.updateEntities();
-        lock=false;
-    }
-
     @Override
     public void markBlockRangeForRenderUpdate(int x1, int y1, int z1, int x2, int y2, int z2) {}
 
