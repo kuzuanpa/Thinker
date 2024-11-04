@@ -29,6 +29,7 @@
  */
 package cn.kuzuanpa.thinker.client.handler;
 
+import cn.kuzuanpa.thinker.client.anim.gui.IGuiAnime;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
 import net.minecraft.util.IIcon;
@@ -204,11 +205,17 @@ public class profileHandler {
             this.buttons.addAll(buttons);
         }
 
+        public thinkingProfile setDummyWorldAnime(List<IGuiAnime> list){
+            dummyWorldAnime=list;
+            return this;
+        }
+
         public final boolean disableDummyWorldRend;
         public final IIcon icon;
         public final float iconR, iconG, iconB, iconA;
         public final List<IdummyWorldThinkerObject> dummyWorldThinkerObjects = new ArrayList<>();
         public final ArrayList<ThinkerButtonBase> buttons = new ArrayList<>();
+        public List<IGuiAnime> dummyWorldAnime = new ArrayList<>();
         public final String id;
         public String[] dir;
         public String bindItemId = "";

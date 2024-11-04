@@ -29,7 +29,7 @@ import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.client.ImmediateWorldSceneRenderer;
 import blockrenderer6343.client.WorldSceneRenderer;
 import blockrenderer6343.world.TrackedDummyWorld;
-import cn.kuzuanpa.thinker.client.ThinkingGuiMain;
+import cn.kuzuanpa.thinker.client.anim.gui.setCamera;
 import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import codechicken.lib.gui.GuiDraw;
@@ -44,6 +44,9 @@ import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DummyWorldButton extends ThinkerButtonBase{
     protected static ImmediateWorldSceneRenderer renderer;
     protected static Vector3f center;
@@ -54,6 +57,7 @@ public class DummyWorldButton extends ThinkerButtonBase{
     protected static final float DEFAULT_RANGE_MULTIPLIER = 3.5f;
     protected int lastGuiMouseX,lastGuiMouseY;
     public boolean clickOnOtherButton=false,worldSynced=false;
+    public List<setCamera> cameraAnimes = new ArrayList<>();
 
 
     public DummyWorldButton(int id, int xPos, int yPos, int width, int height){
@@ -144,8 +148,7 @@ public class DummyWorldButton extends ThinkerButtonBase{
         renderer.setWorldTimer(timer);
     }
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (this.visible&&(profileHandler.selectedProfile==null||!profileHandler.selectedProfile.disableDummyWorldRend))
-        {
+        if (!this.visible|| profileHandler.selectedProfile==null || profileHandler.selectedProfile.disableDummyWorldRend)return;
             try {
                 if(!worldSynced){
                     worldSynced=renderer.sync();
@@ -154,7 +157,7 @@ public class DummyWorldButton extends ThinkerButtonBase{
                 if(!worldSynced)return;
                 renderer.onTick();
                 updateHoverState(mouseX,mouseY);
-                GuiAnimeList.forEach(anime -> anime.animeDrawPre(timer));
+                profileHandler.selectedProfile.dummyWorldAnime.forEach(anime -> anime.animeDrawPre(timer));
 
                 int RECIPE_LAYOUT_X = xPosition;
                 int RECIPE_LAYOUT_Y = yPosition;
@@ -170,10 +173,20 @@ public class DummyWorldButton extends ThinkerButtonBase{
                         sceneHeight,
                         lastGuiMouseX,
                         lastGuiMouseY,
-                        GuiAnimeList);
+                        profileHandler.selectedProfile.dummyWorldAnime);
 
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
+                profileHandler.selectedProfile.dummyWorldAnime.stream().filter(anime-> anime instanceof setCamera).map(anime-> ((setCamera) anime)).forEach(setter-> {
+                    if(setter.time >timer || setter.hasSet)return;
+                    if(setter.pitch != Float.MIN_VALUE) rotationPitch = setter.pitch ;
+                    if(setter.yaw   != Float.MIN_VALUE) rotationYaw   = setter.yaw   ;
+                    if(setter.zoom  != Float.MIN_VALUE) zoom          = setter.zoom  ;
+                    if(setter.x     != Float.MIN_VALUE) center.x      = setter.x     ;
+                    if(setter.y     != Float.MIN_VALUE) center.y      = setter.y     ;
+                    if(setter.z     != Float.MIN_VALUE) center.z      = setter.z     ;
+                    setter.hasSet=true;
+                });
                 boolean insideView = !clickOnOtherButton
                         && guiMouseX >=  RECIPE_LAYOUT_X && guiMouseY >=  RECIPE_LAYOUT_Y
                         && guiMouseX <  RECIPE_LAYOUT_X + RECIPE_WIDTH
@@ -214,11 +227,10 @@ public class DummyWorldButton extends ThinkerButtonBase{
 
                 lastGuiMouseX = guiMouseX;
                 lastGuiMouseY = guiMouseY;
-                GuiAnimeList.forEach(anime -> anime.animeDrawAfter(timer));
+                profileHandler.selectedProfile.dummyWorldAnime.forEach(anime -> anime.animeDrawAfter(timer));
             }catch (Throwable t){
                 t.printStackTrace();
             }
-        }
     }
 
 }

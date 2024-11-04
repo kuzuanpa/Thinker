@@ -15,6 +15,7 @@
 package cn.kuzuanpa.thinker.client.json;
 
 import cn.kuzuanpa.thinker.Thinker;
+import cn.kuzuanpa.thinker.client.anim.gui.IGuiAnime;
 import cn.kuzuanpa.thinker.client.objects.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.objects.IThinkerObject;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
@@ -33,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class thinkerJsonReader {
@@ -66,6 +68,7 @@ public class thinkerJsonReader {
             float iconG=1.0F;
             float iconB=1.0F;
             float iconA=1.0F;
+            List<IGuiAnime> dummyWorldAnimes = new ArrayList<>();
             List<Object> ThinkerObjects = new ArrayList<>();
             json.beginObject();
             while (json.hasNext())
@@ -92,7 +95,9 @@ public class thinkerJsonReader {
                     ThinkerObjects=readAllThinkerObjects(json,profileName);
                 } else if(jsonName.equalsIgnoreCase("comment")){
                     json.skipValue();
-                } else {
+                } else if(jsonName.equalsIgnoreCase("animes")){
+                    dummyWorldAnimes=readAllAnime(json, profileName).stream().filter(anime-> anime instanceof IGuiAnime).map(anime-> ((IGuiAnime) anime)).collect(Collectors.toList());
+                }else {
                     logError(json,profileName,"unknown Element:"+jsonName);
                     json.skipValue();
                 }
@@ -107,6 +112,7 @@ public class thinkerJsonReader {
             if(id.equals("")||ThinkerObjects.isEmpty()){logError(json,profileName,"Invaild Profile");return null;}
             profileHandler.thinkingProfile returnProfile = objs.isEmpty() ? new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,buttons) : new profileHandler.thinkingProfile(id,icon,iconR,iconG,iconB,iconA,objs,buttons);
             returnProfile.setBindItemId(bindItemID);
+            returnProfile.setDummyWorldAnime(dummyWorldAnimes);
             if(dir != null&&dir.length>0)returnProfile.setDir(dir);
             return returnProfile;
     }
@@ -123,7 +129,7 @@ public class thinkerJsonReader {
     }
     public static IThinkerObject readThinkerObject(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException{
         HashMap<String,Object> values=new HashMap<>();
-        ArrayList<IThinkerAnime> animes=new ArrayList<>();
+        List<IThinkerAnime> animes=new ArrayList<>();
         json.beginObject();
         while (json.hasNext())
         {
@@ -173,7 +179,7 @@ public class thinkerJsonReader {
         json.endObject();
         return values;
     }
-    public static ArrayList<IThinkerAnime> readAllAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException {
+    public static List<IThinkerAnime> readAllAnime(JsonReader json, String fileName)throws JsonParseException,IOException,IllegalArgumentException {
         ArrayList<IThinkerAnime> objects=new ArrayList<>();
         json.beginArray();
         while (json.hasNext()) {
