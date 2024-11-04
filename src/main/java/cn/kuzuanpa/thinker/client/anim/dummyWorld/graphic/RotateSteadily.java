@@ -13,13 +13,16 @@
  *
  */
 
-package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
+package cn.kuzuanpa.thinker.client.anim.dummyWorld.graphic;
 
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
-import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
-public interface IDummyWorldTickingAnime extends IDummyWorldAnimes {
-    boolean beforeTick(long time, IdummyWorldThinkerObject tileEntity, World world);
-    default void afterTick(long time, IdummyWorldThinkerObject tileEntity, World world){}
+public class RotateSteadily implements IDummyWorldGraphicAnime {
+    @Override
+    public boolean animeDraw(long time) {
+        GL11.glTranslatef(0.5F,0.5F,0);
+        GL11.glRotated(time/10F,0,0,1);
+        GL11.glTranslatef(-0.5F,-0.5F,0);
+        return false;
+    }
 }

@@ -16,28 +16,21 @@ package cn.kuzuanpa.thinker.client.objects.gui.custom;
 
 import cn.kuzuanpa.thinker.client.objects.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
-import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.anim.gui.IGuiAnime;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
-import cpw.mods.fml.client.config.GuiUtils;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import org.apache.logging.log4j.Level;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 

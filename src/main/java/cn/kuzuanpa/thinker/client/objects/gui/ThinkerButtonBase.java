@@ -15,8 +15,8 @@
 package cn.kuzuanpa.thinker.client.objects.gui;
 
 import cn.kuzuanpa.thinker.client.objects.IAnimatableThinkerObject;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
-import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.anim.gui.IGuiAnime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

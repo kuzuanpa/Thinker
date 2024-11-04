@@ -7,7 +7,7 @@ import blockrenderer6343.api.utils.world.DummySaveHandler;
 import cn.kuzuanpa.thinker.Thinker;
 import cn.kuzuanpa.thinker.client.handler.dummyWorldHandler;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick.IDummyWorldTickingAnime;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.tick.IDummyWorldTickingAnime;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.dummyWorldTile;
 import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
@@ -15,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.*;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.ForgeModContainer;
 
 import java.util.ArrayList;
 

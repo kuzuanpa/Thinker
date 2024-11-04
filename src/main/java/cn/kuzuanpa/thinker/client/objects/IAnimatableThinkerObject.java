@@ -45,8 +45,8 @@
 package cn.kuzuanpa.thinker.client.objects;
 
 import cn.kuzuanpa.thinker.Thinker;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
-import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.anim.gui.IGuiAnime;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,22 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.objects.gui.anime;
+
+/*
+ * This class was created by <kuzuanpa>. It is a part of Thinker.
+ * Get the Source Code in github:
+ * https://github.com/kuzuanpa/Thinker
+ *
+ * Thinker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Thinker is Open Source and distributed under the
+ * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ */
+package cn.kuzuanpa.thinker.client.anim.gui;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.objects.gui.ThinkerButtonBase;
@@ -20,7 +35,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-import static cn.kuzuanpa.thinker.Thinker.getFloat;
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
 public class animeMoveLinear implements IGuiAnime {

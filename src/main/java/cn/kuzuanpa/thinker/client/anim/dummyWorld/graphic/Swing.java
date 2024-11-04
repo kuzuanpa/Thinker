@@ -12,7 +12,7 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
+package cn.kuzuanpa.thinker.client.anim.dummyWorld.graphic;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import org.lwjgl.opengl.GL11;

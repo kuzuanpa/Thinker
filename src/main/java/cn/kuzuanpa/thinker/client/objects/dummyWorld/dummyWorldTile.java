@@ -16,12 +16,12 @@ package cn.kuzuanpa.thinker.client.objects.dummyWorld;
 
 import blockrenderer6343.api.utils.BlockPosition;
 import blockrenderer6343.world.DummyWorld;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.IDummyWorldAnimes;
 import cn.kuzuanpa.thinker.client.objects.IAnimatableThinkerObject;
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.*;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.IDummyBlockAnimeDrawAdditionalQuads;
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic.IDummyWorldGraphicAnime;
-import cn.kuzuanpa.thinker.client.objects.gui.anime.IGuiAnime;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.graphic.IDummyBlockAnimeDrawAdditionalQuads;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.graphic.IDummyWorldGraphicAnime;
+import cn.kuzuanpa.thinker.client.anim.gui.IGuiAnime;
 import cn.kuzuanpa.thinker.util.Nbt;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;

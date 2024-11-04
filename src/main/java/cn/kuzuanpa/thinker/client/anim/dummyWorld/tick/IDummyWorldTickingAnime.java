@@ -13,10 +13,13 @@
  *
  */
 
-package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
+package cn.kuzuanpa.thinker.client.anim.dummyWorld.tick;
 
-import cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.IDummyWorldAnimes;
+import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.IDummyWorldAnimes;
+import net.minecraft.world.World;
 
-public interface IDummyWorldGraphicAnime extends IDummyWorldAnimes {
-    boolean animeDraw(long time);
+public interface IDummyWorldTickingAnime extends IDummyWorldAnimes {
+    boolean beforeTick(long time, IdummyWorldThinkerObject tileEntity, World world);
+    default void afterTick(long time, IdummyWorldThinkerObject tileEntity, World world){}
 }

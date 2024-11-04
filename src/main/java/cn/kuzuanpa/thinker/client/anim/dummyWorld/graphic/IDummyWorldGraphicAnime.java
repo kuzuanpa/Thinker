@@ -12,9 +12,11 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime;
 
-import cn.kuzuanpa.thinker.client.objects.IThinkerAnime;
+package cn.kuzuanpa.thinker.client.anim.dummyWorld.graphic;
 
-public interface IDummyWorldAnimes extends IThinkerAnime {
+import cn.kuzuanpa.thinker.client.anim.dummyWorld.IDummyWorldAnimes;
+
+public interface IDummyWorldGraphicAnime extends IDummyWorldAnimes {
+    boolean animeDraw(long time);
 }

@@ -13,7 +13,7 @@
  *
  */
 
-package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.tick;
+package cn.kuzuanpa.thinker.client.anim.dummyWorld.tick;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import cn.kuzuanpa.thinker.client.objects.dummyWorld.IdummyWorldThinkerObject;

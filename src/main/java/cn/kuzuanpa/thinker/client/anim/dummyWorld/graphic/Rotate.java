@@ -12,47 +12,48 @@
  * LGPLv3 License: https://www.gnu.org/licenses/lgpl-3.0.txt
  *
  */
-package cn.kuzuanpa.thinker.client.objects.dummyWorld.anime.graphic;
+package cn.kuzuanpa.thinker.client.anim.dummyWorld.graphic;
 
 import cn.kuzuanpa.thinker.client.json.thinkerJsonReader;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
+import static cn.kuzuanpa.thinker.Thinker.getFloat;
 import static cn.kuzuanpa.thinker.Thinker.getInt;
 
-public class MoveLinear implements IDummyWorldGraphicAnime {
-    public MoveLinear(int startTime, int endTime, float dX, float dY, float dZ){
+public class Rotate implements IDummyWorldGraphicAnime {
+    public Rotate(int startTime, int endTime, float dRoll, float dPitch, float dYaw){
         this.startTime=startTime;
         this.endTime=endTime;
-        this.dX =dX;
-        this.dY =dY;
-        this.dZ= dZ;
+        this.dRoll =dRoll;
+        this.dPitch =dPitch;
+        this.dYaw= dYaw;
     }
     public int startTime, endTime;
-    public float dX, dY, dZ;
+    public float dRoll, dPitch, dYaw;
     @Override
     public boolean animeDraw(long timer) {
         if(timer<startTime) return false;
         float progress=(float)(timer - startTime)/(float)(endTime-startTime);
-        if (timer < endTime) GL11.glTranslatef(progress * dX,progress * dY, progress*dZ);
-        else GL11.glTranslatef(dX, dY, dZ);
+        if (timer < endTime) GL11.glTranslatef(progress * dPitch,progress * dYaw, progress*dRoll);
+        else GL11.glTranslatef(dPitch, dYaw, dRoll);
         return false;
     }
 
     public static boolean isMapHaveValidContents(Map<String,Object> values) {
         boolean result = values.containsKey("startTime")&&
                 values.containsKey("endTime")&&
-                values.containsKey("dX")&&
-                values.containsKey("dY")&&
-                values.containsKey("dZ");
+                values.containsKey("dRoll")&&
+                values.containsKey("dPitch")&&
+                values.containsKey("dYaw");
         if(!result)
-            thinkerJsonReader.requestLogError("Not Enough contents for world.graphic.MoveLinear: startTime, endTime, dX, dY, dZ");
+            thinkerJsonReader.requestLogError("Not Enough contents for world.graphic.Rotate: startTime, endTime, dRoll, dPitch, dYaw");
         return result;
     }
 
-    public static MoveLinear create(Map<String, Object> values) {
-        return new MoveLinear(getInt(values.get("startTime")),getInt(values.get("endTime")),getInt(values.get("dX")),getInt(values.get("dY")),getInt(values.get("dZ")));
+    public static Rotate create(Map<String, Object> values) {
+        return new Rotate(getInt(values.get("startTime")),getInt(values.get("endTime")),getFloat(values.get("dRoll")),getFloat(values.get("dPitch")),getFloat(values.get("dYaw")));
     }
 
 }

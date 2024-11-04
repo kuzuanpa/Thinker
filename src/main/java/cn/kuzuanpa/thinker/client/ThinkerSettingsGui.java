@@ -29,10 +29,12 @@
  */
 package cn.kuzuanpa.thinker.client;
 
+import cn.kuzuanpa.thinker.client.anim.gui.animeMoveLinear;
+import cn.kuzuanpa.thinker.client.anim.gui.animeRotate;
+import cn.kuzuanpa.thinker.client.anim.gui.animeTransparency;
 import cn.kuzuanpa.thinker.client.handler.configHandler;
 import cn.kuzuanpa.thinker.client.handler.profileHandler;
 import cn.kuzuanpa.thinker.client.objects.gui.*;
-import cn.kuzuanpa.thinker.client.objects.gui.anime.*;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
