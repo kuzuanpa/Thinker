@@ -44,8 +44,6 @@ import org.lwjgl.opengl.GL11;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class DummyWorldButton extends ThinkerButtonBase{
     protected static ImmediateWorldSceneRenderer renderer;
@@ -57,7 +55,6 @@ public class DummyWorldButton extends ThinkerButtonBase{
     protected static final float DEFAULT_RANGE_MULTIPLIER = 3.5f;
     protected int lastGuiMouseX,lastGuiMouseY;
     public boolean clickOnOtherButton=false,worldSynced=false;
-    public List<setCamera> cameraAnimes = new ArrayList<>();
 
 
     public DummyWorldButton(int id, int xPos, int yPos, int width, int height){
@@ -147,6 +144,19 @@ public class DummyWorldButton extends ThinkerButtonBase{
         super.updateTimer(timer);
         renderer.setWorldTimer(timer);
     }
+
+    public void setCameraPitch(float value)
+    {
+        rotationPitch = (value) % 360;
+    }
+    public void setCameraYaw(double value)
+    {
+        rotationYaw = (float) MathHelper.clip(value, -89.9, 89.9);
+    }
+    public void setCameraZoom(double value)
+    {
+        zoom = (float) MathHelper.clip(value, 3, 999);
+    }
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (!this.visible|| profileHandler.selectedProfile==null || profileHandler.selectedProfile.disableDummyWorldRend)return;
             try {
@@ -179,12 +189,12 @@ public class DummyWorldButton extends ThinkerButtonBase{
 
                 profileHandler.selectedProfile.dummyWorldAnime.stream().filter(anime-> anime instanceof setCamera).map(anime-> ((setCamera) anime)).forEach(setter-> {
                     if(setter.time >timer || setter.hasSet)return;
-                    if(setter.pitch != Float.MIN_VALUE) rotationPitch = setter.pitch ;
-                    if(setter.yaw   != Float.MIN_VALUE) rotationYaw   = setter.yaw   ;
-                    if(setter.zoom  != Float.MIN_VALUE) zoom          = setter.zoom  ;
-                    if(setter.x     != Float.MIN_VALUE) center.x      = setter.x     ;
-                    if(setter.y     != Float.MIN_VALUE) center.y      = setter.y     ;
-                    if(setter.z     != Float.MIN_VALUE) center.z      = setter.z     ;
+                    if(setter.pitch != Float.MIN_VALUE) setCameraPitch(setter.pitch);
+                    if(setter.yaw   != Float.MIN_VALUE) setCameraYaw  (setter.yaw  );
+                    if(setter.zoom  != Float.MIN_VALUE) setCameraZoom (setter.zoom );
+                    if(setter.x     != Float.MIN_VALUE) center.x      = setter.x    ;
+                    if(setter.y     != Float.MIN_VALUE) center.y      = setter.y    ;
+                    if(setter.z     != Float.MIN_VALUE) center.z      = setter.z    ;
                     setter.hasSet=true;
                 });
                 boolean insideView = !clickOnOtherButton
@@ -199,13 +209,12 @@ public class DummyWorldButton extends ThinkerButtonBase{
                     MovingObjectPosition rayTraceResult = renderer.getLastTraceResult();
 
                     if (leftClickHeld) {
-                        rotationPitch += guiMouseX - lastGuiMouseX + 360;
-                        rotationPitch = rotationPitch % 360;
-                        rotationYaw = (float) MathHelper.clip(rotationYaw + (guiMouseY - lastGuiMouseY), -89.9, 89.9);
+                        setCameraPitch(rotationPitch + guiMouseX - lastGuiMouseX + 360);
+                        setCameraYaw(rotationYaw + (guiMouseY - lastGuiMouseY));
                     } else if (rightClickHeld) {
                         int mouseDeltaY = guiMouseY - lastGuiMouseY;
                         if (Math.abs(mouseDeltaY) > 0.1) {
-                            zoom = (float) MathHelper.clip(zoom + (mouseDeltaY > 0 ? 0.2 : -0.2), 3, 999);
+                            setCameraZoom(zoom + (mouseDeltaY > 0 ? 0.2 : -0.2));
                         }
                     }else if(middleClickHeld){
                         int mouseDeltaX = guiMouseX - lastGuiMouseX;

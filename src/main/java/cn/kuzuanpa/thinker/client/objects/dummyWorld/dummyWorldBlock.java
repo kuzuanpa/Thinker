@@ -64,7 +64,7 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
         this.dummyPlayerCarmeaYaw=dummyPlayerCarmeaYaw;
         Collections.addAll(WorldAnimeList,animes);
     }
-    public dummyWorldBlock(long joinTime,long leaveTime, BlockPosition pos, Block block, int meta, IDummyWorldAnimes... animes){
+    public dummyWorldBlock(long joinTime, long leaveTime, BlockPosition pos, Block block, int meta, IDummyWorldAnimes... animes){
         this.joinTime=joinTime;
         this.leaveTime=leaveTime;
         this.pos=pos;
@@ -149,7 +149,10 @@ public class dummyWorldBlock implements IdummyWorldThinkerObject, IAnimatableThi
             }
             if (world.getTileEntity(pos.x, pos.y, pos.z) != null)
                 tmp.add(new dummyWorldTile(joinTime, leaveTime, pos,world.getTileEntity(pos.x, pos.y, pos.z), block.WorldAnimeList));
-        } else world.setBlock(pos.x, pos.y, pos.z, block.block);
+        } else {
+            world.setBlock(pos.x, pos.y, pos.z, block.block);
+            world.setBlockMetadataWithNotify(pos.x, pos.y, pos.z, block.meta, 0);
+        }
         if (!block.block.hasTileEntity(block.meta)) return tmp;
         TileEntity tile = block.block.createTileEntity(world, block.meta);
         if (tile != null) {
