@@ -45,7 +45,7 @@ public class keyBindHandler {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (keyThink.isPressed()) {
-                FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGuiMain());
+            FMLClientHandler.instance().getClient().displayGuiScreen(new ThinkingGuiMain());
         }
     }
 }

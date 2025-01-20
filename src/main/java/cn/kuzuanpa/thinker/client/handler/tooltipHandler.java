@@ -31,6 +31,7 @@
 package cn.kuzuanpa.thinker.client.handler;
 
 import cn.kuzuanpa.thinker.client.ThinkingGuiMain;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
@@ -56,7 +57,10 @@ public class tooltipHandler {
                 }
                 event.toolTip.add(processBar.toString());
             }else event.toolTip.add(StatCollector.translateToLocal("tooltip.thinker.0")+" LShift + "+Keyboard.getKeyName(keyBindHandler.keyThink.getKeyCode())+" "+StatCollector.translateToLocal("tooltip.thinker.1"));
-            if(pressedTime>configHandler.keyPressedTimeNeededToStartThink.getI())Minecraft.getMinecraft().displayGuiScreen(new ThinkingGuiMain(event.itemStack));
+            if(pressedTime>configHandler.keyPressedTimeNeededToStartThink.getI()){
+                if(FMLClientHandler.instance().getClient().currentScreen != null)FMLClientHandler.instance().getClient().thePlayer.closeScreen();
+                Minecraft.getMinecraft().displayGuiScreen(new ThinkingGuiMain(event.itemStack));
+            }
         }
     }
     public int calculateProcessBar(){
