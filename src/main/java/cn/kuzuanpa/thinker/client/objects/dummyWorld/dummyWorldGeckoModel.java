@@ -71,7 +71,7 @@ public class dummyWorldGeckoModel implements IGeoRenderer<dummyWorldGeckoModel.d
                 values.containsKey("modelPath")&&
                 values.containsKey("texturePath")&&
                 values.containsKey("animePath");
-        if(!result) thinkerJsonReader.requestLogError("Not Enough contents for dummyWorldGeckoModel: modelPath, texturePath, animePath, posX, posY, posZ");
+        if(!result) thinkerJsonReader.requestLogError("Not Enough contents for dummyWorldGeckoModel: joinTime, leaveTime, modelPath, texturePath, animePath, posX, posY, posZ");
         return result;
     }
 

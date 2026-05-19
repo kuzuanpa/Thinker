@@ -52,8 +52,8 @@ public class tooltipHandler {
             StringBuilder processBar = new StringBuilder();
             if(isThinkerGoingToDisplay) {
                 for (int i = 0; i < 20; i++) {
-                    if (i < calculateProcessBar()) processBar.append(EnumChatFormatting.GREEN.toString()).append("| ");
-                    else processBar.append(EnumChatFormatting.GRAY.toString()).append("| ");
+                    if (i < calculateProcessBar()) processBar.append(EnumChatFormatting.GREEN).append("| ");
+                    else processBar.append(EnumChatFormatting.GRAY).append("| ");
                 }
                 event.toolTip.add(processBar.toString());
             }else event.toolTip.add(StatCollector.translateToLocal("tooltip.thinker.0")+" LShift + "+Keyboard.getKeyName(keyBindHandler.keyThink.getKeyCode())+" "+StatCollector.translateToLocal("tooltip.thinker.1"));

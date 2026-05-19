@@ -72,9 +72,10 @@ public class Thinker
         dummyWorldTickThread.start();
         configHandler.saveAll();
         registerObjectAdaptor(new defaultObjectsAdaptor());
-        registerAnimeAdaptor(new defaultAnimeAdaptor());try {
-        thinkerJsonReader.readAllProfiles("ideas");
-    }catch (Exception ignored){}
+        registerAnimeAdaptor(new defaultAnimeAdaptor());
+        try {
+            thinkerJsonReader.readAllProfiles("ideas");
+        }catch (Exception ignored){}
     }
     @EventHandler
     public void registerCommands(FMLServerStartingEvent e){

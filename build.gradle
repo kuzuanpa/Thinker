@@ -10,9 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') {
-            changing = true
-        }
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') 
     }
 }
 
@@ -90,7 +88,7 @@ task devJar(type: Jar) {
 //to your client and server program arguments if working in a dev environment.
 def yourMixinConfig = "mixins.${modId}.json"
 def refMapForYourConfig = "mixins.${modId}.refmap.json"
-def relativePathToMixinAP = 'libs/mixin-0.8-SNAPSHOT.jar'
+def relativePathToMixinAP = 'libs/mixin.jar'
 
 def embedMixin = false
 
