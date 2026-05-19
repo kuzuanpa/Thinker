@@ -47,10 +47,29 @@
   "animePath":"botarium.animation.json"
   },
   {
-  "type":"text",
-  "posX":0,
-  "posY":5,
-  "text":"thinker"
+    "type":"subtitle",
+    "posX":230,
+    "posY":125,
+    "texts":{
+      "Hello Thinker!":{
+        "joinTime":2000,
+        "leaveTime":10000,
+        "fadeInLength":1000,
+        "fadeOutLength":6000
+      },
+      "This is a Simple Powerful Help Guide!":{
+        "joinTime":10000,
+        "leaveTime":20000,
+        "fadeInLength":1000,
+        "fadeOutLength":6000
+      },
+      "    And with many functions...":{
+        "joinTime":12000,
+        "leaveTime":20000,
+        "fadeInLength":1000,
+        "fadeOutLength":6000
+      }
+    }
   }
   ]
  }
